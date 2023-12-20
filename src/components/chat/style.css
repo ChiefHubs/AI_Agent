@@ -1,0 +1,78 @@
+/* ----chat input ---- */
+.chat-input {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 16px;
+    border: 1px solid gray;
+    border-radius: 5px;
+  }
+  
+  .chat-input input {
+    flex: 1;
+    width: 550px;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    outline:none
+  }
+  
+  .chat-input .icon-style {
+    padding: 10px;
+    color: black;
+    background-color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 10px;
+  }
+
+
+  /* -----message list---- */
+  .chat {
+    max-width: 400px;
+    width: 100%;
+    height: 540px;
+    overflow: auto;
+  }
+  
+  .chat-title {
+    padding: 10px;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;   
+    max-width: 100%;
+    cursor: pointer;
+    background-color: #333;
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+  }
+  
+  .chat-title:hover {
+    background-color: #1d1f20;
+  }
+  
+  /* .chat-title.user {
+    background-color: #333;
+    color: white;
+    align-self: flex-start;
+  }
+  
+  .chat-title.bot {
+    background-color: #f0f0f0;
+    color: #333;
+  } */
+
+
+
+
+::-webkit-scrollbar{
+    width: 8px;
+}
+::-webkit-scrollbar-thumb{
+    background: rgb(79,79,79);
+    border-radius: 8px;
+}
