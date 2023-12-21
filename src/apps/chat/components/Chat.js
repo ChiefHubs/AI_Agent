@@ -1,10 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPaperPlane,
+  faBars,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons";
 
-import "./style.css";
+import "../style.css";
 
-function Chat({ onSendMessage }) {
+function Chat({ onSendMessage, setIsMenuOpen, isMenuOpen }) {
   const ref = useRef();
   const [prompt, setPrompt] = useState("");
   const [messages, setMessages] = useState([
@@ -68,14 +72,24 @@ function Chat({ onSendMessage }) {
   return (
     <>
       <div>
-        <h1 className="font-bold text-xl text-black p-4">Agent Query</h1>
-        {/* <Starter/> */}
+        <div className="flex flex-row justify-between">
+          <h1 className="font-bold text-xl text-black p-4">Agent Query</h1>
+          <div className="md:hidden p-4 cursor-pointer">
+            <FontAwesomeIcon
+              icon={isMenuOpen ? faXmark : faBars}
+              size={25}
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            />
+          </div>
+        </div>
+
         {/* messages */}
         {/* {messages.length === 0 ? (
           <Starter />
-        ) : (
-          <div className="overflow-y-scroll h-[70vh] md:h-[75vh] w-full md:w-[70%] mx-auto md:p-0 p-4 flex flex-col"> */}
+        ) : ( */}
+
         {/* message */}
+
         <div className=" bg-[#dad6d6] rounded overflow-y-scroll h-[70vh] md:h-[75vh] w-full md:w-[70%] mx-auto md:p-0 p-4 flex flex-col">
           {messages.map((m, index) => (
             <div key={index} className="flex items-start space-x-4 my-6 p-2">

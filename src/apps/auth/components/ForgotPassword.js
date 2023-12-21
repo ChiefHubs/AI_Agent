@@ -1,14 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
-import * as Yup from "yup";
-import "./style.css";
 
-const validationSchema = Yup.object({
-  email: Yup.string()
-    .email("Invalid email address")
-    .required("Email is required"),
-});
+import { forgotPasswordSchema } from "../validations";
+import "../style.css";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
@@ -16,7 +11,7 @@ const ForgotPassword = () => {
     initialValues: {
       email: "",
     },
-    validationSchema: validationSchema,
+    validationSchema: forgotPasswordSchema,
     onSubmit: (values) => {
       console.log("Form submitted with values:", values);
     },

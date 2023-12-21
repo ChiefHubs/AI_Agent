@@ -1,25 +1,16 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import { useFormik } from "formik";
-import * as Yup from "yup";
+
+// import { forgotPasswordSchema } from "../validations";
 import "./style.css";
 
-const validationSchema = Yup.object({
-  email: Yup.string()
-    .email("Invalid email address")
-    .required("Email is required"),
-  password: Yup.string()
-    .min(6, "Password must be at least 6 characters")
-    .required("password is required"),
-});
-
-const Login = () => {
+const ChangePassword = () => {
   const formik = useFormik({
     initialValues: {
-      email: "",
-      password: "",
+      newpassword: "",
+      confirmnewpassword: "",
     },
-    validationSchema: validationSchema,
+    // validationSchema: forgotPasswordSchema,
     onSubmit: (values) => {
       console.log("Form submitted with values:", values);
     },
@@ -43,92 +34,85 @@ const Login = () => {
     return <div className="coverSpin"></div>;
   }
 
-  // if (isAuthenticated) {
-  //   return <Redirect to="/dashboard"></Redirect>;
-  // }
-
   return (
     <>
       <section className="form-section">
         <div className="container">
           <div className="login-area">
             <h1 align="center" className="title">
-              Login
+              Change Password
             </h1>
 
             <form onSubmit={formik.handleSubmit}>
               <div className="form-area">
                 <div className="form-control">
                   <span className="input-error">
-                    <label>Email </label>
-                    {formik.touched.email && formik.errors.email ? (
+                    <label>New Password </label>
+                    {/* {formik.touched.email && formik.errors.email ? (
                       <div className="error">{formik.errors.email}</div>
-                    ) : null}
+                    ) : null} */}
                   </span>
 
                   <input
-                    type="text"
-                    id="email"
-                    name="email"
+                    type="password"
+                    id="newpassword"
+                    name="newpassword"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    value={formik.values.email}
+                    value={formik.values.newpassword}
                     className="input-box"
-                    placeholder="Enter your email"
+                    placeholder="Create New Password"
                   />
                 </div>
 
                 <div className="form-control">
                   <span className="input-error">
-                    <label>Password </label>
-                    {formik.touched.password && formik.errors.password ? (
-                      <div className="error">{formik.errors.password}</div>
-                    ) : null}
+                    <label>Confirm Password </label>
+                    {/* {formik.touched.email && formik.errors.email ? (
+                      <div className="error">{formik.errors.email}</div>
+                    ) : null} */}
                   </span>
+
                   <input
                     type="password"
-                    id="password"
-                    name="password"
+                    id="confirmnewpassword"
+                    name="confirmnewpassword"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    value={formik.values.password}
+                    value={formik.values.newpassword}
                     className="input-box"
-                    placeholder="Enter your password"
+                    placeholder="Enter Confirm New Password"
                   />
                 </div>
-
                 <div
                   style={{
-                    textAlign: "right",
-                    marginTop: "4px",
-                    fontSize: "15px",
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "flex-end",
                   }}
                 >
-                  <Link
-                    to={`/forgot-password`}
-                    style={{ textDecoration: "none" }}
+                  <button
+                    className="btn cancel-btn"
+                    // onClick={() => navigate("/login")}
+                    style={{
+                      marginRight: "4px",
+                    }}
                   >
-                    Forgot Password?
-                  </Link>
+                    Cancel
+                  </button>
+                  <button type="submit" className="btn forgot-btn">
+                    Submit
+                  </button>
                 </div>
-
-                <button type="submit" align="center" className="btn submit-btn">
-                  Login
-                </button>
               </div>
             </form>
             <div
               style={{
                 textAlign: "center",
-                marginTop: "12px",
+                marginTop: "20px",
                 fontSize: "15px",
               }}
-            >
-              Don't have an account? &nbsp;
-              <Link to={`/signup`} style={{ textDecoration: "none" }}>
-                Signup
-              </Link>
-            </div>
+            ></div>
           </div>
         </div>
       </section>
@@ -136,4 +120,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default ChangePassword;

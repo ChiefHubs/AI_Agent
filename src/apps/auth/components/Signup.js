@@ -1,39 +1,46 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
-import * as Yup from "yup";
-import "./style.css";
+import { connect } from "react-redux";
 
-const validationSchema = Yup.object({
-  email: Yup.string()
-    .email("Invalid email address")
-    .required("Email is equired"),
-  contact: Yup.string()
-    .matches(/^[0-9]+$/, "Invalid contact number") // Only allow numeric characters
-    .min(10, "Contact number must be at least 10 digits")
-    .max(15, "Contact number can be at most 15 digits")
-    .required("Contact is required"),
-  password: Yup.string()
-    .min(6, "Password must be at least 6 characters")
-    .required("Password is required"),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref("password"), null], "Passwords must match")
-    .required("Confirm password is required"),
-});
+import { signupSchema } from "../validations";
+
+import "../style.css";
 
 const Signup = () => {
   const formik = useFormik({
     initialValues: {
+      firstname: "",
+      lastname: "",
+      mobileno: "",
       email: "",
-      contact: "",
       password: "",
-      confirmPassword: "",
+      confirmpassword: "",
     },
-    validationSchema: validationSchema,
+    validationSchema: signupSchema,
     onSubmit: (values) => {
-      console.log("Form submitted with values:", values);
+      onSubmit(values);
     },
   });
+
+  const [isLoading, changeIsLoading] = useState(false);
+
+  const onSubmit = async (values) => {
+    console.log("register onsubmit", values);
+    changeIsLoading(true);
+    try {
+      console.log("try");
+      // register(values);
+      changeIsLoading(false);
+    } catch (e) {
+      console.log(e.message);
+      changeIsLoading(false);
+    }
+  };
+
+  if (isLoading) {
+    return <div className="coverSpin"></div>;
+  }
 
   return (
     <section className="form-section">
@@ -44,6 +51,44 @@ const Signup = () => {
           </h1>
           <div className="form-area">
             <form onSubmit={formik.handleSubmit}>
+              <div>
+                <div className="form-control">
+                  <span>
+                    <label htmlFor="firstname">First Name</label>
+                    {formik.touched.firstname && formik.errors.firstname ? (
+                      <div className="error">{formik.errors.firstname}</div>
+                    ) : null}
+                  </span>
+                  <input
+                    type="text"
+                    id="firstname"
+                    name="firstname"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.firstname}
+                    className="input-box"
+                    placeholder="Enter First Name"
+                  />
+                </div>
+                <div className="form-control">
+                  <span>
+                    <label htmlFor="firstname">Last Name</label>
+                    {formik.touched.lastname && formik.errors.lastname ? (
+                      <div className="error">{formik.errors.lastname}</div>
+                    ) : null}
+                  </span>
+                  <input
+                    type="text"
+                    id="lastname"
+                    name="lastname"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.lastname}
+                    className="input-box"
+                    placeholder="Enter Last Name"
+                  />
+                </div>
+              </div>
               <div className="form-control">
                 <span>
                   <label htmlFor="email">Email</label>
@@ -65,18 +110,18 @@ const Signup = () => {
 
               <div className="form-control">
                 <span>
-                  <label htmlFor="contact">Contact</label>
-                  {formik.touched.contact && formik.errors.contact ? (
-                    <div className="error">{formik.errors.contact}</div>
+                  <label htmlFor="mobileno">Contact</label>
+                  {formik.touched.mobileno && formik.errors.mobileno ? (
+                    <div className="error">{formik.errors.mobileno}</div>
                   ) : null}
                 </span>
                 <input
                   type="text"
-                  id="contact"
-                  name="contact"
+                  id="mobileno"
+                  name="mobileno"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  value={formik.values.contact}
+                  value={formik.values.mobileno}
                   className="input-box"
                   placeholder="Enter Contact"
                 />
@@ -103,19 +148,19 @@ const Signup = () => {
 
               <div className="form-control">
                 <span>
-                  <label htmlFor="confirmPassword">Confirm Password</label>
-                  {formik.touched.confirmPassword &&
-                  formik.errors.confirmPassword ? (
-                    <div className="error">{formik.errors.confirmPassword}</div>
+                  <label htmlFor="confirmpassword">Confirm Password</label>
+                  {formik.touched.confirmpassword &&
+                  formik.errors.confirmpassword ? (
+                    <div className="error">{formik.errors.confirmpassword}</div>
                   ) : null}
                 </span>
                 <input
                   type="password"
-                  id="confirmPassword"
-                  name="confirmPassword"
+                  id="confirmpassword"
+                  name="confirmpassword"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  value={formik.values.confirmPassword}
+                  value={formik.values.confirmpassword}
                   className="input-box"
                   placeholder="Confirm Password"
                 />

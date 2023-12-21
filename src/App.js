@@ -1,9 +1,9 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "./components/auth/Login";
-import Signup from "./components/auth/Signup";
-import Home from "./components/home/Home";
-import ForgotPassword from "./components/auth/ForgotPassword";
+import Login from "./apps/auth/components/Login";
+import Signup from "./apps/auth/components/Signup";
+import Home from "./apps/home/components/Home";
+import ForgotPassword from "./apps/auth/components/ForgotPassword";
 
 function App() {
   return (
@@ -13,7 +13,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/home" element={<Home />} />
+          <Route path="/" element={<Home />} />
         </Routes>
       </BrowserRouter>
     </>
