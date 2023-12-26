@@ -5,16 +5,20 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    /* padding-right: 15px;
+    padding-left: 15px; */
+    margin-right: auto;
+    margin-left: auto;
     /* padding: 80px 0px 0px 0px; */
   }
 
-  .container {
+  /* .container {
     width: 100%;
     padding-right: 15px;
     padding-left: 15px;
     margin-right: auto;
     margin-left: auto;
-  }
+  } */
 
   .login-area {
     background: #fff;
@@ -28,7 +32,7 @@
   .login-area h2 {
     font-size: 22px;
     font-weight: 600 !important;
-    color: #15509a !important;
+    color: #202123 !important;
   }
   .login-area a {
     font-size: 14px;
@@ -79,12 +83,13 @@
    outline: none;
    width: auto;
    margin-top: 16px;
+   font-weight: 600;
   }
 
 
   .submit-btn {
     color: #fff;
-    background: #144787;
+    background: #202123;
     display: block;
     border: none;
     display: block;
@@ -101,15 +106,15 @@
 
   .forgot-btn{
     color: #fff;
-    background: #144787;
+    background: #202123;
     border: none;
   }
 
   .cancel-btn{
     background: #fff;
-   color:  #15509a;
-   border: 1px solid #15509a;
-   box-shadow: 0 6px 6px -6px #15509a;
+   color:  #202123;
+   border: 1px solid #202123;
+   box-shadow: 0 6px 6px -6px #202123;
   }
 
   /* .cancel-btn:hover{
@@ -123,4 +128,12 @@
     margin-bottom: 2px;
 
   }
-  
+
+
+  @media only screen and (max-width: 600px) {
+    .login-area {
+     
+      width: 350px;
+    
+    }
+}

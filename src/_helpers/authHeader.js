@@ -5,7 +5,7 @@ export default function authHeader(token) {
     token = user.token;
   }
   if (token) {
-    return "Token " + token;
+    return token;
   } else {
     return null;
   }

@@ -1,5 +1,5 @@
 
-  .form-section {
+  .menu-section {
     width: 100%;
     height: 100vh;
     display: flex;
@@ -7,16 +7,16 @@
     align-items: center;
     /* padding: 80px 0px 0px 0px; */
   }
-
+/* 
   .container {
     width: 100%;
     padding-right: 15px;
     padding-left: 15px;
     margin-right: auto;
     margin-left: auto;
-  }
+  } */
 
-  .login-area {
+  .menu-area {
     background: #fff;
     margin: 0px auto;
     width: 400px;
@@ -25,27 +25,19 @@
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     border-radius: 10px;
   }
-  .login-area h2 {
+  .title {
     font-size: 22px;
-    font-weight: 600 !important;
-    color: #15509a !important;
+    font-weight: bold;
+ 
   }
-  .login-area a {
-    font-size: 14px;
-    font-weight: 400;
-    /* color: #555 !important; */
-  }
-  .login-area span {
+
+  .menu-area span {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
   }
   
-  .login-area .form-area {
-    /* margin-top: 25px; */
-  }
-
-  .form-area .input-box {
+  .form-content-area .input-box {
     box-sizing: border-box;
     padding: 10px;
     background: #fff;
@@ -72,8 +64,7 @@ input[type=number]::-webkit-outer-spin-button {
     margin: 0; 
 } */
   .form-control {
-    padding: 10px;
-   
+    padding: 10px;   
   }
 
   .btn{
@@ -115,4 +106,10 @@ input[type=number]::-webkit-outer-spin-button {
     margin-bottom: 2px;
 
   }
-  
+
+
+  @media only screen and (max-width: 600px) {
+    .menu-area{
+      width: 350px;
+    }
+}

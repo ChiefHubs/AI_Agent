@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faRecordVinyl,
@@ -9,10 +10,11 @@ import {
   faTemperatureThreeQuarters,
   faAngleDown,
   faAngleUp,
-  faAngleRight,
   faLock,
   faFileArrowUp,
 } from "@fortawesome/free-solid-svg-icons";
+
+import { logout } from "../../auth/actions";
 
 const leftMenuItems = [
   {
@@ -40,7 +42,7 @@ const settingMenu = [
     icon: faFileArrowUp,
   },
   {
-    title: "UI Key",
+    title: "LLM Key",
     icon: faKey,
   },
   {
@@ -50,6 +52,7 @@ const settingMenu = [
 ];
 
 const Sidebar = ({ queries, setCurrentPage }) => {
+  const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const [isSettingOpen, setIsSettingOpen] = useState(false);
 
@@ -73,19 +76,22 @@ const Sidebar = ({ queries, setCurrentPage }) => {
       </div>
       <div className="flex flex-col justify-between h-full w-full">
         {/* recent chats title */}
+        {/* {queries.length !== 0 && ( */}
         <div>
           <p className="text-[#666666] text-sm mt-1">Today</p>
           <div className="text-[#fff] text-sm space-y-4 mt-4 w-full overflow-y-scroll h-[70vh]">
-            {queries.map((q, index) => (
-              <div
-                key={index}
-                className="px-2 py-2 truncate w-full rounded-lg cursor-pointer hover:bg-[#202123]"
-              >
-                {q.text}
-              </div>
-            ))}
+            {queries.length !== 0 &&
+              queries.map((q, index) => (
+                <div
+                  key={index}
+                  className="px-2 py-2 truncate w-full rounded-lg cursor-pointer hover:bg-[#202123]"
+                >
+                  {q.title}
+                </div>
+              ))}
           </div>
         </div>
+        {/* )} */}
 
         {/* left side bottom menu */}
         <div className="flex flex-col space-y-4 relative">
@@ -135,7 +141,6 @@ const Sidebar = ({ queries, setCurrentPage }) => {
                                 key={i}
                                 onClick={() => {
                                   setCurrentPage(item.title);
-                                  console.log("current ", item.title);
                                 }}
                               >
                                 <div className="block px-3 py-2 mt-2 text-[#fff] text-sm font-semibold rounded-lg md:mt-0  focus:outline-none focus:shadow-outline">
@@ -150,12 +155,25 @@ const Sidebar = ({ queries, setCurrentPage }) => {
                             );
                           })}
                       </div>
+                    ) : item.title === "Logout" ? (
+                      <div
+                        className="cursor-pointer"
+                        onClick={() => {
+                          dispatch(logout);
+                        }}
+                      >
+                        <FontAwesomeIcon
+                          icon={item.icon}
+                          fontSize="1em"
+                          className="icon-style px-3 "
+                        />
+                        {item.title}
+                      </div>
                     ) : (
                       <div
                         className="cursor-pointer"
                         onClick={() => {
                           setCurrentPage(item.title);
-                          console.log("current ", item.title);
                         }}
                       >
                         <FontAwesomeIcon
@@ -174,7 +192,7 @@ const Sidebar = ({ queries, setCurrentPage }) => {
           {/* user account details */}
           <div
             onClick={() => setIsOpen(!isOpen)}
-            className="flex items-center w-full p-2 mt-16 rounded-lg hover:bg-[#202123]"
+            className="flex items-center w-full p-2 mt-16 rounded-lg hover:bg-[#202123] cursor-pointer"
           >
             <img
               src="/images/default_user.jpg"

@@ -1,21 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+// import swal from 'sweetalert'
 
 import { signupSchema } from "../validations";
+import { register } from "../actions";
 
 import "../style.css";
 
 const Signup = () => {
+  const dispatch = useDispatch();
+
+  const [isLoading, changeIsLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
-      firstname: "",
-      lastname: "",
-      mobileno: "",
+      firstName: "",
+      lastName: "",
+      mobile_no: "",
       email: "",
       password: "",
-      confirmpassword: "",
+      confirmPassword: "",
     },
     validationSchema: signupSchema,
     onSubmit: (values) => {
@@ -23,23 +28,40 @@ const Signup = () => {
     },
   });
 
-  const [isLoading, changeIsLoading] = useState(false);
+  const { messages, error, isAuthenticated } = useSelector(
+    (state) => state.auth
+  );
 
+  console.log("errors ", error);
+  console.log("messages ", messages);
   const onSubmit = async (values) => {
-    console.log("register onsubmit", values);
     changeIsLoading(true);
     try {
-      console.log("try");
-      // register(values);
+      const response = dispatch(register(values));
+      console.log("response ", response);
       changeIsLoading(false);
     } catch (e) {
-      console.log(e.message);
+      console.log("error ", e.message);
       changeIsLoading(false);
     }
   };
 
+  useEffect(() => {
+    if (error) {
+      console.log("errors ", error);
+      // dispatch({ type: "clearError" });
+      changeIsLoading(false);
+    }
+    if (isAuthenticated) {
+      // alert(message);
+      changeIsLoading(false);
+      console.log("message", messages);
+      console.log("user ", isAuthenticated);
+    }
+  }, [error, isAuthenticated, messages]);
+
   if (isLoading) {
-    return <div className="coverSpin"></div>;
+    return <div className="coverSpinner"></div>;
   }
 
   return (
@@ -54,36 +76,36 @@ const Signup = () => {
               <div>
                 <div className="form-control">
                   <span>
-                    <label htmlFor="firstname">First Name</label>
-                    {formik.touched.firstname && formik.errors.firstname ? (
-                      <div className="error">{formik.errors.firstname}</div>
+                    <label htmlFor="firstName">First Name</label>
+                    {formik.touched.firstName && formik.errors.firstName ? (
+                      <div className="error">{formik.errors.firstName}</div>
                     ) : null}
                   </span>
                   <input
                     type="text"
-                    id="firstname"
-                    name="firstname"
+                    id="firstName"
+                    name="firstName"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    value={formik.values.firstname}
+                    value={formik.values.firstName}
                     className="input-box"
                     placeholder="Enter First Name"
                   />
                 </div>
                 <div className="form-control">
                   <span>
-                    <label htmlFor="firstname">Last Name</label>
-                    {formik.touched.lastname && formik.errors.lastname ? (
-                      <div className="error">{formik.errors.lastname}</div>
+                    <label htmlFor="lastName">Last Name</label>
+                    {formik.touched.lastName && formik.errors.lastName ? (
+                      <div className="error">{formik.errors.lastName}</div>
                     ) : null}
                   </span>
                   <input
                     type="text"
-                    id="lastname"
-                    name="lastname"
+                    id="lastName"
+                    name="lastName"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    value={formik.values.lastname}
+                    value={formik.values.lastName}
                     className="input-box"
                     placeholder="Enter Last Name"
                   />
@@ -110,18 +132,18 @@ const Signup = () => {
 
               <div className="form-control">
                 <span>
-                  <label htmlFor="mobileno">Contact</label>
-                  {formik.touched.mobileno && formik.errors.mobileno ? (
-                    <div className="error">{formik.errors.mobileno}</div>
+                  <label htmlFor="mobile_no">Contact</label>
+                  {formik.touched.mobile_no && formik.errors.mobile_no ? (
+                    <div className="error">{formik.errors.mobile_no}</div>
                   ) : null}
                 </span>
                 <input
                   type="text"
-                  id="mobileno"
-                  name="mobileno"
+                  id="mobile_no"
+                  name="mobile_no"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  value={formik.values.mobileno}
+                  value={formik.values.mobile_no}
                   className="input-box"
                   placeholder="Enter Contact"
                 />
@@ -148,19 +170,19 @@ const Signup = () => {
 
               <div className="form-control">
                 <span>
-                  <label htmlFor="confirmpassword">Confirm Password</label>
-                  {formik.touched.confirmpassword &&
-                  formik.errors.confirmpassword ? (
-                    <div className="error">{formik.errors.confirmpassword}</div>
+                  <label htmlFor="confirmPassword">Confirm Password</label>
+                  {formik.touched.confirmPassword &&
+                  formik.errors.confirmPassword ? (
+                    <div className="error">{formik.errors.confirmPassword}</div>
                   ) : null}
                 </span>
                 <input
                   type="password"
-                  id="confirmpassword"
-                  name="confirmpassword"
+                  id="confirmPassword"
+                  name="confirmPassword"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  value={formik.values.confirmpassword}
+                  value={formik.values.confirmPassword}
                   className="input-box"
                   placeholder="Confirm Password"
                 />
