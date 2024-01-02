@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faRecordVinyl,
@@ -51,18 +51,24 @@ const settingMenu = [
   },
 ];
 
-const Sidebar = ({ queries, setCurrentPage }) => {
+const Sidebar = ({
+  queries,
+  setCurrentPage,
+  setActiveChat,
+  activeChat,
+  handleCreateNewChat,
+  setIsMenuOpen,
+}) => {
   const dispatch = useDispatch();
+  const user = useSelector((store) => store.auth.user);
+
   const [isOpen, setIsOpen] = useState(false);
   const [isSettingOpen, setIsSettingOpen] = useState(false);
 
   return (
     <div className="bg-[#333] flex flex-col items-start p-4 h-screen">
       {/* new chat button */}
-      <div
-        onClick={() => window.location.reload()}
-        className="flex items-center w-full p-1 rounded-lg hover:bg-[#202123]"
-      >
+      <div className="flex items-center w-full p-1 rounded-lg hover:bg-[#202123]">
         <div className="flex items-center space-x-2 cursor-pointer">
           <div className="text-[#ececf1] p-1 h-8 w-8">
             <FontAwesomeIcon
@@ -71,19 +77,33 @@ const Sidebar = ({ queries, setCurrentPage }) => {
               className="icon-style"
             />
           </div>
-          <h2 className="text-[#ececf1] font-semibold">New Chat</h2>
+          <h2
+            onClick={handleCreateNewChat}
+            className="text-[#ececf1] font-semibold"
+          >
+            New Chat
+          </h2>
         </div>
       </div>
       <div className="flex flex-col justify-between h-full w-full">
         {/* recent chats title */}
-        {/* {queries.length !== 0 && ( */}
+
         <div>
           <p className="text-[#666666] text-sm mt-1">Today</p>
           <div className="text-[#fff] text-sm space-y-4 mt-4 w-full overflow-y-scroll h-[70vh]">
             {queries.length !== 0 &&
               queries.map((q, index) => (
                 <div
+                  style={{
+                    backgroundColor:
+                      q.id === activeChat.id ? "#434b49" : "inherit",
+                  }}
                   key={index}
+                  onClick={() => {
+                    setActiveChat(q);
+                    setCurrentPage("");
+                    setIsMenuOpen && setIsMenuOpen(false);
+                  }}
                   className="px-2 py-2 truncate w-full rounded-lg cursor-pointer hover:bg-[#202123]"
                 >
                   {q.title}
@@ -91,7 +111,6 @@ const Sidebar = ({ queries, setCurrentPage }) => {
               ))}
           </div>
         </div>
-        {/* )} */}
 
         {/* left side bottom menu */}
         <div className="flex flex-col space-y-4 relative">
@@ -141,6 +160,7 @@ const Sidebar = ({ queries, setCurrentPage }) => {
                                 key={i}
                                 onClick={() => {
                                   setCurrentPage(item.title);
+                                  setIsMenuOpen && setIsMenuOpen(false);
                                 }}
                               >
                                 <div className="block px-3 py-2 mt-2 text-[#fff] text-sm font-semibold rounded-lg md:mt-0  focus:outline-none focus:shadow-outline">
@@ -174,6 +194,7 @@ const Sidebar = ({ queries, setCurrentPage }) => {
                         className="cursor-pointer"
                         onClick={() => {
                           setCurrentPage(item.title);
+                          setIsMenuOpen && setIsMenuOpen(false);
                         }}
                       >
                         <FontAwesomeIcon
@@ -192,14 +213,16 @@ const Sidebar = ({ queries, setCurrentPage }) => {
           {/* user account details */}
           <div
             onClick={() => setIsOpen(!isOpen)}
-            className="flex items-center w-full p-2 mt-16 rounded-lg hover:bg-[#202123] cursor-pointer"
+            className="flex items-center w-full p-2 rounded-lg hover:bg-[#202123] cursor-pointer"
           >
             <img
               src="/images/default_user.jpg"
               alt="account"
               className="w-8 h-8 rounded-full"
             />
-            <p className="text-[#fff] h-8 p-1">Pooja Patel</p>
+            <p className="text-[#fff] h-8 p-1">
+              {user.firstName + " " + user.lastName}
+            </p>
           </div>
         </div>
       </div>

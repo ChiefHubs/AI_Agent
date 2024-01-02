@@ -67,26 +67,22 @@ input[type=number]::-webkit-outer-spin-button {
     padding: 10px;   
   }
 
-  .btn{
+  .file-upload-btn{
     cursor: pointer;
    padding: 10px 20px;
    font-size: 15px;
    text-align: center;
+   /* width: 16%; */
    /* display: block; */
    border-radius: 10px;
    outline: none;
-   width: auto;
+   /* width: auto; */
    margin-top: 16px;
+   color: #fff;
+   background: #202123;
+   border: none;
   }
 
-
-
-
-  .forgot-btn{
-    color: #fff;
-    background: #202123;
-    border: none;
-  }
 
   .cancel-btn{
     background: #fff;
@@ -111,5 +107,99 @@ input[type=number]::-webkit-outer-spin-button {
   @media only screen and (max-width: 600px) {
     .menu-area{
       width: 350px;
-    }
+    }   
+}
+
+@media only screen and (max-width: 480px) {
+  .aroundFileUploadTable {
+    align-items: center;
+}
+
+  .aroundFileUploadTable .firstSection{
+  
+  flex-direction: column-reverse !important;
+  /* background-color: #f00; */
+  /* width: 80% !important; */
+  align-items: flex-start;
+  
+  }
+
+  .file-upload-btn {
+    width:50%;
+  }
+ 
+}
+
+
+.aroundFileUploadTable{
+  display: flex;
+  width: 100%;
+  padding: 10px;
+  flex-direction: column;
+}
+
+/* .aroundFileUploadTable .file-upload-input{
+  align-self: end;
+} */
+.aroundFileUploadTable .firstSection{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  padding: 10px;
+  justify-content: space-between;
+
+}
+.noRecordFound{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+padding:20px
+}
+
+
+#filesTable {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#filesTable td, #filesTable th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#filesTable tr:nth-child(even){background-color: #f2f2f2;}
+
+
+
+#filesTable th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #3a413f;
+ 
+  color: white;
+}
+#filesTable td {
+
+  background-color: #ddd;
+
+}
+.retrainButton{
+  cursor: pointer;
+   padding: 10px 20px;
+   font-size: 15px;
+   text-align: center;
+   /* width: 50%; */
+   /* display: block; */
+   border-radius: 10px;
+   outline: none;
+   /* width: auto; */
+   /* margin-top: 16px; */
+  color:white;
+  background-color: #3b3e47 !important;
+}
+
+.retrainButton:hover{
+  background-color: #202123;
 }

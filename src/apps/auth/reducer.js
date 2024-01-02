@@ -15,6 +15,7 @@ const initialState = {
 };
 
 const authReducer = (state = initialState, action) => {
+
   switch (action.type) {
     case REGISTER_ERROR:
       return {

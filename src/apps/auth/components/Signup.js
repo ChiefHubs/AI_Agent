@@ -32,13 +32,11 @@ const Signup = () => {
     (state) => state.auth
   );
 
-  console.log("errors ", error);
-  console.log("messages ", messages);
   const onSubmit = async (values) => {
     changeIsLoading(true);
     try {
       const response = dispatch(register(values));
-      console.log("response ", response);
+   
       changeIsLoading(false);
     } catch (e) {
       console.log("error ", e.message);
@@ -55,8 +53,7 @@ const Signup = () => {
     if (isAuthenticated) {
       // alert(message);
       changeIsLoading(false);
-      console.log("message", messages);
-      console.log("user ", isAuthenticated);
+  
     }
   }, [error, isAuthenticated, messages]);
 
@@ -73,7 +70,7 @@ const Signup = () => {
           </h1>
           <div className="form-area">
             <form onSubmit={formik.handleSubmit}>
-              <div>
+              <div className="signupForm">
                 <div className="form-control">
                   <span>
                     <label htmlFor="firstName">First Name</label>

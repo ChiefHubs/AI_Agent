@@ -25,15 +25,14 @@ const Login = () => {
     (state) => state.auth
   );
 
-  console.log("errors ", error);
-  console.log("messages ", messages);
+
 
   const onSubmit = async (values) => {
-    console.log("login onsubmit", values);
+   
     changeIsLoading(true);
 
     try {
-      console.log("try");
+   
       dispatch(login(values));
       changeIsLoading(false);
     } catch (e) {
@@ -49,8 +48,7 @@ const Login = () => {
     }
     if (isAuthenticated) {
       // alert(message);
-      console.log("message", messages);
-      console.log("user ", isAuthenticated);
+  
       changeIsLoading(false);
     }
   }, [error, isAuthenticated, messages]);

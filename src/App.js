@@ -6,10 +6,12 @@ import Login from "./apps/auth/components/Login";
 import Signup from "./apps/auth/components/Signup";
 import ForgotPassword from "./apps/auth/components/ForgotPassword";
 import Home from "./apps/home/components/Home";
+import 'react-toastify/dist/ReactToastify.css';
+
 
 function App() {
   const { isAuthenticated } = useSelector((state) => state.auth);
-  console.log("authenticate ", isAuthenticated);
+
   const RequireAuth = ({ children }) => {
     return isAuthenticated ? children : <Navigate to="/login" />;
   };

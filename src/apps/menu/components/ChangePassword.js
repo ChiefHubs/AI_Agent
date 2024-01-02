@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useFormik } from "formik";
+import { ToastContainer, toast } from "react-toastify";
 
 import { passwordSchema } from "../validations";
 import { updatePassword } from "../apis";
@@ -16,7 +17,6 @@ const ChangePassword = ({ setCurrentPage }) => {
     },
     validationSchema: passwordSchema,
     onSubmit: (values) => {
-      console.log("Form submitted with values:", values);
       changePassword(values);
     },
   });
@@ -24,23 +24,47 @@ const ChangePassword = ({ setCurrentPage }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const changePassword = async (values) => {
+    setIsLoading(true);
     await updatePassword(values)
       .then((res) => {
-        console.log("change password ", res);
-        setIsLoading(false);
+        console.log("Res", res);
+        toast.success(res.data.msg, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        setTimeout(() => {
+          setIsLoading(false);
+          setCurrentPage("");
+        }, 5000);
+        // setIsLoading(false);
+        // setCurrentPage("");
       })
       .catch((err) => {
         console.log("error ", err);
+
         setIsLoading(false);
+        toast.error("Something Went wrong!", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       });
   };
 
-  if (isLoading) {
-    return <div className="coverSpin"></div>;
-  }
-
   return (
     <>
+      {isLoading && <div className="coverSpinner"></div>}
       <section className="menu-section">
         {/* <div className="container"> */}
         <div className="menu-area">
@@ -120,6 +144,7 @@ const ChangePassword = ({ setCurrentPage }) => {
           ></div>
         </div>
         {/* </div> */}
+        <ToastContainer />
       </section>
     </>
   );

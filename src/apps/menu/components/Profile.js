@@ -2,11 +2,15 @@ import React, { useState, useEffect } from "react";
 import { Formik } from "formik";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { ToastContainer, toast } from "react-toastify";
 
 import { profileSchema } from "../validations";
 import { getProfile, editProfile } from "../apis";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../auth/actions";
 
 export default function Profile({ setCurrentPage }) {
+  const dispatch = useDispatch();
   const userInfo = {
     firstName: "",
     lastName: "",
@@ -22,12 +26,36 @@ export default function Profile({ setCurrentPage }) {
     await editProfile(values)
       .then((res) => {
         setUserData(res.data);
-        setIsLoading(false);
-        setIsEdit(false);
+
+        toast.success("User info updated successfully!", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        setTimeout(() => {
+          setIsLoading(false);
+          dispatch(setUser(res.data));
+          // setIsEdit(false);
+        }, 5000);
       })
       .catch((err) => {
         console.log("error ", err);
         setIsLoading(false);
+        toast.error("Something Went wrong!", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       });
   };
 
@@ -52,12 +80,10 @@ export default function Profile({ setCurrentPage }) {
   useEffect(() => {
     getUserDetails();
   }, []);
-  if (isLoading) {
-    return <div className="coverSpinner"></div>;
-  }
 
   return (
     <>
+      {isLoading && <div className="coverSpinner"></div>}
       {isEdit ? (
         <section className="menu-section">
           {/* <div className="container"> */}
@@ -190,6 +216,7 @@ export default function Profile({ setCurrentPage }) {
               </Formik>
             </div>
           </div>
+          <ToastContainer />
         </section>
       ) : (
         <section className="menu-section">

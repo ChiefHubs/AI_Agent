@@ -12,7 +12,7 @@ const UIKey = ({ setCurrentPage }) => {
     },
     validationSchema: LLMKeySchema,
     onSubmit: (values) => {
-      console.log("Form submitted with values:", values);
+    
       onSubmit(values);
     },
   });
@@ -62,7 +62,7 @@ const UIKey = ({ setCurrentPage }) => {
                 </span>
 
                 <input
-                  type="text"
+                  type="password"
                   id="key"
                   name="key"
                   onChange={formik.handleChange}

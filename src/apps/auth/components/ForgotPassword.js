@@ -13,7 +13,7 @@ const ForgotPassword = () => {
     },
     validationSchema: forgotPasswordSchema,
     onSubmit: (values) => {
-      console.log("Form submitted with values:", values);
+   
     },
   });
 
@@ -23,7 +23,7 @@ const ForgotPassword = () => {
   const onSubmit = async (data) => {
     changeIsLoading(true);
     try {
-      console.log("try");
+   
       changeIsLoading(false);
     } catch (e) {
       console.log(e.message);

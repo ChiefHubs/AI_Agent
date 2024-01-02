@@ -35,7 +35,7 @@ export const register = (values) => async (dispatch) => {
     console.log("error: ", error);
     dispatch({
       type: REGISTER_ERROR,
-      error: error.response.data.error,
+      error: error.response?.data?.error||error.message,
     });
   }
 };
@@ -50,9 +50,10 @@ export const login = (loginInput) => async (dispatch) => {
     sessionStorage.setItem("user", JSON.stringify(data));
     dispatch(setUser(data.storeData));
     window.location = "/";
+  
   } catch (error) {
     console.log("error: ", error);
-    dispatch({ type: LOGIN_ERROR, error: error.response.data.error });
+    dispatch({ type: LOGIN_ERROR, error: error.response?.data?.error||error.message });
   }
 };
 

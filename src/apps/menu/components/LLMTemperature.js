@@ -21,7 +21,7 @@ const LLMTemperature = ({ setCurrentPage }) => {
   const onSubmit = async (data) => {
     changeIsLoading(true);
     try {
-      console.log("try");
+  
       changeIsLoading(false);
       setCurrentPage("");
     } catch (e) {
