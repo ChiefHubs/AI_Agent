@@ -4,6 +4,7 @@ import {
   CLIENT_UNSET,
   LOGIN_ERROR,
   REGISTER_ERROR,
+  SET_ACTIVE_MODEL,
 } from "./constants";
 
 const API_URL = process.env.REACT_APP_API_URL;
@@ -12,6 +13,13 @@ export function setUser(user) {
   return {
     type: CLIENT_SET,
     user,
+  };
+}
+export function setActiveModel(id) {
+  console.log(id);
+  return {
+    type: SET_ACTIVE_MODEL,
+    activeModel:id,
   };
 }
 
@@ -49,6 +57,9 @@ export const login = (loginInput) => async (dispatch) => {
     });
     sessionStorage.setItem("user", JSON.stringify(data));
     dispatch(setUser(data.storeData));
+    sessionStorage.setItem('activeModel',"gpt");
+    dispatch(setActiveModel('gpt'));
+    
     window.location = "/";
   
   } catch (error) {

@@ -3,6 +3,7 @@ import {
   CLIENT_UNSET,
   LOGIN_ERROR,
   REGISTER_ERROR,
+  SET_ACTIVE_MODEL
 } from "./constants";
 
 const initialState = {
@@ -12,10 +13,12 @@ const initialState = {
   successful: false,
   messages: "",
   error: "",
+  activeModel:"",
 };
 
 const authReducer = (state = initialState, action) => {
-
+  
+  // console.log(action);
   switch (action.type) {
     case REGISTER_ERROR:
       return {
@@ -39,6 +42,11 @@ const authReducer = (state = initialState, action) => {
         requesting: false,
         successful: true,
         error: "",
+      };
+    case SET_ACTIVE_MODEL:
+      return {
+        ...state,
+        activeModel: action.activeModel,
       };
 
     case CLIENT_UNSET:

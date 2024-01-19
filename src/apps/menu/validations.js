@@ -20,9 +20,9 @@ export const passwordSchema = Yup.object({
 });
 
 export const LLMKeySchema = Yup.object({
-  key: Yup.string().required("key is required"),
+  llmKey: Yup.string().required("key is required"),
 });
 
 export const LLMTempSchema = Yup.object({
-  temparature: Yup.string().required("Temparature is required"),
+  llmTemp: Yup.string().required("Temparature is required"),
 });

@@ -4,31 +4,45 @@ import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from 'react-toastify';
 import { generateChat } from "../apis";
 import "../style.css";
+import { useSelector } from "react-redux";
 
-function Chat({ activeChat, setActiveChat, setQueries }) {
+function Chat({
+  activeChat,
+  setActiveChat,
+  setQueries,
+  questionList,
+  setQuestionList,
+}) {
   const ref = useRef();
-  const [prompt, setPrompt] = useState([]);
+
+  const activeModel = useSelector((store) => store.auth.activeModel);
   const [question, setQuestion] = useState("");
+
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSendMessage = async (e) => {
-    e.preventDefault();
+  const handleSendMessage = async () => {
+    // e.preventDefault();
+    setQuestionList([...questionList, question]);
+
     if (!question) {
       return;
     }
     let payload = {
       question: question,
-      fileId: 1,
+      modelId: activeModel,
     };
+
     if (!activeChat.id) {
       const splitQues = question.split(" ");
 
       payload.isNew = true;
-      payload.title = splitQues[0] + " " + splitQues[1];
+      payload.title =
+        splitQues[0] + " " + (splitQues[1] || "") + " " + (splitQues[2] || "");
     } else {
       payload.id = activeChat.id;
     }
     setIsLoading(true);
+    setQuestion("");
     await generateChat(payload)
       .then((res) => {
         setQueries(res.data.chats);
@@ -36,14 +50,12 @@ function Chat({ activeChat, setActiveChat, setQueries }) {
         const oldActiveChat = res.data.chats.find(
           (chat) => chat.id === activeChat.id
         );
-
-        setPrompt(res.data.chats);
-
         const chat = oldActiveChat
           ? oldActiveChat
           : res.data.chats[res.data.chats.length - 1];
+        // console.log("chat ", chat);
         setActiveChat(chat);
-        setQuestion("");
+        // setQuestion("");
         setIsLoading(false);
       })
       .catch((err) => {
@@ -64,6 +76,13 @@ function Chat({ activeChat, setActiveChat, setQueries }) {
 
   useEffect(() => {}, [question]);
 
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      // console.log("Enter key pressed ✅");
+      handleSendMessage();
+    }
+  };
+
   const handleInputChange = (e) => {
     setQuestion(e.target.value);
   };
@@ -75,41 +94,85 @@ function Chat({ activeChat, setActiveChat, setQueries }) {
           {/* <h1 className="font-bold text-xl text-black p-4">Agent Query</h1> */}
           <div
             className={`${
-              activeChat.queries.length > 0 && "bg-[#dad6d6]"
+              (questionList.length > 0 || activeChat.queries.length > 0) &&
+              "bg-[#dad6d6]"
             } rounded overflow-y-scroll h-[70vh] md:h-[75vh] w-full md:w-[70%] mx-auto md:p-0 p-4 flex flex-col`}
           >
-            {activeChat.queries.map((m, index) => (
-              <div key={index} className="flex items-start space-x-4 my-6 p-2">
-                {/* <img
-                className="h-8 w-8 rounded-full"   
-                src={m.isUser ? "/images/asset 0.png" : "/images/logo.png"}
-                alt="user"
-              /> */}
-                <div className="flex flex-col items-start">
-                  <p className="text-gray font-bold">{m.question && "You"}</p>
-                  <p className="text-black">{m.question}</p>
-                  {/* </div>
-              <div className="flex flex-col items-start"> */}
-                  <p className="text-gray font-bold">
-                    {m.solution && "Answer"}
-                  </p>
-                  <p className="text-black">{m.solution}</p>
+            {questionList.length > 0 &&
+              questionList.map((m, index) => (
+                <div
+                  key={index}
+                  className="flex items-start space-x-4 my-6 p-2"
+                >
+                  <div className="flex flex-col items-start">
+                    <p className="text-gray font-bold">{m && "You"}</p>
+                    <p className="text-black">{m}</p>
+
+                    <p className="text-gray font-bold">{m && "Answer"}</p>
+                    {isLoading && questionList.length - 1 === index && (
+                      <p className="text-black text-sm animate-pulse text-center">
+                        Loading...
+                      </p>
+                    )}
+                    {activeChat.queries.map((ans) => (
+                      <p className="text-black">
+                        {m === ans.question && ans.solution}
+                      </p>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            {/* {questionList.length > 0
+              ? questionList.map((m, index) => (
+                  <div
+                    key={index}
+                    className="flex items-start space-x-4 my-6 p-2"
+                  >
+                    <div className="flex flex-col items-start">
+                      <p className="text-gray font-bold">{m && "You"}</p>
+                      <p className="text-black">{m}</p>
+
+                      <p className="text-gray font-bold">{m && "Answer"}</p>
+                      {activeChat.queries.map((ans) => (
+                        <p className="text-black">
+                          {m === ans.question && ans.solution}
+                        </p>
+                      ))}
+                    </div>
+                  </div>
+                ))
+              : activeChat.queries.map((m, index) => (
+                  <div
+                    key={index}
+                    className="flex items-start space-x-4 my-6 p-2"
+                  >
+                    <div className="flex flex-col items-start">
+                      <p className="text-gray font-bold">
+                        {m.question && "You"}
+                      </p>
+                      <p className="text-black">{m.question}</p>
+
+                      <p className="text-gray font-bold">
+                        {m.solution && "Answer"}
+                      </p>
+                      <p className="text-black">{m.solution}</p>
+                    </div>
+                  </div>
+                ))} */}
             <div ref={ref} />
           </div>
         </div>
-        {isLoading && (
+        {/* {isLoading && (
           <p className="text-black text-sm animate-pulse text-center">
             Loading...
           </p>
-        )}
+        )} */}
         <div className="w-full flex justify-center items-center flex-col p-4 md:p-0">
           <div className="w-full md:w-[65%] h-[55px] border border-gray-600 flex items-center rounded-lg p-2">
             <input
               value={question}
               onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
               className="text-black h-full w-full p-2 outline-none bg-inherit"
               type="text"
               placeholder="Type a message..."

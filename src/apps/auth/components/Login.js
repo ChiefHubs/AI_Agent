@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
+import { ToastContainer, toast } from "react-toastify";
 
 import { loginSchema } from "../validations";
 import { login } from "../actions";
@@ -9,7 +10,7 @@ import "../style.css";
 
 const Login = () => {
   const dispatch = useDispatch();
-  const [isLoading, changeIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -25,40 +26,36 @@ const Login = () => {
     (state) => state.auth
   );
 
-
-
   const onSubmit = async (values) => {
-   
-    changeIsLoading(true);
-
-    try {
-   
-      dispatch(login(values));
-      changeIsLoading(false);
-    } catch (e) {
-      console.log("error ", e.message);
-      changeIsLoading(false);
-    }
+    setIsLoading(true);
+    dispatch(login(values));
   };
 
   useEffect(() => {
     if (error) {
       console.log("errors ", error);
-      changeIsLoading(false);
+      setIsLoading(false);
+      toast.error("Incorrect email or password!", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
     }
     if (isAuthenticated) {
       // alert(message);
-  
-      changeIsLoading(false);
+
+      setIsLoading(false);
     }
   }, [error, isAuthenticated, messages]);
 
-  if (isLoading) {
-    return <div className="coverSpinner"></div>;
-  }
-
   return (
     <>
+      {isLoading && <div className="coverSpinner"></div>}
       <section className="form-section">
         {/* <div className="container"> */}
         <div className="login-area">
@@ -141,6 +138,7 @@ const Login = () => {
           </div>
         </div>
         {/* </div> */}
+        <ToastContainer />
       </section>
     </>
   );

@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 // import swal from 'sweetalert'
 
 import { signupSchema } from "../validations";
-import { register } from "../actions";
+import { register, setActiveModel } from "../actions";
 
 import "../style.css";
 
@@ -36,7 +36,7 @@ const Signup = () => {
     changeIsLoading(true);
     try {
       const response = dispatch(register(values));
-   
+   dispatch(setActiveModel('gpt'))
       changeIsLoading(false);
     } catch (e) {
       console.log("error ", e.message);

@@ -2,13 +2,15 @@ import React, { useState } from "react";
 import { useFormik } from "formik";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { ToastContainer, toast } from "react-toastify";
 
 import { LLMTempSchema } from "../validations";
+import { setLLMTemperature } from "../apis";
 
 const LLMTemperature = ({ setCurrentPage }) => {
   const formik = useFormik({
     initialValues: {
-      temparature: "",
+      llmTemp: "",
     },
     validationSchema: LLMTempSchema,
     onSubmit: (values) => {
@@ -16,25 +18,48 @@ const LLMTemperature = ({ setCurrentPage }) => {
     },
   });
 
-  const [isLoading, changeIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const onSubmit = async (data) => {
-    changeIsLoading(true);
-    try {
-  
-      changeIsLoading(false);
-      setCurrentPage("");
-    } catch (e) {
-      console.log(e.message);
-      changeIsLoading(false);
-    }
+  const onSubmit = async (values) => {
+    setIsLoading(true);
+    await setLLMTemperature(values)
+      .then((res) => {
+        // console.log("Res", res);
+        toast.success("LLM Temperature added successfully!", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        setTimeout(() => {
+          setIsLoading(false);
+          setCurrentPage("");
+        }, 4000);
+      })
+      .catch((err) => {
+        console.log("error ", err);
+
+        setIsLoading(false);
+        toast.error("Something Went wrong!", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      });
   };
 
-  if (isLoading) {
-    return <div className="coverSpin"></div>;
-  }
   return (
     <>
+      {isLoading && <div className="coverSpinner"></div>}
       <section className="menu-section">
         {/* <div className="container"> */}
         <div className="menu-area">
@@ -56,18 +81,18 @@ const LLMTemperature = ({ setCurrentPage }) => {
               <div className="form-control">
                 <span className="input-error">
                   <label> LLM Temperature </label>
-                  {formik.touched.temparature && formik.errors.temparature ? (
-                    <div className="error">{formik.errors.temparature}</div>
+                  {formik.touched.llmTemp && formik.errors.llmTemp ? (
+                    <div className="error">{formik.errors.llmTemp}</div>
                   ) : null}
                 </span>
 
                 <input
                   type="text"
-                  id="temparature"
-                  name="temparature"
+                  id="llmTemp"
+                  name="llmTemp"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  value={formik.values.temparature}
+                  value={formik.values.llmTemp}
                   className="input-box"
                   placeholder="Enter temparature"
                 />
@@ -94,6 +119,7 @@ const LLMTemperature = ({ setCurrentPage }) => {
             }}
           ></div>
         </div>
+        <ToastContainer />
         {/* </div> */}
       </section>
     </>

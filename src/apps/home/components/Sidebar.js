@@ -15,6 +15,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import { logout } from "../../auth/actions";
+import { deleteChat } from "../../chat/apis";
 
 const leftMenuItems = [
   {
@@ -55,15 +56,28 @@ const Sidebar = ({
   queries,
   setCurrentPage,
   setActiveChat,
+  setQueries,
+  getQueries,
   activeChat,
   handleCreateNewChat,
   setIsMenuOpen,
+  setQuestionList,
+  questionList,
 }) => {
   const dispatch = useDispatch();
   const user = useSelector((store) => store.auth.user);
-
   const [isOpen, setIsOpen] = useState(false);
   const [isSettingOpen, setIsSettingOpen] = useState(false);
+
+  // console.log(queries);
+  const handleDeleteChat = async (id) => {
+    try {
+      const res = await deleteChat(id);
+      setQueries(res.data.chats);
+      setActiveChat({ queries: [] });
+      setQuestionList([]);
+    } catch (e) {}
+  };
 
   return (
     <div className="bg-[#333] flex flex-col items-start p-4 h-screen">
@@ -97,16 +111,41 @@ const Sidebar = ({
                   style={{
                     backgroundColor:
                       q.id === activeChat.id ? "#434b49" : "inherit",
+                    display: "flex",
+                    justifyContent: "space-around",
+                    borderRadius: "0.5rem",
+                    padding: "4px",
+                    cursor: "pointer",
                   }}
-                  key={index}
-                  onClick={() => {
-                    setActiveChat(q);
-                    setCurrentPage("");
-                    setIsMenuOpen && setIsMenuOpen(false);
-                  }}
-                  className="px-2 py-2 truncate w-full rounded-lg cursor-pointer hover:bg-[#202123]"
                 >
-                  {q.title}
+                  <div
+                    // style={{
+                    //   backgroundColor:
+                    //     q.id === activeChat.id ? "#434b49" : "inherit",
+                    // }}
+                    key={index}
+                    onClick={() => {
+                      setActiveChat(q);
+                      setCurrentPage("");
+                      setQuestionList([]);
+                      const question = q.queries.map((q) => q.question);
+                      setQuestionList(question);
+                      setIsMenuOpen && setIsMenuOpen(false);
+                    }}
+                    className="px-2 py-2 truncate w-full rounded-lg cursor-pointer"
+                  >
+                    {q.title}
+                  </div>
+                  <button
+                    style={{ marginLeft: "10px" }}
+                    onClick={() => handleDeleteChat(q.id)}
+                  >
+                    <img
+                      src="/images/delete.png"
+                      alt="delete"
+                      className="w-5 h-5 rounded-full"
+                    />
+                  </button>
                 </div>
               ))}
           </div>

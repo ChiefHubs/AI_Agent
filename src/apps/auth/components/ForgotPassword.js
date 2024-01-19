@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
+import { ToastContainer, toast } from "react-toastify";
 
 import { forgotPasswordSchema } from "../validations";
+import { forgotPassword } from "../api";
 import "../style.css";
 
 const ForgotPassword = () => {
@@ -13,30 +15,54 @@ const ForgotPassword = () => {
     },
     validationSchema: forgotPasswordSchema,
     onSubmit: (values) => {
-   
+      onSubmit(values);
     },
   });
 
   //   const [wrongCredError, changeWrongCredError] = useState("");
-  const [isLoading, changeIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const onSubmit = async (data) => {
-    changeIsLoading(true);
-    try {
-   
-      changeIsLoading(false);
-    } catch (e) {
-      console.log(e.message);
-      changeIsLoading(false);
-    }
+  const onSubmit = async (values) => {
+    console.log("data1 ", values);
+    setIsLoading(true);
+
+    await forgotPassword(values)
+      .then((res) => {
+        console.log("Reset password link sent to your registered email.", res);
+        toast.success("Link ", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 5000);
+      })
+      .catch((err) => {
+        console.log("error ", err);
+
+        setIsLoading(false);
+        toast.error("Something Went wrong!", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      });
   };
-
-  if (isLoading) {
-    return <div className="coverSpin"></div>;
-  }
 
   return (
     <>
+      {isLoading && <div className="coverSpinner"></div>}
       <section className="form-section">
         <div className="container">
           <div className="login-area">
@@ -107,6 +133,7 @@ const ForgotPassword = () => {
             ></div>
           </div>
         </div>
+        <ToastContainer />
       </section>
     </>
   );

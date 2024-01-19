@@ -21,19 +21,14 @@ const Home = () => {
   const [queries, setQueries] = useState([]);
   const [activeChat,setActiveChat] = useState({queries:[]});
 
-  const addMessage = (text) => {
-    const newMessage = { text };
-
-    // setMessages([...messages, newMessage]);
-  };
-
+  const [questionList, setQuestionList] = useState([]);
 
   const getQueries = async () => {
     setIsLoading(true);
     await getAllQueries()
       .then((res) => {
-       
-        setQueries(res.data?.chats?.Sales||[]);
+        //  console.log(res);
+        setQueries(res.data?.chats || []);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -43,7 +38,6 @@ const Home = () => {
   };
 
   useEffect(() => {
- 
     getQueries();
     setCurrentPage("");
   }, []);
@@ -52,6 +46,7 @@ const Home = () => {
     setActiveChat({ queries: [] });
     setIsMenuOpen && setIsMenuOpen(false);
     setCurrentPage("");
+    setQuestionList([]);
   };
 
   if (isLoading) {
@@ -84,6 +79,8 @@ const Home = () => {
             setIsCurrentMenuOpen={setIsCurrentMenuOpen}
             handleCreateNewChat={handleCreateNewChat}
             setIsMenuOpen={setIsMenuOpen}
+            questionList={questionList}
+            setQuestionList={setQuestionList}
           />
         </div>
       ) : null}
@@ -95,11 +92,15 @@ const Home = () => {
             queries={queries}
             setCurrentPage={setCurrentPage}
             setActiveChat={setActiveChat}
+            setQueries={setQueries}
+            getQueries={getQueries}
             activeChat={activeChat}
             currentPage={currentPage}
             isCurrentMenuOpen={isCurrentMenuOpen}
             setIsCurrentMenuOpen={setIsCurrentMenuOpen}
             handleCreateNewChat={handleCreateNewChat}
+            questionList={questionList}
+            setQuestionList={setQuestionList}
           />
         </div>
 
@@ -118,12 +119,13 @@ const Home = () => {
           </div>
           {currentPage === "" ? (
             <Chat
-              onSendMessage={(text) => addMessage(text)}
               setIsMenuOpen={setIsMenuOpen}
               isMenuOpen={isMenuOpen}
               activeChat={activeChat}
               setActiveChat={setActiveChat}
               setQueries={setQueries}
+              questionList={questionList}
+              setQuestionList={setQuestionList}
             />
           ) : (
             <>

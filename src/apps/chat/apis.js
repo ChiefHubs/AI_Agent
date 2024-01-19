@@ -9,3 +9,10 @@ export const generateChat = (query) => {
     },
   });
 };
+
+
+  // delete chat 
+  export const deleteChat = (id) => {
+    return axios.post(`${API_URL}/user_query/deleteChat`,{id});
+  };
+

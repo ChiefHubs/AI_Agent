@@ -2,40 +2,75 @@ import React, { useState } from "react";
 import { useFormik } from "formik";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { ToastContainer, toast } from "react-toastify";
+import CryptoJS from "crypto-js";
 
 import { LLMKeySchema } from "../validations";
+import { setLLMKey } from "../apis";
+
+const secretKey = process.env.REACT_APP_SECRET_KEY;
 
 const UIKey = ({ setCurrentPage }) => {
   const formik = useFormik({
     initialValues: {
-      key: "",
+      llmKey: "",
     },
     validationSchema: LLMKeySchema,
     onSubmit: (values) => {
-    
       onSubmit(values);
+      // encryptLLMKey(values);
     },
   });
-  const [isLoading, changeIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const onSubmit = async (data) => {
-    changeIsLoading(true);
-    try {
-      console.log("try");
-      changeIsLoading(false);
-      setCurrentPage("");
-    } catch (e) {
-      console.log(e.message);
-      changeIsLoading(false);
-    }
+  const encryptLLMKey = (key) => {
+    const ciphertext = CryptoJS.AES.encrypt(key, secretKey).toString();
+    return { llmKey: ciphertext };
   };
 
-  if (isLoading) {
-    return <div className="coverSpin"></div>;
-  }
+  const onSubmit = async (values) => {
+    setIsLoading(true);
+    const data = encryptLLMKey(values.llmKey);
+    await setLLMKey(data)
+      .then((res) => {
+        // console.log("Res", res);
+        toast.success("LLM Key added successfully!", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        setTimeout(() => {
+          setIsLoading(false);
+          setCurrentPage("");
+        }, 4000);
+        // setIsLoading(false);
+        // setCurrentPage("");
+      })
+      .catch((err) => {
+        console.log("error ", err);
+
+        setIsLoading(false);
+        toast.error("Something Went wrong!", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      });
+  };
 
   return (
     <>
+      {isLoading && <div className="coverSpinner"></div>}
       <section className="menu-section">
         {/* <div className="container"> */}
         <div className="menu-area">
@@ -56,18 +91,18 @@ const UIKey = ({ setCurrentPage }) => {
               <div className="form-control">
                 <span className="input-error">
                   <label>LLM Key </label>
-                  {formik.touched.key && formik.errors.key ? (
-                    <div className="error">{formik.errors.key}</div>
+                  {formik.touched.llmKey && formik.errors.llmKey ? (
+                    <div className="error">{formik.errors.llmKey}</div>
                   ) : null}
                 </span>
 
                 <input
                   type="password"
-                  id="key"
-                  name="key"
+                  id="llmKey"
+                  name="llmKey"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  value={formik.values.key}
+                  value={formik.values.llmKey}
                   className="input-box"
                   placeholder="Enter LLM Key"
                 />
@@ -104,6 +139,7 @@ const UIKey = ({ setCurrentPage }) => {
           ></div>
         </div>
         {/* </div> */}
+        <ToastContainer />
       </section>
     </>
   );
