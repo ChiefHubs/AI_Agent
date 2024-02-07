@@ -2,8 +2,9 @@ import {
   CLIENT_SET,
   CLIENT_UNSET,
   LOGIN_ERROR,
+  LOGIN_NOT_EXIST,
   REGISTER_ERROR,
-  SET_ACTIVE_MODEL
+  SET_ACTIVE_MODEL,
 } from "./constants";
 
 const initialState = {
@@ -13,28 +14,29 @@ const initialState = {
   successful: false,
   messages: "",
   error: "",
-  activeModel:"",
+  activeModel: "",
+  errorType: "",
 };
 
 const authReducer = (state = initialState, action) => {
-  
-  // console.log(action);
-  switch (action.type) {
-    case REGISTER_ERROR:
+  switch (true) {
+    case action.type === REGISTER_ERROR:
       return {
         ...state,
         isAuthenticated: false,
         error: action.error,
+        errorType: action.type,
       };
 
-    case LOGIN_ERROR:
+    case action.type === LOGIN_ERROR || action.type === LOGIN_NOT_EXIST:
       return {
         ...state,
         isAuthenticated: false,
         error: action.error,
+        errorType: action.type,
       };
 
-    case CLIENT_SET:
+    case action.type === CLIENT_SET:
       return {
         ...state,
         user: action.user,
@@ -42,14 +44,15 @@ const authReducer = (state = initialState, action) => {
         requesting: false,
         successful: true,
         error: "",
+        errorType: action.type,
       };
-    case SET_ACTIVE_MODEL:
+    case action.type === SET_ACTIVE_MODEL:
       return {
         ...state,
         activeModel: action.activeModel,
       };
 
-    case CLIENT_UNSET:
+    case action.type === CLIENT_UNSET:
       return {
         ...state,
         initialState,

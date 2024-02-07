@@ -7,6 +7,12 @@ import { ToastContainer, toast } from "react-toastify";
 import { loginSchema } from "../validations";
 import { login } from "../actions";
 import "../style.css";
+import {
+  INCORRECT_E_P,
+  LOGIN_ERROR,
+  LOGIN_NOT_EXIST,
+  NOT_REGISTER_MSG,
+} from "../constants";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -22,7 +28,7 @@ const Login = () => {
     },
   });
 
-  const { messages, error, isAuthenticated } = useSelector(
+  const { messages, error, isAuthenticated, errorType } = useSelector(
     (state) => state.auth
   );
 
@@ -33,25 +39,28 @@ const Login = () => {
 
   useEffect(() => {
     if (error) {
-      console.log("errors ", error);
+      console.log("errors ", errorType, error);
       setIsLoading(false);
-      toast.error("Incorrect email or password!", {
-        position: "bottom-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
+      toast.error(
+        errorType === LOGIN_NOT_EXIST ? NOT_REGISTER_MSG : INCORRECT_E_P,
+        {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        }
+      );
     }
     if (isAuthenticated) {
       // alert(message);
 
       setIsLoading(false);
     }
-  }, [error, isAuthenticated, messages]);
+  }, [error, isAuthenticated, messages, errorType]);
 
   return (
     <>
@@ -104,7 +113,7 @@ const Login = () => {
                 />
               </div>
 
-              <div
+              {/* <div
                 style={{
                   textAlign: "right",
                   marginTop: "4px",
@@ -117,14 +126,14 @@ const Login = () => {
                 >
                   Forgot Password?
                 </Link>
-              </div>
+              </div> */}
 
               <button type="submit" align="center" className="btn submit-btn">
                 Login
               </button>
             </div>
           </form>
-          <div
+          {/* <div
             style={{
               textAlign: "center",
               marginTop: "12px",
@@ -135,7 +144,7 @@ const Login = () => {
             <Link to={`/signup`} style={{ textDecoration: "none" }}>
               Signup
             </Link>
-          </div>
+          </div> */}
         </div>
         {/* </div> */}
         <ToastContainer />

@@ -3,6 +3,7 @@ import {
   CLIENT_SET,
   CLIENT_UNSET,
   LOGIN_ERROR,
+  LOGIN_NOT_EXIST,
   REGISTER_ERROR,
   SET_ACTIVE_MODEL,
 } from "./constants";
@@ -16,10 +17,9 @@ export function setUser(user) {
   };
 }
 export function setActiveModel(id) {
-  console.log(id);
   return {
     type: SET_ACTIVE_MODEL,
-    activeModel:id,
+    activeModel: id,
   };
 }
 
@@ -43,7 +43,7 @@ export const register = (values) => async (dispatch) => {
     console.log("error: ", error);
     dispatch({
       type: REGISTER_ERROR,
-      error: error.response?.data?.error||error.message,
+      error: error.response?.data?.error || error.message,
     });
   }
 };
@@ -55,16 +55,19 @@ export const login = (loginInput) => async (dispatch) => {
         "Content-Type": "application/json",
       },
     });
+    console.log("login data-----------", API_URL);
     sessionStorage.setItem("user", JSON.stringify(data));
     dispatch(setUser(data.storeData));
-    sessionStorage.setItem('activeModel',"gpt");
-    dispatch(setActiveModel('gpt'));
-    
+    sessionStorage.setItem("activeModel", "gpt");
+    dispatch(setActiveModel("gpt"));
+
     window.location = "/";
-  
   } catch (error) {
     console.log("error: ", error);
-    dispatch({ type: LOGIN_ERROR, error: error.response?.data?.error||error.message });
+    dispatch({
+      type: error.response?.data?.type === 1 ? LOGIN_NOT_EXIST : LOGIN_ERROR,
+      error: error.response?.data?.error || error.message,
+    });
   }
 };
 

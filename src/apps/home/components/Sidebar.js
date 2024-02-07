@@ -108,6 +108,7 @@ const Sidebar = ({
             {queries.length !== 0 &&
               queries.map((q, index) => (
                 <div
+                  key={index}
                   style={{
                     backgroundColor:
                       q.id === activeChat.id ? "#434b49" : "inherit",
