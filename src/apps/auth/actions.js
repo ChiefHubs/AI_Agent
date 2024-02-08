@@ -7,6 +7,7 @@ import {
   REGISTER_ERROR,
   SET_ACTIVE_MODEL,
 } from "./constants";
+import setAuthHeader from "../../_helpers/setAuthHeader";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -55,7 +56,8 @@ export const login = (loginInput) => async (dispatch) => {
         "Content-Type": "application/json",
       },
     });
-    console.log("login data-----------", API_URL);
+    // console.log("login data-----------", data);
+    setAuthHeader(data);
     sessionStorage.setItem("user", JSON.stringify(data));
     dispatch(setUser(data.storeData));
     sessionStorage.setItem("activeModel", "gpt");

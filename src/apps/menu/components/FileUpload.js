@@ -39,21 +39,17 @@ const FileUpload = () => {
   useEffect(() => {
     handleGetAllFiles();
     // handleGetActiveModel();
-
-    
   }, []);
 
+  const handleGetActiveModel = () => {
+    try {
+      const res = getActiveModelApi();
 
-const handleGetActiveModel=()=>{
-  try {
-    const res = getActiveModelApi();
-    
-    dispatch(setActiveModel(res.activeModel));
-  } catch (e) {
-    console.log(e.message)
-    
-  }
-}
+      dispatch(setActiveModel(res.activeModel));
+    } catch (e) {
+      console.log(e.message);
+    }
+  };
 
   const handleGetAllFiles = async () => {
     try {
@@ -188,11 +184,11 @@ const handleGetActiveModel=()=>{
     }
   };
 
-  const handleDeleteFile = async (id,path) => {
+  const handleDeleteFile = async (id, path) => {
     setIsLoading(true);
     setIsDelete(true);
     try {
-      const res = await deleteModel({id,path});
+      const res = await deleteModel({ id, path });
       handleGetAllFiles();
       fileRef.current.value = null;
       toast.success("File deleted successfully!", {
@@ -247,7 +243,7 @@ const handleGetActiveModel=()=>{
           }}
         >
           <>
-            <label className="file-upload-btn" for="customFile">
+            <label className="file-upload-btn" htmlFor="customFile">
               Upload new file
             </label>
             <input
@@ -329,7 +325,7 @@ const handleGetActiveModel=()=>{
                   </span> */}
                     <span>
                       <button
-                        onClick={() => handleDeleteFile(file.id,file.path)}
+                        onClick={() => handleDeleteFile(file.id, file.path)}
                         align="center"
                         className="deleteButton"
                       >

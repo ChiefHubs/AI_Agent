@@ -12,6 +12,7 @@ import LLMKey from "../../menu/components/LLMKey";
 import "../style.css";
 
 import { getAllQueries } from "../apis";
+import setAuthHeader from "../../../_helpers/setAuthHeader";
 
 const Home = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -19,7 +20,7 @@ const Home = () => {
   const [currentPage, setCurrentPage] = useState("");
   const [isCurrentMenuOpen, setIsCurrentMenuOpen] = useState(false);
   const [queries, setQueries] = useState([]);
-  const [activeChat,setActiveChat] = useState({queries:[]});
+  const [activeChat, setActiveChat] = useState({ queries: [] });
 
   const [questionList, setQuestionList] = useState([]);
 
@@ -38,6 +39,7 @@ const Home = () => {
   };
 
   useEffect(() => {
+    setAuthHeader(sessionStorage.getItem("user"));
     getQueries();
     setCurrentPage("");
   }, []);
@@ -112,7 +114,7 @@ const Home = () => {
             <div className="md:hidden p-4 cursor-pointer">
               <FontAwesomeIcon
                 icon={isMenuOpen ? faXmark : faBars}
-                size={25}
+                // size={25}
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
               />
             </div>
