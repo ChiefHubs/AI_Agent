@@ -13,55 +13,54 @@ export const editProfile = (values) => {
 
 // change password api
 export const updatePassword = (values) => {
-    return axios.put(`${API_URL}/auth/updatepassword`, values);
-  };
-  
+  return axios.put(`${API_URL}/auth/updatepassword`, values);
+};
+
 // upload file
 export const uploadFile = (file) => {
   const formData = new FormData();
-  formData.append('file', file);
+  formData.append("file", file);
   const config = {
     headers: {
-      'content-type': 'multipart/form-data',
+      "content-type": "multipart/form-data",
     },
   };
-    return axios.post(`${API_URL}/user_query/uploadFile`,formData,config);
-  };
+
+  return axios.post(`${API_URL}/user_query/uploadFile`, formData, config);
+};
 // retrain model (file)
 export const retrainModel = (files) => {
   return axios.post(`${API_URL}/user_query/retrainModel`, { files });
 };
-// retrieve all files api 
+// retrieve all files api
 export const getAllFiles = (values) => {
-  
-    return axios.get(`${API_URL}/user_query/getAllFiles`);
-  };
+  return axios.get(`${API_URL}/user_query/getAllFiles`);
+};
 
-  // delete Model (file)
-  export const deleteModel = (payload) => {
-    return axios.post(`${API_URL}/user_query/deleteModel`,payload);
-  };
+// delete Model (file)
+export const deleteModel = (payload) => {
+  return axios.post(`${API_URL}/user_query/deleteModel`, payload);
+};
 
+// LLM Key
+export const setLLMKey = (value) => {
+  return axios.post(`${API_URL}/user_query/setLlmKey`, value);
+};
 
-  // LLM Key
-  export const setLLMKey = (value) => {
-    return axios.post(`${API_URL}/user_query/setLlmKey`,value);
-  };
+// LLM Temperature
+export const setLLMTemperature = (value) => {
+  return axios.post(`${API_URL}/user_query/setllmTemp`, value);
+};
 
-  // LLM Temperature
-  export const setLLMTemperature = (value) => {
-    return axios.post(`${API_URL}/user_query/setllmTemp`,value);
-  };
-
-  // retrain all models (files)
+// retrain all models (files)
 export const retrainAllModels = (files) => {
-  return axios.post(`${API_URL}/user_query/retrainAllModels`,{files});
+  return axios.post(`${API_URL}/user_query/retrainAllModels`, { files });
 };
-  // set active model
+// set active model
 export const setActiveModelApi = (id) => {
-  return axios.post(`${API_URL}/user_query/setActiveModel`,{id});
+  return axios.post(`${API_URL}/user_query/setActiveModel`, { id });
 };
-  // set active model
+// set active model
 export const getActiveModelApi = () => {
   return axios.get(`${API_URL}/user_query/getActiveModel`);
 };
