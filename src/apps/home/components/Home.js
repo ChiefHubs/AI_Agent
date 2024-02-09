@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { useSelector } from "react-redux";
 
 import Sidebar from "./Sidebar";
 import Chat from "../../chat/components/Chat";
@@ -21,6 +22,8 @@ const Home = () => {
   const [isCurrentMenuOpen, setIsCurrentMenuOpen] = useState(false);
   const [queries, setQueries] = useState([]);
   const [activeChat, setActiveChat] = useState({ queries: [] });
+
+  const theme = useSelector((store) => store.setting.isDark);
 
   const [questionList, setQuestionList] = useState([]);
 
@@ -107,10 +110,20 @@ const Home = () => {
         </div>
 
         {/* Right side content */}
-        <div className="w-full md:w-[80%] h-screen md:h-screen">
+        <div
+          className={`w-full md:w-[80%] h-screen md:h-screen ${
+            theme === true ? "bg-[#171717]" : "bg-gray-100"
+          }`}
+        >
           {/* <div className="bg-[#f4f4f4] h-screen flex flex-col justify-between mb-2"> */}{" "}
           <div className="flex flex-row justify-between">
-            <h1 className="font-bold text-xl text-black p-4">Agent Query</h1>
+            <h1
+              className={`font-bold text-xl ${
+                theme === true ? "text-[#ececf1]" : "text-black"
+              } p-4`}
+            >
+              Agent Query
+            </h1>
             <div className="md:hidden p-4 cursor-pointer">
               <FontAwesomeIcon
                 icon={isMenuOpen ? faXmark : faBars}

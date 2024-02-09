@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, toast } from "react-toastify";
 import { generateChat } from "../apis";
 import "../style.css";
 import { useSelector } from "react-redux";
@@ -14,6 +14,8 @@ function Chat({
   setQuestionList,
 }) {
   const ref = useRef();
+
+  const theme = useSelector((store) => store.setting.isDark);
 
   const activeModel = useSelector((store) => store.auth.activeModel);
   const [question, setQuestion] = useState("");
@@ -95,7 +97,7 @@ function Chat({
           <div
             className={`${
               (questionList.length > 0 || activeChat.queries.length > 0) &&
-              "bg-[#dad6d6]"
+              (theme === true ? "bg-[#171717] text-white" : "bg-gray-100")
             } rounded overflow-y-scroll h-[70vh] md:h-[75vh] w-full md:w-[70%] mx-auto md:p-0 p-4 flex flex-col`}
           >
             {questionList.length > 0 &&
@@ -106,16 +108,36 @@ function Chat({
                 >
                   <div className="flex flex-col items-start">
                     <p className="text-gray font-bold">{m && "You"}</p>
-                    <p className="text-black">{m}</p>
+                    <p
+                      className={`${
+                        theme === true ? "text-gray-300" : "text-black"
+                      }`}
+                    >
+                      {m}
+                    </p>
 
-                    <p className="text-gray font-bold">{m && "Answer"}</p>
+                    <p
+                      className={`${
+                        theme === true ? "text-gray-300" : "text-black"
+                      } font-bold`}
+                    >
+                      {m && "Answer"}
+                    </p>
                     {isLoading && questionList.length - 1 === index && (
-                      <p className="text-black text-sm animate-pulse text-center">
+                      <p
+                        className={`${
+                          theme === true ? "text-gray-300" : "text-black"
+                        } text-sm animate-pulse text-center`}
+                      >
                         Loading...
                       </p>
                     )}
                     {activeChat.queries.map((ans) => (
-                      <p className="text-black">
+                      <p
+                        className={`${
+                          theme === true ? "text-gray-300" : "text-black"
+                        }`}
+                      >
                         {m === ans.question && ans.solution}
                       </p>
                     ))}
@@ -173,13 +195,15 @@ function Chat({
               value={question}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
-              className="text-black h-full w-full p-2 outline-none bg-inherit"
+              className={`${
+                theme === true ? "text-gray-300" : "text-black"
+              } h-full w-full p-2 outline-none bg-inherit`}
               type="text"
               placeholder="Type a message..."
             />
             <button
               onClick={handleSendMessage}
-              className="h-full p-2 rounded-lg icon-style"
+              className="h-full p-2 rounded-lg icon-style text-[#ececf1]"
             >
               <FontAwesomeIcon icon={faPaperPlane} />
             </button>

@@ -6,6 +6,7 @@ import {
   LOGIN_NOT_EXIST,
   REGISTER_ERROR,
   SET_ACTIVE_MODEL,
+  SET_THEME,
 } from "./constants";
 import setAuthHeader from "../../_helpers/setAuthHeader";
 
@@ -27,6 +28,13 @@ export function setActiveModel(id) {
 export function unsetUser() {
   return {
     type: CLIENT_UNSET,
+  };
+}
+
+export function setTheme(value) {
+  return {
+    type: SET_THEME,
+    value,
   };
 }
 

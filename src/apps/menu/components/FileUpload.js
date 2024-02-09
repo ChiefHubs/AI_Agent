@@ -19,6 +19,7 @@ const FileUpload = () => {
   const fileRef = useRef();
   const dispatch = useDispatch();
   const activeModel = useSelector((store) => store.auth.activeModel);
+  const theme = useSelector((store) => store.setting.isDark);
   // console.log(activeModel);
   const [files, setFiles] = useState([]);
   const [models, setModels] = useState([]);
@@ -231,7 +232,13 @@ const FileUpload = () => {
     <div className="aroundFileUploadTable">
       {isLoading && <div className="coverSpinner"></div>}
       <div className="firstSection">
-        <div className="font-bold text-xl text-black p-2">All files</div>
+        <div
+          className={`font-bold text-xl ${
+            theme === true ? "text-gray-100" : "text-black"
+          }  p-2`}
+        >
+          All files
+        </div>
         <div
           style={{
             display: "flex",
@@ -243,7 +250,14 @@ const FileUpload = () => {
           }}
         >
           <>
-            <label className="file-upload-btn" htmlFor="customFile">
+            <label
+              className={` ${
+                theme === true
+                  ? "bg-white text-black hover:bg-gray-300"
+                  : "bg-black text-white"
+              }  p-2 text-base font-bold rounded cursor-pointer`}
+              htmlFor="customFile"
+            >
               Upload new file
             </label>
             <input
@@ -283,7 +297,11 @@ const FileUpload = () => {
                 </>
               ) : (
                 <button
-                  className="retrainButton mr-1"
+                  className={` ${
+                    theme === true
+                      ? "bg-white text-black hover:bg-gray-300"
+                      : "bg-black text-white"
+                  }  px-4  py-2 font-bold text-base rounded  mr-2`}
                   disabled={files.length ? false : true}
                   onClick={handleRetrainModel}
                 >
@@ -390,7 +408,9 @@ const FileUpload = () => {
         </>
       ) : (
         <div className="noRecordFound">
-          <h2>No record found</h2>
+          <h2 className={`${theme === true ? "text-gray-100" : "text-black"}`}>
+            No record found
+          </h2>
         </div>
       )}
       <ToastContainer />

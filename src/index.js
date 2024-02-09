@@ -7,14 +7,14 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import store from "./apps/auth/store";
 import setAuthHeader from "./_helpers/setAuthHeader";
-import { setActiveModel, setUser } from "./apps/auth/actions";
+import { setActiveModel, setUser, setTheme } from "./apps/auth/actions";
 
 if (sessionStorage.getItem("user")) {
   setAuthHeader(sessionStorage.getItem("user"));
   store.dispatch(setUser(JSON.parse(sessionStorage.getItem("user"))));
   store.dispatch(setActiveModel("gpt"));
+  // store.dispatch(setTheme(true));
 }
-
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   // <React.StrictMode>
