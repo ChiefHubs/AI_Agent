@@ -13,6 +13,7 @@ import {
   faLock,
   faFileArrowUp,
   faPalette,
+  faComment,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { logout, setTheme } from "../../auth/actions";
@@ -50,6 +51,11 @@ const settingMenu = [
   {
     title: "LLM Temperature",
     icon: faTemperatureThreeQuarters,
+  },
+
+  {
+    title: "Set Prompt",
+    icon: faComment,
   },
   {
     title: "Theme Mode",

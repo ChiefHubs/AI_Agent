@@ -26,3 +26,7 @@ export const LLMKeySchema = Yup.object({
 export const LLMTempSchema = Yup.object({
   llmTemp: Yup.string().required("Temparature is required"),
 });
+
+export const SetPromptSchema = Yup.object({
+  setGpt: Yup.string().required("Prompt is required"),
+});

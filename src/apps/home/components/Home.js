@@ -10,6 +10,7 @@ import LLMTemperature from "../../menu/components/LLMTemperature";
 import Profile from "../../menu/components/Profile";
 import FileUpload from "../../menu/components/FileUpload";
 import LLMKey from "../../menu/components/LLMKey";
+import SetPrompt from "../../menu/components/SetPrompt";
 import "../style.css";
 
 import { getAllQueries } from "../apis";
@@ -158,6 +159,9 @@ const Home = () => {
               )}
               {currentPage === "File Upload" && (
                 <FileUpload setCurrentPage={setCurrentPage} />
+              )}
+              {currentPage === "Set Prompt" && (
+                <SetPrompt setCurrentPage={setCurrentPage} />
               )}
             </>
           )}
