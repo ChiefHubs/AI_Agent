@@ -71,7 +71,7 @@ const SetPrompts = ({ setCurrentPage }) => {
               />
             </div>
             <h1 align="center" className="title">
-              Prompt
+              System Prompt
             </h1>
           </div>
           <form onSubmit={formik.handleSubmit}>

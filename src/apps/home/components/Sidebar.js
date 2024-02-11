@@ -54,7 +54,7 @@ const settingMenu = [
   },
 
   {
-    title: "Set Prompt",
+    title: "System Prompt",
     icon: faComment,
   },
   {

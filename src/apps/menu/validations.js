@@ -28,5 +28,5 @@ export const LLMTempSchema = Yup.object({
 });
 
 export const SetPromptSchema = Yup.object({
-  setGpt: Yup.string().required("Prompt is required"),
+  prompt: Yup.string().required("Prompt is required"),
 });

@@ -160,7 +160,7 @@ const Home = () => {
               {currentPage === "File Upload" && (
                 <FileUpload setCurrentPage={setCurrentPage} />
               )}
-              {currentPage === "Set Prompt" && (
+              {currentPage === "System Prompt" && (
                 <SetPrompt setCurrentPage={setCurrentPage} />
               )}
             </>
