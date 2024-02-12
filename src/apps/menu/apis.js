@@ -67,5 +67,9 @@ export const getActiveModelApi = () => {
 
 // Prompt
 export const setPrompt = (value) => {
-  return axios.post(`${API_URL}/prompt`, value);
+  return axios.post(`${API_URL}/prompt/set`, value);
+};
+
+export const getUserPrompt = () => {
+  return axios.get(`${API_URL}/prompt/get`);
 };

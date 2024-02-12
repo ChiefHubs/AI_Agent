@@ -13,14 +13,14 @@ function Chat({
   questionList,
   setQuestionList,
 }) {
-  const ref = useRef();
-
   const theme = useSelector((store) => store.setting.isDark);
 
   const activeModel = useSelector((store) => store.auth.activeModel);
   const [question, setQuestion] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
+
+  const bottomRef = useRef(null);
 
   const handleSendMessage = async () => {
     // e.preventDefault();
@@ -76,7 +76,10 @@ function Chat({
       });
   };
 
-  useEffect(() => {}, [question]);
+  // useEffect(() => {}, [question]);
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [activeChat.queries.length]);
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
@@ -132,8 +135,9 @@ function Chat({
                         Loading...
                       </p>
                     )}
-                    {activeChat.queries.map((ans) => (
+                    {activeChat.queries.map((ans, index) => (
                       <p
+                        key={index}
                         className={`${
                           theme === true ? "text-gray-300" : "text-black"
                         }`}
@@ -181,7 +185,7 @@ function Chat({
                     </div>
                   </div>
                 ))} */}
-            <div ref={ref} />
+            <div ref={bottomRef} />
           </div>
         </div>
         {/* {isLoading && (

@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from "react-toastify";
 
 import { SetPromptSchema } from "../validations";
-import { setPrompt } from "../apis";
+import { setPrompt, getUserPrompt } from "../apis";
 
 const SetPrompts = ({ setCurrentPage }) => {
   const formik = useFormik({
@@ -18,6 +18,19 @@ const SetPrompts = ({ setCurrentPage }) => {
     },
   });
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    handleGetPrompt();
+  }, []);
+
+  const handleGetPrompt = async () => {
+    try {
+      const res = await getUserPrompt();
+      formik.setFieldValue("prompt", res.data?.detail);
+    } catch (e) {
+      console.log(e.message);
+    }
+  };
 
   const onSubmit = async (values) => {
     setIsLoading(true);
@@ -66,7 +79,7 @@ const SetPrompts = ({ setCurrentPage }) => {
             <div className="flex cursor-pointer">
               <FontAwesomeIcon
                 icon={faXmark}
-                size={25}
+                // size={25}
                 onClick={() => setCurrentPage("")}
               />
             </div>
