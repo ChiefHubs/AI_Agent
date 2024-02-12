@@ -133,7 +133,7 @@ const Login = () => {
               </button>
             </div>
           </form>
-          {/* <div
+          <div
             style={{
               textAlign: "center",
               marginTop: "12px",
@@ -144,7 +144,7 @@ const Login = () => {
             <Link to={`/signup`} style={{ textDecoration: "none" }}>
               Signup
             </Link>
-          </div> */}
+          </div>
         </div>
         {/* </div> */}
         <ToastContainer />
