@@ -367,7 +367,9 @@ const Sidebar = ({
                 theme === true ? "text-[#fff]" : "text-black"
               }  h-8 p-1`}
             >
-              {user.firstName + " " + user.lastName}
+              {user.firstName +
+                " " +
+                (user.lastName == undefined ? "" : user.lastName)}
             </p>
           </div>
         </div>

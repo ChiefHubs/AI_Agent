@@ -6,8 +6,7 @@ import Login from "./apps/auth/components/Login";
 import Signup from "./apps/auth/components/Signup";
 import ForgotPassword from "./apps/auth/components/ForgotPassword";
 import Home from "./apps/home/components/Home";
-import 'react-toastify/dist/ReactToastify.css';
-
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -31,6 +30,7 @@ function App() {
           />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+
           <Route path="/forgot-password" element={<ForgotPassword />} />
           {/* <Route path="/" element={<Home />} /> */}
         </Routes>

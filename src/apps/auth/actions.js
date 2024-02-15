@@ -8,6 +8,7 @@ import {
   SET_ACTIVE_MODEL,
   SET_THEME,
 } from "./constants";
+import { googleLogout } from "@react-oauth/google";
 import setAuthHeader from "../../_helpers/setAuthHeader";
 
 const API_URL = process.env.REACT_APP_API_URL;
@@ -81,9 +82,49 @@ export const login = (loginInput) => async (dispatch) => {
   }
 };
 
+export const loginWithGoogle = (token) => async (dispatch) => {
+  axios
+    .get(
+      `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${token}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      }
+    )
+    .then((res) => {
+      axios
+        .post(
+          `${API_URL}/auth/googleRegister`,
+          { values: res.data },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((res) => {
+          console.log("google resdata", res.data);
+          sessionStorage.setItem("user", JSON.stringify(res.data));
+          dispatch(setUser(res.data.storeData));
+          window.location = "/";
+        })
+        .catch((error) => {
+          console.log("google login error----", error);
+          dispatch({
+            type: LOGIN_ERROR,
+            error: error.response?.data?.error || error.message,
+          });
+        });
+    })
+    .catch((err) => console.log(err));
+};
+
 export const logout = () => {
   sessionStorage.removeItem("user");
   window.location = "/login";
+  // googleLogout()
   // window.location.reload();
   return (dispatch) => {
     dispatch(unsetUser());

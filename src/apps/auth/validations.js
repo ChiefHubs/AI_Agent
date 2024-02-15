@@ -7,7 +7,10 @@ export const signupSchema = Yup.object({
     .email("Invalid email address")
     .required("Email is required"),
   mobile_no: Yup.string()
-    .matches(/^[0-9]+$/, "Invalid contact number") // Only allow numeric characters
+    .matches(
+      /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,7}$/,
+      "Invalid contact number"
+    ) // Only allow numeric characters
     .min(10, "Contact number must be at least 10 digits")
     .max(15, "Contact number can be at most 15 digits")
     .required("Contact is required"),

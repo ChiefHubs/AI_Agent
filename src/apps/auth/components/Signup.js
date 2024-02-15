@@ -36,7 +36,7 @@ const Signup = () => {
     changeIsLoading(true);
     try {
       const response = dispatch(register(values));
-   dispatch(setActiveModel('gpt'))
+      dispatch(setActiveModel("gpt"));
       changeIsLoading(false);
     } catch (e) {
       console.log("error ", e.message);
@@ -53,7 +53,6 @@ const Signup = () => {
     if (isAuthenticated) {
       // alert(message);
       changeIsLoading(false);
-  
     }
   }, [error, isAuthenticated, messages]);
 

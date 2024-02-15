@@ -1,22 +1,19 @@
 import React, { useState, useEffect } from "react";
+import { useGoogleLogin } from "@react-oauth/google";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 
 import { loginSchema } from "../validations";
-import { login } from "../actions";
+import { login, loginWithGoogle } from "../actions";
 import "../style.css";
-import {
-  INCORRECT_E_P,
-  LOGIN_ERROR,
-  LOGIN_NOT_EXIST,
-  NOT_REGISTER_MSG,
-} from "../constants";
+import { INCORRECT_E_P, LOGIN_NOT_EXIST, NOT_REGISTER_MSG } from "../constants";
 
 const Login = () => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
+
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -61,6 +58,16 @@ const Login = () => {
       setIsLoading(false);
     }
   }, [error, isAuthenticated, messages, errorType]);
+
+  // const handleGoogleLogin = (credentialResponse) => {
+  //   console.log("credentialResponse-------", credentialResponse);
+  const loginGoogle = useGoogleLogin({
+    onSuccess: (codeResponse) =>
+      dispatch(loginWithGoogle(codeResponse.access_token)),
+    onError: (error) => console.log("Login Failed:", error),
+  });
+  // loginWithGoogle();
+  // };
 
   return (
     <>
@@ -128,12 +135,27 @@ const Login = () => {
                 </Link>
               </div> */}
 
-              <button type="submit" align="center" className="btn submit-btn">
+              <button
+                type="submit"
+                align="center"
+                className="btn text-white bg-neutral-950 hover:bg-neutral-800 w-full relative flex items-center flex justify-center !w-full"
+              >
                 Login
               </button>
+              <div className="mt-5 flex justify-center">
+                <button
+                  onClick={loginGoogle}
+                  type="button"
+                  align="center"
+                  className="btn text-white bg-neutral-950 hover:bg-neutral-800 w-full relative flex items-center flex justify-center !w-full"
+                >
+                  Login with Google
+                </button>
+              </div>
             </div>
           </form>
-          {/* <div
+
+          <div
             style={{
               textAlign: "center",
               marginTop: "12px",
@@ -144,7 +166,7 @@ const Login = () => {
             <Link to={`/signup`} style={{ textDecoration: "none" }}>
               Signup
             </Link>
-          </div> */}
+          </div>
         </div>
         {/* </div> */}
         <ToastContainer />
