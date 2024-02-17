@@ -8,7 +8,11 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import store from "./apps/auth/store";
 import setAuthHeader from "./_helpers/setAuthHeader";
-import { setActiveModel, setUser, setTheme } from "./apps/auth/actions";
+import { setActiveModel, setUser } from "./apps/auth/actions";
+
+const environment = process.env.REACT_APP_ENV;
+const local_id = process.env.REACT_APP_LOCAL_CLIENT_ID;
+const google_id = process.env.REACT_APP_CLIENT_ID;
 
 if (sessionStorage.getItem("user")) {
   setAuthHeader(sessionStorage.getItem("user"));
@@ -20,7 +24,9 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   // <React.StrictMode>
   <Provider store={store}>
-    <GoogleOAuthProvider clientId="9830403119-j8ad74iabe28adr9lre1gc55ol5h0hgh.apps.googleusercontent.com">
+    <GoogleOAuthProvider
+      clientId={environment === "dev" ? local_id : google_id}
+    >
       <App />
     </GoogleOAuthProvider>
   </Provider>

@@ -12,9 +12,12 @@ export const LOGIN_ERROR = "LOGIN_ERROR";
 export const LOGIN_NOT_EXIST = "LOGIN_NOT_EXIST";
 export const LOGIN_EXISTING = "LOGIN_EXISTING";
 export const LOGOUT = "LOGOUT";
+export const EMAIL_VERIFY = "E_VERIFY";
 
 //Message constant
 
 export const NOT_REGISTER_MSG =
   "Email does not exist! Please try again our contact support.";
 export const INCORRECT_E_P = "Incorrect email or password!";
+export const EMAIL_VERIFY_MSG = "Please verify your email";
+export const EMAIL_EXIST_MSG = "This email is already exist!";

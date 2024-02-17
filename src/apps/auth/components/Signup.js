@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
+import { ToastContainer, toast } from "react-toastify";
 // import swal from 'sweetalert'
 
 import { signupSchema } from "../validations";
 import { register, setActiveModel } from "../actions";
 
 import "../style.css";
+import { EMAIL_VERIFY_MSG, EMAIL_VERIFY, EMAIL_EXIST_MSG } from "../constants";
 
 const Signup = () => {
   const dispatch = useDispatch();
@@ -28,7 +30,7 @@ const Signup = () => {
     },
   });
 
-  const { messages, error, isAuthenticated } = useSelector(
+  const { messages, error, isAuthenticated, errorType } = useSelector(
     (state) => state.auth
   );
 
@@ -49,6 +51,29 @@ const Signup = () => {
       console.log("errors ", error);
       // dispatch({ type: "clearError" });
       changeIsLoading(false);
+      if (errorType === EMAIL_VERIFY) {
+        toast.success(EMAIL_VERIFY_MSG, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      } else {
+        toast.error(error, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      }
     }
     if (isAuthenticated) {
       // alert(message);
@@ -203,6 +228,7 @@ const Signup = () => {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </section>
   );
 };

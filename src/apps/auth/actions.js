@@ -7,6 +7,8 @@ import {
   REGISTER_ERROR,
   SET_ACTIVE_MODEL,
   SET_THEME,
+  EMAIL_VERIFY,
+  EMAIL_VERIFY_MSG,
 } from "./constants";
 import { googleLogout } from "@react-oauth/google";
 import setAuthHeader from "../../_helpers/setAuthHeader";
@@ -48,7 +50,11 @@ export const register = (values) => async (dispatch) => {
     });
     sessionStorage.setItem("user", JSON.stringify(data));
     dispatch(setUser(data.storeData));
-    window.location = "/";
+    dispatch({
+      type: EMAIL_VERIFY,
+      error: EMAIL_VERIFY_MSG,
+    });
+    // window.location = "/";
   } catch (error) {
     console.log("error: ", error);
     dispatch({

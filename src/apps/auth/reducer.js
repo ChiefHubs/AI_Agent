@@ -1,6 +1,7 @@
 import {
   CLIENT_SET,
   CLIENT_UNSET,
+  EMAIL_VERIFY,
   LOGIN_ERROR,
   LOGIN_NOT_EXIST,
   REGISTER_ERROR,
@@ -21,6 +22,14 @@ const initialState = {
 const authReducer = (state = initialState, action) => {
   switch (true) {
     case action.type === REGISTER_ERROR:
+      return {
+        ...state,
+        isAuthenticated: false,
+        error: action.error,
+        errorType: action.type,
+      };
+
+    case action.type === EMAIL_VERIFY:
       return {
         ...state,
         isAuthenticated: false,
