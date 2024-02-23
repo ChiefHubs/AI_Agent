@@ -6,6 +6,8 @@ import {
   LOGIN_NOT_EXIST,
   REGISTER_ERROR,
   SET_ACTIVE_MODEL,
+  EMAIL_VERIFY_ERROR,
+  EMAIL_VERIFY_ERROR_MSG,
 } from "./constants";
 
 const initialState = {
@@ -30,6 +32,14 @@ const authReducer = (state = initialState, action) => {
       };
 
     case action.type === EMAIL_VERIFY:
+      return {
+        ...state,
+        isAuthenticated: false,
+        error: action.error,
+        errorType: action.type,
+      };
+
+    case action.type === EMAIL_VERIFY_ERROR:
       return {
         ...state,
         isAuthenticated: false,

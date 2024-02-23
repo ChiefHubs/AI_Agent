@@ -4,8 +4,10 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        dark: "var(--primary)",
-        light: "var(--secondary)",
+        sidebar_back: "black",
+        sidebar_setting_back: "#202123",
+        sidebar_hover: "#333",
+        chat_back: "#171717",
       },
     },
   },

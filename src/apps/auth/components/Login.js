@@ -8,7 +8,15 @@ import { ToastContainer, toast } from "react-toastify";
 import { loginSchema } from "../validations";
 import { login, loginWithGoogle } from "../actions";
 import "../style.css";
-import { INCORRECT_E_P, LOGIN_NOT_EXIST, NOT_REGISTER_MSG } from "../constants";
+import {
+  EMAIL_VERIFY,
+  EMAIL_VERIFY_MSG,
+  INCORRECT_E_P,
+  LOGIN_ERROR,
+  LOGIN_NOT_EXIST,
+  NOT_REGISTER_MSG,
+  UNKNOWN_MSG,
+} from "../constants";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -38,9 +46,8 @@ const Login = () => {
     if (error) {
       console.log("errors ", errorType, error);
       setIsLoading(false);
-      toast.error(
-        errorType === LOGIN_NOT_EXIST ? NOT_REGISTER_MSG : INCORRECT_E_P,
-        {
+      if (errorType === LOGIN_NOT_EXIST) {
+        toast.error(NOT_REGISTER_MSG, {
           position: "bottom-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -49,8 +56,41 @@ const Login = () => {
           draggable: true,
           progress: undefined,
           theme: "dark",
-        }
-      );
+        });
+      } else if (errorType === LOGIN_ERROR) {
+        toast.error(INCORRECT_E_P, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      } else if (errorType === EMAIL_VERIFY) {
+        toast.warning(EMAIL_VERIFY_MSG, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      } else {
+        toast.warning(UNKNOWN_MSG, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      }
     }
     if (isAuthenticated) {
       // alert(message);

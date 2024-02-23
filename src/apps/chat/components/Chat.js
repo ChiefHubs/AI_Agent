@@ -100,7 +100,7 @@ function Chat({
           <div
             className={`${
               (questionList.length > 0 || activeChat.queries.length > 0) &&
-              (theme === true ? "bg-[#171717] text-white" : "bg-gray-100")
+              (theme === true ? "bg-chat_back text-white" : "bg-gray-100")
             } rounded overflow-y-scroll h-[70vh] md:h-[75vh] w-full md:w-[70%] mx-auto md:p-0 p-4 flex flex-col`}
           >
             {questionList.length > 0 &&

@@ -113,7 +113,7 @@ const Home = () => {
         {/* Right side content */}
         <div
           className={`w-full md:w-[80%] h-screen md:h-screen ${
-            theme === true ? "bg-[#171717]" : "bg-gray-100"
+            theme === true ? "bg-chat_back" : "bg-gray-100"
           }`}
         >
           {/* <div className="bg-[#f4f4f4] h-screen flex flex-col justify-between mb-2"> */}{" "}

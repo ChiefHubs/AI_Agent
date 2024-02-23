@@ -1,18 +1,44 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
+import * as CryptoJS from "crypto-js";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 // import swal from 'sweetalert'
 
 import { signupSchema } from "../validations";
-import { register, setActiveModel } from "../actions";
+import { register, setActiveModel, verifyEmail } from "../actions";
 
 import "../style.css";
 import { EMAIL_VERIFY_MSG, EMAIL_VERIFY, EMAIL_EXIST_MSG } from "../constants";
 
 const Signup = () => {
   const dispatch = useDispatch();
+  const [queryParam] = useSearchParams();
+
+  useEffect(() => {
+    console.log("size-----------", queryParam);
+    if (queryParam.size > 0) {
+      const etoken = queryParam.get("etoken");
+      const ptoken = queryParam.get("ptoken");
+      const e_string = etoken
+        .toString()
+        .replace("xMl3Jk", "+")
+        .replace("Por21Ld", "/")
+        .replace("Ml32", "=");
+      const p_string = ptoken
+        .toString()
+        .replace("xMl3Jk", "+")
+        .replace("Por21Ld", "/")
+        .replace("Ml32", "=");
+      dispatch(verifyEmail({ e_string, p_string }));
+      // const bytes = CryptoJS.AES.decrypt(
+      //   token,
+      //   process.env.REACT_APP_MAIL_SECRET_KEY
+      // );
+      // const originalText = bytes.toString(CryptoJS.enc.Utf8);
+    }
+  }, [queryParam]);
 
   const [isLoading, changeIsLoading] = useState(false);
   const formik = useFormik({

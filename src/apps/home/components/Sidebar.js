@@ -98,13 +98,13 @@ const Sidebar = ({
   return (
     <div
       className={`${
-        theme === true ? `bg-black ` : `bg-gray-50`
+        theme === true ? `bg-sidebar_back ` : `bg-gray-50`
       } flex flex-col items-start p-4 h-screen`}
     >
       {/* new chat button */}
       <div
         className={`flex items-center w-full p-1 rounded-lg ${
-          theme === true ? "hover:bg-[#202123]" : "hover:bg-gray-100"
+          theme === true ? "hover:bg-sidebar_setting_back" : "hover:bg-gray-100"
         } `}
       >
         <div className="flex items-center space-x-2 cursor-pointer">
@@ -193,13 +193,15 @@ const Sidebar = ({
           {isOpen && (
             <div
               className={`absolute bottom-10 w-full ${
-                theme === true ? "bg-[#202123]" : "bg-gray-100"
+                theme === true ? "bg-sidebar_setting_back" : "bg-gray-100"
               }  origin-top-right rounded-md `}
             >
               {leftMenuItems.map((item, i) => (
                 <div
                   className={`py-2 rounded-md w-full ${
-                    theme === true ? "hover:bg-[#333]" : "hover:bg-gray-200"
+                    theme === true
+                      ? "hover:bg-sidebar_hover"
+                      : "hover:bg-gray-200"
                   }`}
                   key={i}
                 >
@@ -354,7 +356,9 @@ const Sidebar = ({
           <div
             onClick={() => setIsOpen(!isOpen)}
             className={`flex items-center w-full p-2 rounded-lg ${
-              theme === true ? "hover:bg-[#202123]" : "hover:bg-gray-100"
+              theme === true
+                ? "hover:bg-sidebar_setting_back"
+                : "hover:bg-gray-100"
             } cursor-pointer`}
           >
             <img

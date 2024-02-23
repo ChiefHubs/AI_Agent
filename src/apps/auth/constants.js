@@ -13,6 +13,8 @@ export const LOGIN_NOT_EXIST = "LOGIN_NOT_EXIST";
 export const LOGIN_EXISTING = "LOGIN_EXISTING";
 export const LOGOUT = "LOGOUT";
 export const EMAIL_VERIFY = "E_VERIFY";
+export const EMAIL_VERIFY_ERROR = "E_VERIFY_ERROR";
+export const EMAIL_VERIFY_SUCCESS = "E_VERIFY_SUCCESS";
 
 //Message constant
 
@@ -20,4 +22,7 @@ export const NOT_REGISTER_MSG =
   "Email does not exist! Please try again our contact support.";
 export const INCORRECT_E_P = "Incorrect email or password!";
 export const EMAIL_VERIFY_MSG = "Please verify your email";
+export const EMAIL_VERIFY_ERROR_MSG = "Your email is invaild";
+export const EMAIL_VERIFY_SUCCESS_MSG = "Your email is verified";
 export const EMAIL_EXIST_MSG = "This email is already exist!";
+export const UNKNOWN_MSG = "Unkown error!";

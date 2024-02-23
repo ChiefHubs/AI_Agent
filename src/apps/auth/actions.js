@@ -9,6 +9,10 @@ import {
   SET_THEME,
   EMAIL_VERIFY,
   EMAIL_VERIFY_MSG,
+  EMAIL_VERIFY_ERROR,
+  EMAIL_VERIFY_ERROR_MSG,
+  EMAIL_VERIFY_SUCCESS,
+  EMAIL_VERIFY_SUCCESS_MSG,
 } from "./constants";
 import { googleLogout } from "@react-oauth/google";
 import setAuthHeader from "../../_helpers/setAuthHeader";
@@ -48,18 +52,40 @@ export const register = (values) => async (dispatch) => {
         "Content-Type": "application/json",
       },
     });
-    sessionStorage.setItem("user", JSON.stringify(data));
-    dispatch(setUser(data.storeData));
+    // sessionStorage.setItem("user", JSON.stringify(data));
+    // dispatch(setUser(data.storeData));
     dispatch({
       type: EMAIL_VERIFY,
       error: EMAIL_VERIFY_MSG,
     });
-    // window.location = "/";
   } catch (error) {
     console.log("error: ", error);
     dispatch({
       type: REGISTER_ERROR,
       error: error.response?.data?.error || error.message,
+    });
+  }
+};
+
+export const verifyEmail = (tokens) => async (dispatch) => {
+  try {
+    const { data } = await axios.post(`${API_URL}/auth/verifyEmail`, tokens, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    sessionStorage.setItem("user", JSON.stringify(data));
+    dispatch(setUser(data.storeData));
+    dispatch({
+      type: EMAIL_VERIFY_SUCCESS,
+      error: EMAIL_VERIFY_SUCCESS_MSG,
+    });
+    window.location = "/";
+  } catch (error) {
+    console.log("error: ", error);
+    dispatch({
+      type: EMAIL_VERIFY_ERROR,
+      error: EMAIL_VERIFY_ERROR_MSG,
     });
   }
 };
@@ -82,7 +108,12 @@ export const login = (loginInput) => async (dispatch) => {
   } catch (error) {
     console.log("error: ", error);
     dispatch({
-      type: error.response?.data?.type === 1 ? LOGIN_NOT_EXIST : LOGIN_ERROR,
+      type:
+        error.response?.data?.type === 1
+          ? LOGIN_NOT_EXIST
+          : error.response?.data?.type === 2
+          ? EMAIL_VERIFY
+          : LOGIN_ERROR,
       error: error.response?.data?.error || error.message,
     });
   }
