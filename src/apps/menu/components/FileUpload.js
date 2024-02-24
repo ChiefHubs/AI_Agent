@@ -192,6 +192,7 @@ const FileUpload = () => {
       const res = await deleteModel({ id, path });
       handleGetAllFiles();
       fileRef.current.value = null;
+      await retrainModel(files);
       toast.success("File deleted successfully!", {
         position: "bottom-right",
         autoClose: 5000,
