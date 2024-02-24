@@ -93,21 +93,15 @@ const Login = () => {
       }
     }
     if (isAuthenticated) {
-      // alert(message);
-
       setIsLoading(false);
     }
   }, [error, isAuthenticated, messages, errorType]);
 
-  // const handleGoogleLogin = (credentialResponse) => {
-  //   console.log("credentialResponse-------", credentialResponse);
   const loginGoogle = useGoogleLogin({
     onSuccess: (codeResponse) =>
       dispatch(loginWithGoogle(codeResponse.access_token)),
     onError: (error) => console.log("Login Failed:", error),
   });
-  // loginWithGoogle();
-  // };
 
   return (
     <>
