@@ -9,6 +9,8 @@ import { loginSchema } from "../validations";
 import { login, loginWithGoogle } from "../actions";
 import "../style.css";
 import {
+  EMAIL_ALREADY_EXIST,
+  EMAIL_EXIST_MSG,
   EMAIL_VERIFY,
   EMAIL_VERIFY_MSG,
   INCORRECT_E_P,
@@ -70,6 +72,17 @@ const Login = () => {
         });
       } else if (errorType === EMAIL_VERIFY) {
         toast.warning(EMAIL_VERIFY_MSG, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      } else if (errorType === EMAIL_ALREADY_EXIST) {
+        toast.warning(EMAIL_EXIST_MSG, {
           position: "bottom-right",
           autoClose: 5000,
           hideProgressBar: false,

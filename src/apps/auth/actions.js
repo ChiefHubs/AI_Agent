@@ -13,6 +13,7 @@ import {
   EMAIL_VERIFY_ERROR_MSG,
   EMAIL_VERIFY_SUCCESS,
   EMAIL_VERIFY_SUCCESS_MSG,
+  EMAIL_ALREADY_EXIST,
 } from "./constants";
 import { googleLogout } from "@react-oauth/google";
 import setAuthHeader from "../../_helpers/setAuthHeader";
@@ -150,7 +151,7 @@ export const loginWithGoogle = (token) => async (dispatch) => {
         .catch((error) => {
           console.log("google login error----", error);
           dispatch({
-            type: LOGIN_ERROR,
+            type: EMAIL_ALREADY_EXIST,
             error: error.response?.data?.error || error.message,
           });
         });

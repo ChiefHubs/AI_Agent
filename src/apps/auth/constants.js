@@ -15,6 +15,7 @@ export const LOGOUT = "LOGOUT";
 export const EMAIL_VERIFY = "E_VERIFY";
 export const EMAIL_VERIFY_ERROR = "E_VERIFY_ERROR";
 export const EMAIL_VERIFY_SUCCESS = "E_VERIFY_SUCCESS";
+export const EMAIL_ALREADY_EXIST = "E_ALREADY_EXIST";
 
 //Message constant
 
