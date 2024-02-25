@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -93,7 +93,17 @@ const Sidebar = ({
 
   const handleChangeTheme = () => {
     dispatch(setTheme(!theme));
+    sessionStorage.setItem("dark", !theme);
   };
+
+  useEffect(() => {
+    const session_theme = sessionStorage.getItem("dark");
+    if (session_theme === "false" || session_theme === false) {
+      dispatch(setTheme(false));
+    } else {
+      dispatch(setTheme(true));
+    }
+  }, []);
 
   return (
     <div

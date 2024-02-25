@@ -7,7 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 // import swal from 'sweetalert'
 
 import { signupSchema } from "../validations";
-import { register, setActiveModel, verifyEmail } from "../actions";
+import { register, setActiveModel, verifyEmail, setTheme } from "../actions";
 
 import "../style.css";
 import { EMAIL_VERIFY_MSG, EMAIL_VERIFY, EMAIL_EXIST_MSG } from "../constants";
@@ -72,7 +72,15 @@ const Signup = () => {
     }
   };
 
+  const theme = useSelector((store) => store.setting.isDark);
+  const session_theme = sessionStorage.getItem("dark");
+
   useEffect(() => {
+    if (session_theme === "false" || session_theme === false) {
+      dispatch(setTheme(false));
+    } else {
+      dispatch(setTheme(true));
+    }
     if (error) {
       console.log("errors ", error);
       // dispatch({ type: "clearError" });
@@ -112,7 +120,9 @@ const Signup = () => {
   }
 
   return (
-    <section className="form-section">
+    <section
+      className={`form-section ${theme === true ? "bg-chat_back" : "bg-white"}`}
+    >
       <div className="container">
         <div className="login-area">
           <h1 align="center" className="title">

@@ -15,6 +15,7 @@ import "../style.css";
 
 import { getAllQueries } from "../apis";
 import setAuthHeader from "../../../_helpers/setAuthHeader";
+import { AGENT_TITLE } from "../../auth/constants";
 
 const Home = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -123,7 +124,7 @@ const Home = () => {
                 theme === true ? "text-[#ececf1]" : "text-black"
               } p-4`}
             >
-              Agent Query
+              {AGENT_TITLE}
             </h1>
             <div className="md:hidden p-4 cursor-pointer">
               <FontAwesomeIcon

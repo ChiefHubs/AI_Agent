@@ -27,3 +27,6 @@ export const EMAIL_VERIFY_ERROR_MSG = "Your email is invaild";
 export const EMAIL_VERIFY_SUCCESS_MSG = "Your email is verified";
 export const EMAIL_EXIST_MSG = "This email is already exist!";
 export const UNKNOWN_MSG = "Unkown error!";
+
+//title
+export const AGENT_TITLE = "IYKYK Agent";

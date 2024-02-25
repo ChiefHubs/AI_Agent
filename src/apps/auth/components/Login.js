@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 
 import { loginSchema } from "../validations";
-import { login, loginWithGoogle } from "../actions";
+import { login, loginWithGoogle, setTheme } from "../actions";
 import "../style.css";
 import {
   EMAIL_ALREADY_EXIST,
@@ -38,6 +38,8 @@ const Login = () => {
   const { messages, error, isAuthenticated, errorType } = useSelector(
     (state) => state.auth
   );
+  const theme = useSelector((store) => store.setting.isDark);
+  const session_theme = sessionStorage.getItem("dark");
 
   const onSubmit = async (values) => {
     setIsLoading(true);
@@ -45,6 +47,11 @@ const Login = () => {
   };
 
   useEffect(() => {
+    if (session_theme === "false" || session_theme === false) {
+      dispatch(setTheme(false));
+    } else {
+      dispatch(setTheme(true));
+    }
     if (error) {
       console.log("errors ", errorType, error);
       setIsLoading(false);
@@ -119,7 +126,11 @@ const Login = () => {
   return (
     <>
       {isLoading && <div className="coverSpinner"></div>}
-      <section className="form-section">
+      <section
+        className={`form-section ${
+          theme === true ? "bg-chat_back" : "bg-white"
+        }`}
+      >
         {/* <div className="container"> */}
         <div className="login-area">
           <h1 align="center" className="title">
