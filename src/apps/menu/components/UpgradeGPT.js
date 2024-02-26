@@ -1,34 +1,43 @@
-import React, { useState } from "react";
-// import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useFormik } from "formik";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { useFormik } from "formik";
 import { ToastContainer, toast } from "react-toastify";
 
-import { passwordSchema } from "../validations";
-import { updatePassword } from "../apis";
-import "../style.css";
+import { GPTSchema } from "../validations";
+import { setGPT, getUserGPT } from "../apis";
 
-const ChangePassword = ({ setCurrentPage }) => {
+const UpgradeGPT = ({ setCurrentPage }) => {
   const formik = useFormik({
     initialValues: {
-      password: "",
-      confirmpassword: "",
+      gpt: "",
     },
-    validationSchema: passwordSchema,
+    // validationSchema: GPTSchema,
     onSubmit: (values) => {
-      changePassword(values);
+      onSubmit(values);
     },
   });
-
   const [isLoading, setIsLoading] = useState(false);
 
-  const changePassword = async (values) => {
+  useEffect(() => {
+    handleGetGPT();
+  }, []);
+
+  const handleGetGPT = async () => {
+    try {
+      const res = await getUserGPT();
+      formik.setFieldValue("gpt", res.data?.gpt);
+    } catch (e) {
+      console.log(e.message);
+    }
+  };
+
+  const onSubmit = async (values) => {
     setIsLoading(true);
-    await updatePassword(values)
+    await setGPT(values)
       .then((res) => {
-        console.log("Res", res);
-        toast.success(res.data.msg, {
+        // console.log("Res", res);
+        toast.success("GPT added successfully!", {
           position: "bottom-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -41,9 +50,7 @@ const ChangePassword = ({ setCurrentPage }) => {
         setTimeout(() => {
           setIsLoading(false);
           setCurrentPage("");
-        }, 5000);
-        // setIsLoading(false);
-        // setCurrentPage("");
+        }, 4000);
       })
       .catch((err) => {
         console.log("error ", err);
@@ -77,51 +84,31 @@ const ChangePassword = ({ setCurrentPage }) => {
               />
             </div>
             <h1 align="center" className="title">
-              Change Password
+              GPT
             </h1>
           </div>
           <form onSubmit={formik.handleSubmit}>
             <div className="form-content-area">
               <div className="form-control">
                 <span className="input-error">
-                  <label>New Password </label>
-                  {formik.touched.password && formik.errors.password ? (
-                    <div className="error">{formik.errors.password}</div>
+                  {/* <label>Prompt </label> */}
+                  {formik.touched.prompt && formik.errors.prompt ? (
+                    <div className="error">{formik.errors.prompt}</div>
                   ) : null}
                 </span>
 
                 <input
-                  type="password"
-                  id="password"
-                  name="password"
+                  type="text"
+                  id="gpt"
+                  name="gpt"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  value={formik.values.password}
+                  value={formik.values.gpt}
                   className="input-box"
-                  placeholder="Create New Password"
+                  placeholder="Enter GPT name"
                 />
               </div>
 
-              <div className="form-control">
-                <span className="input-error">
-                  <label>Confirm Password </label>
-                  {formik.touched.confirmpassword &&
-                  formik.errors.confirmpassword ? (
-                    <div className="error">{formik.errors.confirmpassword}</div>
-                  ) : null}
-                </span>
-
-                <input
-                  type="password"
-                  id="confirmpassword"
-                  name="confirmpassword"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.confirmpassword}
-                  className="input-box"
-                  placeholder="Enter Confirm New Password"
-                />
-              </div>
               <div
                 style={{
                   display: "flex",
@@ -150,4 +137,4 @@ const ChangePassword = ({ setCurrentPage }) => {
   );
 };
 
-export default ChangePassword;
+export default UpgradeGPT;

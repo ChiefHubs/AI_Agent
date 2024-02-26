@@ -73,3 +73,13 @@ export const setPrompt = (value) => {
 export const getUserPrompt = () => {
   return axios.get(`${API_URL}/prompt/get`);
 };
+
+//set GPT model name
+
+export const setGPT = (value) => {
+  return axios.post(`${API_URL}/user_gpt/setGPT`, value);
+};
+
+export const getUserGPT = () => {
+  return axios.get(`${API_URL}/user_gpt/get`);
+};

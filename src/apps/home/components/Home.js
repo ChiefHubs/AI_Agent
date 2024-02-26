@@ -11,6 +11,7 @@ import Profile from "../../menu/components/Profile";
 import FileUpload from "../../menu/components/FileUpload";
 import LLMKey from "../../menu/components/LLMKey";
 import SetPrompt from "../../menu/components/SetPrompt";
+import UpgradeGPT from "../../menu/components/UpgradeGPT";
 import "../style.css";
 
 import { getAllQueries } from "../apis";
@@ -148,6 +149,9 @@ const Home = () => {
             <>
               {currentPage === "Change Password" && (
                 <ChangePassword setCurrentPage={setCurrentPage} />
+              )}
+              {currentPage === "Upgrade GPT" && (
+                <UpgradeGPT setCurrentPage={setCurrentPage} />
               )}
               {currentPage === "LLM Temperature" && (
                 <LLMTemperature setCurrentPage={setCurrentPage} />

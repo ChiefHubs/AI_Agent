@@ -75,8 +75,10 @@ const FileUpload = () => {
   };
 
   const handleDropdownChange = (event) => {
-    setSelectedValue(event.target.value);
-    handlesetActiveModel(event.target.value);
+    if (event.target.value !== "no") {
+      setSelectedValue(event.target.value);
+      handlesetActiveModel(event.target.value);
+    }
   };
 
   const handleUploadFile = async ({ currentTarget: input }) => {
@@ -192,7 +194,7 @@ const FileUpload = () => {
       const res = await deleteModel({ id, path });
       handleGetAllFiles();
       fileRef.current.value = null;
-      await retrainModel(files);
+      // await retrainModel(files);
       toast.success("File deleted successfully!", {
         position: "bottom-right",
         autoClose: 5000,
@@ -287,7 +289,7 @@ const FileUpload = () => {
                     value={activeModel}
                     onChange={handleDropdownChange}
                   >
-                    <option value="">Select Version</option>
+                    <option value="no">Select Version</option>
                     {models.map((model) => (
                       <option
                         value={model}

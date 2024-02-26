@@ -14,6 +14,7 @@ import {
   faFileArrowUp,
   faPalette,
   faComment,
+  faStar,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { logout, setTheme } from "../../auth/actions";
@@ -27,6 +28,10 @@ const leftMenuItems = [
   {
     title: "Change Password",
     icon: faLock,
+  },
+  {
+    title: "Upgrade GPT",
+    icon: faStar,
   },
   {
     title: "Setting",
