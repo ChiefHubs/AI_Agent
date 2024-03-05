@@ -15,10 +15,12 @@ import {
   faPalette,
   faComment,
   faStar,
+  faShieldHalved,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { logout, setTheme } from "../../auth/actions";
 import { deleteChat } from "../../chat/apis";
+import { useNavigate } from "react-router-dom";
 
 const leftMenuItems = [
   {
@@ -36,6 +38,11 @@ const leftMenuItems = [
   {
     title: "Setting",
     icon: faGear,
+  },
+
+  {
+    title: "GoAdmin",
+    icon: faShieldHalved,
   },
 
   {
@@ -82,9 +89,11 @@ const Sidebar = ({
 }) => {
   const dispatch = useDispatch();
   const user = useSelector((store) => store.auth.user);
+  console.log("user-------", user.roles.includes("admin"));
   const theme = useSelector((store) => store.setting.isDark);
   const [isOpen, setIsOpen] = useState(false);
   const [isSettingOpen, setIsSettingOpen] = useState(false);
+  const navigate = useNavigate();
 
   // console.log(queries);
   const handleDeleteChat = async (id) => {
@@ -337,6 +346,21 @@ const Sidebar = ({
                         className={`cursor-pointer }`}
                         onClick={() => {
                           dispatch(logout);
+                        }}
+                      >
+                        <FontAwesomeIcon
+                          icon={item.icon}
+                          fontSize="1em"
+                          className="icon-style px-3 "
+                        />
+                        {item.title}
+                      </div>
+                    ) : item.title === "GoAdmin" &&
+                      user.roles.includes("admin") ? (
+                      <div
+                        className={`cursor-pointer }`}
+                        onClick={() => {
+                          navigate("/admin");
                         }}
                       >
                         <FontAwesomeIcon
