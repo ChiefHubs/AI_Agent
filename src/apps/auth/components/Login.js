@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 
 import { loginSchema } from "../validations";
-import { login, loginWithGoogle, setTheme } from "../actions";
+import { login, loginWithGoogle, setTheme, verifyURL } from "../actions";
 import "../style.css";
+import { Helmet } from "react-helmet";
 import {
   EMAIL_ALREADY_EXIST,
   EMAIL_EXIST_MSG,
@@ -18,11 +19,32 @@ import {
   LOGIN_NOT_EXIST,
   NOT_REGISTER_MSG,
   UNKNOWN_MSG,
+  URL_VERIFY_ERROR,
+  URL_VERIFY_ERROR_MSG,
 } from "../constants";
+import { getStyles } from "../../admin/apis";
 
 const Login = () => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
+  const [setStyle, setStyleData] = useState(false);
+
+  const [queryParam] = useSearchParams();
+
+  const { chat_back, text_title, font_size, font_color } =
+    setStyle.length > 0 ? setStyle[0] : {};
+
+  console.log("text_title------", text_title);
+
+  useEffect(() => {
+    if (queryParam.size > 0) {
+      const u_token = queryParam.get("u_token");
+      const c_token = queryParam.get("c_token");
+      const b_token = queryParam.get("b_token");
+      const r_token = queryParam.get("r_token");
+      dispatch(verifyURL({ u_token, c_token, b_token, r_token }));
+    }
+  }, [queryParam]);
 
   const formik = useFormik({
     initialValues: {
@@ -40,6 +62,24 @@ const Login = () => {
   );
   const theme = useSelector((store) => store.setting.isDark);
   const session_theme = sessionStorage.getItem("dark");
+
+  const getStyle = async () => {
+    setIsLoading(true);
+    await getStyles()
+      .then((res) => {
+        console.log("ehllo style data-----------------", res.data);
+        setStyleData(res.data);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.log("error ", err);
+        setIsLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    getStyle();
+  }, []);
 
   const onSubmit = async (values) => {
     setIsLoading(true);
@@ -99,6 +139,17 @@ const Login = () => {
           progress: undefined,
           theme: "dark",
         });
+      } else if (errorType === URL_VERIFY_ERROR) {
+        toast.warning(URL_VERIFY_ERROR_MSG, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       } else {
         toast.warning(UNKNOWN_MSG, {
           position: "bottom-right",
@@ -125,6 +176,13 @@ const Login = () => {
 
   return (
     <>
+      {text_title ? (
+        <Helmet>
+          <title>{text_title}</title>
+        </Helmet>
+      ) : (
+        <></>
+      )}
       {isLoading && <div className="coverSpinner"></div>}
       <section
         className={`form-section ${

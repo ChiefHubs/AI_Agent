@@ -5,9 +5,10 @@ import {
   LOGIN_ERROR,
   LOGIN_NOT_EXIST,
   REGISTER_ERROR,
+  REGISTER_ERROR_ADMIN,
   SET_ACTIVE_MODEL,
   EMAIL_VERIFY_ERROR,
-  EMAIL_VERIFY_ERROR_MSG,
+  URL_VERIFY_ERROR,
   EMAIL_ALREADY_EXIST,
 } from "./constants";
 
@@ -32,6 +33,14 @@ const authReducer = (state = initialState, action) => {
         errorType: action.type,
       };
 
+    case action.type === REGISTER_ERROR_ADMIN:
+      return {
+        ...state,
+        isAuthenticated: true,
+        error: action.error,
+        errorType: action.type,
+      };
+
     case action.type === EMAIL_VERIFY:
       return {
         ...state,
@@ -41,6 +50,14 @@ const authReducer = (state = initialState, action) => {
       };
 
     case action.type === EMAIL_VERIFY_ERROR:
+      return {
+        ...state,
+        isAuthenticated: false,
+        error: action.error,
+        errorType: action.type,
+      };
+
+    case action.type === URL_VERIFY_ERROR:
       return {
         ...state,
         isAuthenticated: false,

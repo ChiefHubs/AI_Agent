@@ -17,7 +17,6 @@ const Signup = () => {
   const [queryParam] = useSearchParams();
 
   useEffect(() => {
-    console.log("size-----------", queryParam);
     if (queryParam.size > 0) {
       const etoken = queryParam.get("etoken");
       const ptoken = queryParam.get("ptoken");
@@ -83,7 +82,6 @@ const Signup = () => {
     }
     if (error) {
       console.log("errors ", error);
-      // dispatch({ type: "clearError" });
       changeIsLoading(false);
       if (errorType === EMAIL_VERIFY) {
         toast.success(EMAIL_VERIFY_MSG, {
@@ -110,7 +108,6 @@ const Signup = () => {
       }
     }
     if (isAuthenticated) {
-      // alert(message);
       changeIsLoading(false);
     }
   }, [error, isAuthenticated, messages]);
@@ -189,7 +186,7 @@ const Signup = () => {
 
               <div className="form-control">
                 <span>
-                  <label htmlFor="mobile_no">Contact</label>
+                  <label htmlFor="mobile_no">Phone Number</label>
                   {formik.touched.mobile_no && formik.errors.mobile_no ? (
                     <div className="error">{formik.errors.mobile_no}</div>
                   ) : null}
@@ -202,7 +199,7 @@ const Signup = () => {
                   onBlur={formik.handleBlur}
                   value={formik.values.mobile_no}
                   className="input-box"
-                  placeholder="Enter Contact"
+                  placeholder="Enter Phone number"
                 />
               </div>
 

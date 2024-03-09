@@ -1,10 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
+import { getStyles } from "../../admin/apis";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from "react-toastify";
 import { generateChat } from "../apis";
 import "../style.css";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 function Chat({
   activeChat,
@@ -19,9 +23,12 @@ function Chat({
   const [question, setQuestion] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
+  const [setStyle, setStyleData] = useState(false);
 
   const bottomRef = useRef(null);
 
+  const { first_question, font_size, font_color } =
+    setStyle.length > 0 ? setStyle[0] : {};
   const handleSendMessage = async () => {
     // e.preventDefault();
     setQuestionList([...questionList, question]);
@@ -55,9 +62,7 @@ function Chat({
         const chat = oldActiveChat
           ? oldActiveChat
           : res.data.chats[res.data.chats.length - 1];
-        // console.log("chat ", chat);
         setActiveChat(chat);
-        // setQuestion("");
         setIsLoading(false);
       })
       .catch((err) => {
@@ -76,10 +81,26 @@ function Chat({
       });
   };
 
-  // useEffect(() => {}, [question]);
+  const getStyle = async () => {
+    setIsLoading(true);
+    await getStyles()
+      .then((res) => {
+        setStyleData(res.data);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.log("error ", err);
+        setIsLoading(false);
+      });
+  };
+
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [activeChat.queries.length]);
+
+  useEffect(() => {
+    getStyle();
+  }, []);
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
@@ -109,7 +130,12 @@ function Chat({
                   theme === true ? "text-[#ececf1]" : "text-black"
                 }`}
               >
-                How can I help today?
+                <span
+                  // style={{ fontSize: font_size, color: font_color }}
+                  className="font-bold"
+                >
+                  {!first_question ? "How can I help you?" : first_question}
+                </span>
               </div>
             ) : (
               <></>
@@ -121,8 +147,14 @@ function Chat({
                   className="flex items-start space-x-4 my-6 p-2"
                 >
                   <div className="flex flex-col items-start">
-                    <p className="text-gray font-bold">{m && "You"}</p>
                     <p
+                      style={{ fontSize: font_size, color: font_color }}
+                      className="text-gray font-bold"
+                    >
+                      {m && "You"}
+                    </p>
+                    <p
+                      style={{ fontSize: font_size, color: font_color }}
                       className={`${
                         theme === true ? "text-gray-300" : "text-black"
                       }`}
@@ -131,6 +163,7 @@ function Chat({
                     </p>
 
                     <p
+                      style={{ fontSize: font_size, color: font_color }}
                       className={`${
                         theme === true ? "text-gray-300" : "text-black"
                       } font-bold`}
@@ -139,6 +172,7 @@ function Chat({
                     </p>
                     {isLoading && questionList.length - 1 === index && (
                       <p
+                        style={{ fontSize: font_size, color: font_color }}
                         className={`${
                           theme === true ? "text-gray-300" : "text-black"
                         } text-sm animate-pulse text-center`}
@@ -148,12 +182,15 @@ function Chat({
                     )}
                     {activeChat.queries.map((ans, index) => (
                       <p
+                        style={{ fontSize: font_size, color: font_color }}
                         key={index}
                         className={`${
                           theme === true ? "text-gray-300" : "text-black"
                         }`}
                       >
-                        {m === ans.question && ans.solution}
+                        <Markdown remarkPlugins={[remarkGfm]}>
+                          {m === ans.question && ans.solution}
+                        </Markdown>
                       </p>
                     ))}
                   </div>
@@ -226,6 +263,16 @@ function Chat({
           <p className="text-xs text-white p-2 text-center"></p>
           <ToastContainer />
         </div>
+      </div>
+
+      <div className="flex justify-center">
+        <Link
+          to={"/policy"}
+          target="_blank"
+          className="underline  text-white  fixed bottom-0"
+        >
+          Our Policy
+        </Link>
       </div>
     </>
   );

@@ -14,6 +14,12 @@ import {
   EMAIL_VERIFY_SUCCESS,
   EMAIL_VERIFY_SUCCESS_MSG,
   EMAIL_ALREADY_EXIST,
+  EMAIL_EXIST_MSG,
+  REGISTER_ERROR_ADMIN,
+  URL_VERIFY_ERROR,
+  URL_VERIFY_ERROR_MSG,
+  URL_VERIFY_SUCCESS,
+  URL_VERIFY_SUCCESS_MSG,
 } from "./constants";
 import { googleLogout } from "@react-oauth/google";
 import setAuthHeader from "../../_helpers/setAuthHeader";
@@ -55,16 +61,28 @@ export const register = (values) => async (dispatch) => {
     });
     // sessionStorage.setItem("user", JSON.stringify(data));
     // dispatch(setUser(data.storeData));
-    dispatch({
-      type: EMAIL_VERIFY,
-      error: EMAIL_VERIFY_MSG,
-    });
+    if (values.state !== "user") {
+      dispatch({
+        type: EMAIL_VERIFY,
+        error: EMAIL_VERIFY_MSG,
+      });
+    } else {
+      if (data.message === "update") {
+        return 2;
+      } else {
+        return 1;
+      }
+    }
   } catch (error) {
     console.log("error: ", error);
-    dispatch({
-      type: REGISTER_ERROR,
-      error: error.response?.data?.error || error.message,
-    });
+    if (values.state === "user") {
+      return 0;
+    } else {
+      dispatch({
+        type: REGISTER_ERROR,
+        error: error.response?.data?.error || error.message,
+      });
+    }
   }
 };
 
@@ -91,6 +109,29 @@ export const verifyEmail = (tokens) => async (dispatch) => {
   }
 };
 
+export const verifyURL = (tokens) => async (dispatch) => {
+  try {
+    const { data } = await axios.post(`${API_URL}/auth/verifyHashURL`, tokens, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    sessionStorage.setItem("user", JSON.stringify(data));
+    dispatch(setUser(data.storeData));
+    dispatch({
+      type: URL_VERIFY_SUCCESS,
+      error: URL_VERIFY_SUCCESS_MSG,
+    });
+    window.location = "/";
+  } catch (error) {
+    console.log("error: ", error);
+    dispatch({
+      type: URL_VERIFY_ERROR,
+      error: URL_VERIFY_ERROR_MSG,
+    });
+  }
+};
+
 export const login = (loginInput) => async (dispatch) => {
   try {
     const { data } = await axios.post(`${API_URL}/auth/login`, loginInput, {
@@ -98,7 +139,6 @@ export const login = (loginInput) => async (dispatch) => {
         "Content-Type": "application/json",
       },
     });
-    // console.log("login data-----------", data);
     setAuthHeader(data);
     sessionStorage.setItem("user", JSON.stringify(data));
     dispatch(setUser(data.storeData));
