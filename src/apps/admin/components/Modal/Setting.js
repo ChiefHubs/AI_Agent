@@ -56,7 +56,7 @@ const CustomModal = () => {
           <form onSubmit={formik.handleSubmit}>
             <div className="form-control">
               <span>
-                <label>sidebar_back</label>
+                <label>Sidebar Background</label>
               </span>
               <input
                 onChange={formik.handleChange}
@@ -68,7 +68,7 @@ const CustomModal = () => {
             </div>
             <div className="form-control">
               <span>
-                <label>sidebar_setting_back</label>
+                <label>Sidebar Sub Background</label>
               </span>
               <input
                 name="sidebar_setting_back"
@@ -80,7 +80,7 @@ const CustomModal = () => {
             </div>
             <div className="form-control">
               <span>
-                <label>sidebar_hover</label>
+                <label>Sidebar Mouse Hover Color</label>
               </span>
               <input
                 name="sidebar_hover"
@@ -92,7 +92,7 @@ const CustomModal = () => {
             </div>
             <div className="form-control">
               <span>
-                <label>chat_back</label>
+                <label>Chat Background</label>
               </span>
               <input
                 name="chat_back"
@@ -104,7 +104,7 @@ const CustomModal = () => {
             </div>
             <div className="form-control">
               <span>
-                <label>font_color</label>
+                <label>Font Color</label>
               </span>
               <input
                 type="color"
@@ -116,7 +116,7 @@ const CustomModal = () => {
             </div>
             <div className="form-control">
               <span>
-                <label>font_size</label>
+                <label>Font Size</label>
               </span>
               <input
                 onChange={formik.handleChange}
@@ -130,7 +130,7 @@ const CustomModal = () => {
             </div>
             <div className="form-control">
               <span>
-                <label>text_title</label>
+                <label>Chat Title</label>
               </span>
               <input
                 className="input-box"
@@ -144,7 +144,7 @@ const CustomModal = () => {
             </div>
             <div className="form-control">
               <span>
-                <label>first_question</label>
+                <label>First Greeting Sentence</label>
               </span>
               <input
                 className="input-box"
