@@ -119,10 +119,12 @@ function Chat({
         <div>
           {/* <h1 className="font-bold text-xl text-black p-4">Agent Query</h1> */}
           <div
-            style={{ backgroundColor: chat_back }}
+            // style={{ backgroundColor: chat_back }}
             className={`${
               (questionList.length > 0 || activeChat.queries.length > 0) &&
-              (theme === true ? "bg-chat_back text-white" : "bg-gray-100")
+              (theme === true
+                ? `${chat_back}  text-white`
+                : "white border-slate-300")
             } rounded overflow-y-scroll h-[70vh] md:h-[75vh] w-full md:w-[70%] mx-auto md:p-0 p-4 flex flex-col`}
           >
             {questionList.length === 0 ? (
@@ -149,13 +151,21 @@ function Chat({
                 >
                   <div className="flex flex-col items-start">
                     <p
-                      style={{ fontSize: font_size, color: font_color }}
-                      className="text-gray font-bold"
+                      style={
+                        theme === true
+                          ? { fontSize: font_size, color: font_color }
+                          : { fontSize: font_size, color: "black" }
+                      }
+                      className={`font-bold`}
                     >
                       {m && "You"}
                     </p>
                     <p
-                      style={{ fontSize: font_size, color: font_color }}
+                      style={
+                        theme === true
+                          ? { fontSize: font_size, color: font_color }
+                          : { fontSize: font_size, color: "black" }
+                      }
                       className={`${
                         theme === true ? "text-gray-300" : "text-black"
                       }`}
@@ -164,7 +174,11 @@ function Chat({
                     </p>
 
                     <p
-                      style={{ fontSize: font_size, color: font_color }}
+                      style={
+                        theme === true
+                          ? { fontSize: font_size, color: font_color }
+                          : { fontSize: font_size, color: "black" }
+                      }
                       className={`${
                         theme === true ? "text-gray-300" : "text-black"
                       } font-bold`}
@@ -173,7 +187,11 @@ function Chat({
                     </p>
                     {isLoading && questionList.length - 1 === index && (
                       <p
-                        style={{ fontSize: font_size, color: font_color }}
+                        style={
+                          theme === true
+                            ? { fontSize: font_size, color: font_color }
+                            : { fontSize: font_size, color: "black" }
+                        }
                         className={`${
                           theme === true ? "text-gray-300" : "text-black"
                         } text-sm animate-pulse text-center`}
@@ -183,7 +201,11 @@ function Chat({
                     )}
                     {activeChat.queries.map((ans, index) => (
                       <p
-                        style={{ fontSize: font_size, color: font_color }}
+                        style={
+                          theme === true
+                            ? { fontSize: font_size, color: font_color }
+                            : { fontSize: font_size, color: "black" }
+                        }
                         key={index}
                         className={`${
                           theme === true ? "text-gray-300" : "text-black"
@@ -270,7 +292,9 @@ function Chat({
         <Link
           to={"/policy"}
           target="_blank"
-          className="underline  text-white  fixed bottom-0"
+          className={`${
+            theme === true ? `text-white ` : `text-black`
+          } underline fixed bottom-0`}
         >
           Our Policy
         </Link>

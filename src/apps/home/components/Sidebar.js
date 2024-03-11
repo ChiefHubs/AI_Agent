@@ -584,10 +584,13 @@ const Sidebar = ({
               {isOpen && (
                 <div
                   style={{
-                    background:
-                      theme === true ? sidebar_setting_back : !originColor,
+                    background: theme === true ? sidebar_setting_back : "white",
                   }}
-                  className="absolute bottom-10 w-full origin-top-right rounded-md"
+                  className={`${
+                    theme === true
+                      ? `bg-[${sidebar_setting_back}]`
+                      : `bg-slate-400 border boder-slate-400`
+                  } absolute bottom-10 w-full origin-top-right rounded-md z-[50]`}
                 >
                   {menu[role].map((item, i) => (
                     <div

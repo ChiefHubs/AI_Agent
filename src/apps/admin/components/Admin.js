@@ -1,9 +1,10 @@
 import { ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import { getAllUsers, deleteUser } from "../apis";
+import ReactPaginate from "react-paginate";
 import CustomModal from "../../admin/components/Modal/CustomModal";
 import Setting from "../../admin/components/Modal/Setting";
 import React, { useState, useEffect } from "react";
-import { TrashIcon, CreditCardIcon } from "@heroicons/react/24/solid";
+import { TrashIcon, DocumentCheckIcon } from "@heroicons/react/24/solid";
 import {
   Typography,
   Button,
@@ -21,6 +22,16 @@ const Admin = () => {
   const [userData, setUserData] = useState([]);
   const [open, setOpen] = useState(false);
   const [tabState, setTabState] = useState(true);
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const [PER_PAGE, setPER_PAGE] = useState(5);
+
+  const handlePageClick = ({ selected: selectedPage }) => {
+    setCurrentPage(selectedPage);
+  };
+
+  const offset = currentPage * PER_PAGE;
+  const pageCount = Math.ceil(userData.length / PER_PAGE);
 
   const showToast = (value) => {
     if (value === 0) {
@@ -147,7 +158,7 @@ const Admin = () => {
                 </Button>
               </div>
             </div>
-            <div className="overflow-scroll px-0">
+            <div className="px-0">
               <table className="mt-4 w-full min-w-max table-auto text-left">
                 <thead>
                   <tr>
@@ -174,109 +185,141 @@ const Admin = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {userData.map(
-                    (
-                      { firstName, lastName, email, mobile_no, roles, _id },
-                      index
-                    ) => {
-                      let Croles = parseInt(roles);
-                      const getRoleName = (Croles) => {
-                        switch (Croles) {
-                          case 0:
-                            return "Admin";
-                          case 1:
-                            return "Employee";
-                          case 2:
-                            return "User";
-                          default:
-                            return "";
-                        }
-                      };
-                      let name =
-                        firstName +
-                        " " +
-                        (lastName === undefined ? "" : lastName);
-                      const isLast = index === userData.length - 1;
-                      const classes = isLast
-                        ? "p-4"
-                        : "p-4 border-b border-blue-gray-50";
+                  {userData
+                    .slice(offset, offset + PER_PAGE)
+                    .map(
+                      (
+                        { firstName, lastName, email, mobile_no, roles, _id },
+                        index
+                      ) => {
+                        let Croles = parseInt(roles);
+                        const getRoleName = (Croles) => {
+                          switch (Croles) {
+                            case 0:
+                              return "Admin";
+                            case 1:
+                              return "Employee";
+                            case 2:
+                              return "User";
+                            default:
+                              return "";
+                          }
+                        };
+                        let name =
+                          firstName +
+                          " " +
+                          (lastName === undefined ? "" : lastName);
+                        const isLast = index === userData.length - 1;
+                        const classes = isLast
+                          ? "p-4"
+                          : "p-4 border-b border-blue-gray-50";
 
-                      return (
-                        <tr key={index} id={_id}>
-                          <td className={classes}>
-                            <div className="flex items-center gap-3">
+                        return (
+                          <tr key={index} id={_id}>
+                            <td className={classes}>
+                              <div className="flex items-center gap-3">
+                                <div className="flex flex-col">
+                                  <Typography
+                                    variant="small"
+                                    color="blue-gray"
+                                    className="font-normal"
+                                  >
+                                    {name}
+                                  </Typography>
+                                </div>
+                              </div>
+                            </td>
+                            <td className={classes}>
                               <div className="flex flex-col">
                                 <Typography
                                   variant="small"
                                   color="blue-gray"
                                   className="font-normal"
                                 >
-                                  {name}
+                                  {email}
                                 </Typography>
                               </div>
-                            </div>
-                          </td>
-                          <td className={classes}>
-                            <div className="flex flex-col">
+                            </td>
+                            <td className={classes}>
+                              <div className="w-max">
+                                <Typography
+                                  variant="small"
+                                  color="blue-gray"
+                                  className="font-normal"
+                                >
+                                  {mobile_no}
+                                </Typography>
+                              </div>
+                            </td>
+                            <td className={classes}>
                               <Typography
                                 variant="small"
                                 color="blue-gray"
                                 className="font-normal"
                               >
-                                {email}
+                                {getRoleName(Croles)}
                               </Typography>
-                            </div>
-                          </td>
-                          <td className={classes}>
-                            <div className="w-max">
+                            </td>
+                            <td className={classes}>
                               <Typography
                                 variant="small"
                                 color="blue-gray"
                                 className="font-normal"
                               >
-                                {mobile_no}
+                                <Tooltip content="Delete">
+                                  <Button
+                                    onClick={() => handleDelete(_id)}
+                                    variant="text"
+                                  >
+                                    <TrashIcon className="h-4 w-4" />
+                                  </Button>
+                                </Tooltip>
+                                <Tooltip content="Edit">
+                                  <Button
+                                    onClick={() => handleEdit(_id)}
+                                    variant="text"
+                                  >
+                                    <DocumentCheckIcon className="h-4 w-4" />
+                                  </Button>
+                                </Tooltip>
                               </Typography>
-                            </div>
-                          </td>
-                          <td className={classes}>
-                            <Typography
-                              variant="small"
-                              color="blue-gray"
-                              className="font-normal"
-                            >
-                              {getRoleName(Croles)}
-                            </Typography>
-                          </td>
-                          <td className={classes}>
-                            <Typography
-                              variant="small"
-                              color="blue-gray"
-                              className="font-normal"
-                            >
-                              <Tooltip content="Delete">
-                                <Button
-                                  onClick={() => handleDelete(_id)}
-                                  variant="text"
-                                >
-                                  <TrashIcon className="h-4 w-4" />
-                                </Button>
-                              </Tooltip>
-                              <Tooltip content="Edit">
-                                <Button
-                                  onClick={() => handleEdit(_id)}
-                                  variant="text"
-                                >
-                                  <CreditCardIcon className="h-4 w-4" />
-                                </Button>
-                              </Tooltip>
-                            </Typography>
-                          </td>
-                        </tr>
-                      );
-                    }
-                  )}
+                            </td>
+                          </tr>
+                        );
+                      }
+                    )}
                 </tbody>
               </table>
+              <div className="tableFooter">
+                {/* <div>
+              Show -{" "}
+              <select
+                className="show-number"
+                onChange={(e) => setPER_PAGE(e.target.value)}
+              >
+                <option defaultValue>3</option>
+                <option>20</option>
+                <option>30</option>
+                <option>40</option>
+              </select>
+            </div> */}
+                <ReactPaginate
+                  previousLabel={"Previous"}
+                  nextLabel={"Next"}
+                  pageCount={pageCount}
+                  onPageChange={handlePageClick}
+                  containerClassName={"pagination"}
+                  pageClassName="page-item"
+                  pageLinkClassName="page-link"
+                  previousClassName="page-item"
+                  previousLinkClassName={"page-link"}
+                  nextClassName={"page-item"}
+                  nextLinkClassName={"page-link"}
+                  disabledClassName={"page-item"}
+                  activeClassName={"page-item active"}
+                  activeLinkClassName="page-link"
+                />
+              </div>
             </div>
           </div>
         </div>
