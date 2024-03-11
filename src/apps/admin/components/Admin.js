@@ -14,7 +14,7 @@ import "../style.css";
 import { ToastContainer, toast } from "react-toastify";
 import { EMAIL_EXIST_MSG } from "../../auth/constants";
 
-const TABLE_HEAD = ["Name", "email", "mobile_no", "roles", "action"];
+const TABLE_HEAD = ["Name", "Email", "Phone Number", "Role", "Action"];
 
 const Admin = () => {
   const [isLoading, setIsLoading] = useState(false);
