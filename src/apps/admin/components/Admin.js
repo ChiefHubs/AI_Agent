@@ -192,7 +192,10 @@ const Admin = () => {
                             return "";
                         }
                       };
-                      let name = firstName + " " + lastName;
+                      let name =
+                        firstName + " " + lastName === undefined
+                          ? ""
+                          : lastName;
                       const isLast = index === userData.length - 1;
                       const classes = isLast
                         ? "p-4"
