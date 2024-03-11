@@ -117,6 +117,12 @@ const Admin = () => {
 
   return (
     <>
+      <CustomModal
+        isOpen={open}
+        onClose={handleClose}
+        getUsers={getUsers}
+        showToast={showToast}
+      />
       {isLoading && <div className="coverSpinner"></div>}
       <select
         id="roles"
@@ -269,14 +275,6 @@ const Admin = () => {
                 </tbody>
               </table>
             </div>
-          </div>
-          <div>
-            <CustomModal
-              isOpen={open}
-              onClose={handleClose}
-              getUsers={getUsers}
-              showToast={showToast}
-            />
           </div>
         </div>
       ) : (

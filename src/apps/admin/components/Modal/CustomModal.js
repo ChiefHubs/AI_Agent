@@ -117,9 +117,11 @@ const CustomModal = ({ isOpen, onClose, getUsers, showToast }) => {
     <>
       {!isOpen.length > 0 ? (
         <section
-          className={`form-sections ${theme === true ? "" : "bg-white"}`}
+          className={`form-sections ${
+            theme === true ? "" : "bg-white"
+          } relative `}
         >
-          <div className="login-area">
+          <div className="login-area fixed top-[15%]">
             <h1 align="center" className="title">
               Add User
             </h1>
@@ -290,9 +292,11 @@ const CustomModal = ({ isOpen, onClose, getUsers, showToast }) => {
         </section>
       ) : (
         <section
-          className={`form-sections ${theme === true ? "" : "bg-white"}`}
+          className={`form-sections ${
+            theme === true ? "" : "bg-white"
+          } relative`}
         >
-          <div className="login-area">
+          <div className="login-area fixed top-[15%]">
             <h1 align="center" className="title">
               Edit User
             </h1>
