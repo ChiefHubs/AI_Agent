@@ -117,7 +117,7 @@ export const verifyURL = (tokens) => async (dispatch) => {
       },
     });
     sessionStorage.setItem("user", JSON.stringify(data));
-    dispatch(setUser(data.storeData));
+    dispatch(setUser(data));
     dispatch({
       type: URL_VERIFY_SUCCESS,
       error: URL_VERIFY_SUCCESS_MSG,
@@ -144,7 +144,6 @@ export const login = (loginInput) => async (dispatch) => {
     dispatch(setUser(data.storeData));
     sessionStorage.setItem("activeModel", "gpt");
     dispatch(setActiveModel("gpt"));
-
     window.location = "/";
   } catch (error) {
     console.log("error: ", error);

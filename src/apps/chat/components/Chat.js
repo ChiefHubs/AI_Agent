@@ -27,7 +27,7 @@ function Chat({
 
   const bottomRef = useRef(null);
 
-  const { first_question, font_size, font_color } =
+  const { first_question, font_size, font_color, chat_back } =
     setStyle.length > 0 ? setStyle[0] : {};
   const handleSendMessage = async () => {
     // e.preventDefault();
@@ -119,6 +119,7 @@ function Chat({
         <div>
           {/* <h1 className="font-bold text-xl text-black p-4">Agent Query</h1> */}
           <div
+            style={{ backgroundColor: chat_back }}
             className={`${
               (questionList.length > 0 || activeChat.queries.length > 0) &&
               (theme === true ? "bg-chat_back text-white" : "bg-gray-100")
