@@ -5,17 +5,14 @@ import CustomModal from "../../admin/components/Modal/CustomModal";
 import Setting from "../../admin/components/Modal/Setting";
 import React, { useState, useEffect } from "react";
 import { TrashIcon, DocumentCheckIcon } from "@heroicons/react/24/solid";
-import {
-  Typography,
-  Button,
-  CardBody,
-  Tooltip,
-} from "@material-tailwind/react";
+import { Typography, Button, Tooltip } from "@material-tailwind/react";
 import "../style.css";
 import { ToastContainer, toast } from "react-toastify";
 import { EMAIL_EXIST_MSG } from "../../auth/constants";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCopy } from "@fortawesome/free-solid-svg-icons";
 
-const TABLE_HEAD = ["Name", "Email", "Phone Number", "Role", "Action"];
+const TABLE_HEAD = ["Name", "Email", "Phone Number", "Role", "URL", "Action"];
 
 const Admin = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -58,6 +55,17 @@ const Admin = () => {
       });
     } else if (value === 2) {
       toast.success("The user was updated succesfully", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+    } else if (value === 3) {
+      toast.success("The text is copied in clipboard succesfully", {
         position: "bottom-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -189,7 +197,15 @@ const Admin = () => {
                     .slice(offset, offset + PER_PAGE)
                     .map(
                       (
-                        { firstName, lastName, email, mobile_no, roles, _id },
+                        {
+                          firstName,
+                          lastName,
+                          email,
+                          mobile_no,
+                          roles,
+                          _id,
+                          direct_URL,
+                        },
                         index
                       ) => {
                         let Croles = parseInt(roles);
@@ -258,6 +274,26 @@ const Admin = () => {
                                 className="font-normal"
                               >
                                 {getRoleName(Croles)}
+                              </Typography>
+                            </td>
+                            <td className={classes}>
+                              <Typography
+                                variant="small"
+                                color="blue-gray"
+                                className="font-normal"
+                              >
+                                {direct_URL ? (
+                                  <button
+                                    onClick={() => {
+                                      navigator.clipboard.writeText(direct_URL);
+                                      showToast(3);
+                                    }}
+                                  >
+                                    <FontAwesomeIcon icon={faCopy} />
+                                  </button>
+                                ) : (
+                                  ""
+                                )}
                               </Typography>
                             </td>
                             <td className={classes}>

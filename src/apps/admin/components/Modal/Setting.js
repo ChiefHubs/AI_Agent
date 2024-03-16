@@ -100,7 +100,7 @@ const CustomModal = () => {
   }
   return (
     <>
-      <div className="login-area">
+      <div className="login-area h-[75vh] overflow-y-scroll">
         <h1 align="center" className="title">
           Setting Style
         </h1>
