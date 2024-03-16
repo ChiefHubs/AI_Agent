@@ -4,6 +4,8 @@ import { useSelector } from "react-redux";
 
 import Login from "./apps/auth/components/Login";
 import Policy from "./apps/home/components/Policy.js";
+import Terms from "./apps/home/components/Terms.js";
+import Privacy from "./apps/home/components/Privacy.js";
 import Signup from "./apps/auth/components/Signup";
 import ForgotPassword from "./apps/auth/components/ForgotPassword";
 import Home from "./apps/home/components/Home";
@@ -31,6 +33,8 @@ function App() {
           />
 
           <Route path="/policy" element={<Policy />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy" element={<Privacy />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
 

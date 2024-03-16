@@ -287,17 +287,42 @@ function Chat({
           <ToastContainer />
         </div>
       </div>
-
-      <div className="flex justify-center">
-        <Link
-          to={"/policy"}
-          target="_blank"
-          className={`${
-            theme === true ? `text-white ` : `text-black`
-          } underline fixed bottom-0`}
-        >
-          Our Policy
-        </Link>
+      <div className="flex justify-center -ml-[4%]">
+        <div className="w-[500px] flex justify-between">
+          <div>
+            <Link
+              to={"/policy"}
+              target="_blank"
+              className={`${
+                theme === true ? `text-white ` : `text-black`
+              } underline fixed bottom-0`}
+            >
+              Our Policy
+            </Link>
+          </div>
+          <div>
+            <Link
+              to={"/terms"}
+              target="_blank"
+              className={`${
+                theme === true ? `text-white ` : `text-black`
+              } underline fixed bottom-0`}
+            >
+              Term and Condition
+            </Link>
+          </div>
+          <div>
+            <Link
+              to={"/privacy"}
+              target="_blank"
+              className={`${
+                theme === true ? `text-white ` : `text-black`
+              } underline fixed bottom-0`}
+            >
+              Privacy Policy
+            </Link>
+          </div>
+        </div>
       </div>
     </>
   );
