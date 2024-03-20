@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { register, setActiveModel, setTheme } from "../../../auth/actions";
 import { EMAIL_VERIFY_MSG, EMAIL_VERIFY } from "../../../auth/constants";
-import { signupSchema } from "../../../admin/validations";
+import { addUserSchema, editUserSchema } from "../../../admin/validations";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useFormik } from "formik";
@@ -24,13 +24,45 @@ const CustomModal = ({ isOpen, onClose, getUsers, showToast }) => {
       confirmPassword: "",
       roles: "2",
     },
-    validationSchema: signupSchema,
+    validationSchema: addUserSchema,
     onSubmit: (values) => {
       onSubmit(values);
     },
   });
 
+  const formik_edit = useFormik({
+    initialValues: {
+      firstName: "",
+      lastName: "",
+      mobile_no: "",
+      email: "",
+      roles: "",
+    },
+    validationSchema: editUserSchema,
+    onSubmit: (values) => {
+      onSubmitEdit(values);
+    },
+  });
+
   const onSubmit = async (values) => {
+    let data = { ...values, state: "user", is_EV: true };
+    changeIsLoading(true);
+    try {
+      const response = await dispatch(register(data));
+      changeIsLoading(false);
+      onClose();
+      getUsers();
+      if (response) {
+        showToast(response);
+      }
+    } catch (e) {
+      console.log("error ", e.message);
+      changeIsLoading(false);
+    }
+  };
+
+  const onSubmitEdit = async (values) => {
+    console.log("values--------------", values);
     let data = { ...values, state: "user", is_EV: true };
     changeIsLoading(true);
     try {
@@ -52,10 +84,18 @@ const CustomModal = ({ isOpen, onClose, getUsers, showToast }) => {
 
   useEffect(() => {
     if (isOpen.length > 0) {
-      console.log("isOpen[0]", isOpen[0]);
       formik.setValues(isOpen[0]);
+      formik_edit.setValues(isOpen[0]);
     } else {
       formik.setValues({
+        email: "",
+        firstName: "",
+        lastName: "",
+        mobile_no: "",
+        password: "",
+        roles: 2,
+      });
+      formik_edit.setValues({
         email: "",
         firstName: "",
         lastName: "",
@@ -113,6 +153,7 @@ const CustomModal = ({ isOpen, onClose, getUsers, showToast }) => {
   } else {
     // console.log(isOpen, "--------------------");
   }
+
   return (
     <>
       {!isOpen.length > 0 ? (
@@ -301,13 +342,16 @@ const CustomModal = ({ isOpen, onClose, getUsers, showToast }) => {
               Edit User
             </h1>
             <div className="form-area">
-              <form onSubmit={formik.handleSubmit}>
+              <form onSubmit={formik_edit.handleSubmit}>
                 <div className="signupForm">
                   <div className="form-control">
                     <span>
                       <label htmlFor="firstName">First Name</label>
-                      {formik.touched.firstName && formik.errors.firstName ? (
-                        <div className="error">{formik.errors.firstName}</div>
+                      {formik_edit.touched.firstName &&
+                      formik_edit.errors.firstName ? (
+                        <div className="error">
+                          {formik_edit.errors.firstName}
+                        </div>
                       ) : null}
                     </span>
                     <input
@@ -315,9 +359,9 @@ const CustomModal = ({ isOpen, onClose, getUsers, showToast }) => {
                       autoComplete="off"
                       id="firstName"
                       name="firstName"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.firstName}
+                      onChange={formik_edit.handleChange}
+                      onBlur={formik_edit.handleBlur}
+                      value={formik_edit.values.firstName}
                       className="input-box"
                       placeholder="Enter First Name"
                     />
@@ -325,8 +369,11 @@ const CustomModal = ({ isOpen, onClose, getUsers, showToast }) => {
                   <div className="form-control">
                     <span>
                       <label htmlFor="lastName">Last Name</label>
-                      {formik.touched.lastName && formik.errors.lastName ? (
-                        <div className="error">{formik.errors.lastName}</div>
+                      {formik_edit.touched.lastName &&
+                      formik_edit.errors.lastName ? (
+                        <div className="error">
+                          {formik_edit.errors.lastName}
+                        </div>
                       ) : null}
                     </span>
                     <input
@@ -334,9 +381,9 @@ const CustomModal = ({ isOpen, onClose, getUsers, showToast }) => {
                       autoComplete="off"
                       id="lastName"
                       name="lastName"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.lastName}
+                      onChange={formik_edit.handleChange}
+                      onBlur={formik_edit.handleBlur}
+                      value={formik_edit.values.lastName}
                       className="input-box"
                       placeholder="Enter Last Name"
                     />
@@ -345,8 +392,8 @@ const CustomModal = ({ isOpen, onClose, getUsers, showToast }) => {
                 <div className="form-control">
                   <span>
                     <label htmlFor="email">Email</label>
-                    {formik.touched.email && formik.errors.email ? (
-                      <div className="error">{formik.errors.email}</div>
+                    {formik_edit.touched.email && formik_edit.errors.email ? (
+                      <div className="error">{formik_edit.errors.email}</div>
                     ) : null}
                   </span>
                   <input
@@ -354,9 +401,9 @@ const CustomModal = ({ isOpen, onClose, getUsers, showToast }) => {
                     autoComplete="off"
                     id="email"
                     name="email"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.email}
+                    onChange={formik_edit.handleChange}
+                    onBlur={formik_edit.handleBlur}
+                    value={formik_edit.values.email}
                     className="input-box disabled"
                     disabled
                   />
@@ -365,8 +412,11 @@ const CustomModal = ({ isOpen, onClose, getUsers, showToast }) => {
                 <div className="form-control">
                   <span>
                     <label htmlFor="mobile_no">Contact</label>
-                    {formik.touched.mobile_no && formik.errors.mobile_no ? (
-                      <div className="error">{formik.errors.mobile_no}</div>
+                    {formik_edit.touched.mobile_no &&
+                    formik_edit.errors.mobile_no ? (
+                      <div className="error">
+                        {formik_edit.errors.mobile_no}
+                      </div>
                     ) : null}
                   </span>
                   <input
@@ -374,9 +424,9 @@ const CustomModal = ({ isOpen, onClose, getUsers, showToast }) => {
                     autoComplete="off"
                     id="mobile_no"
                     name="mobile_no"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.mobile_no}
+                    onChange={formik_edit.handleChange}
+                    onBlur={formik_edit.handleBlur}
+                    value={formik_edit.values.mobile_no}
                     className="input-box"
                     placeholder="Enter Contact"
                   />
@@ -384,60 +434,19 @@ const CustomModal = ({ isOpen, onClose, getUsers, showToast }) => {
 
                 <div className="form-control">
                   <span>
-                    <label htmlFor="password">Password</label>
-                    {formik.touched.password && formik.errors.password ? (
-                      <div className="error">{formik.errors.password}</div>
+                    <label htmlFor="roles">Roles</label>
+                    {formik_edit.touched.roles && formik_edit.errors.roles ? (
+                      <div className="error">{formik_edit.errors.roles}</div>
                     ) : null}
                   </span>
-                  <input
-                    type="password"
-                    id="password"
-                    autoComplete="off"
-                    name="password"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.password}
-                    className="input-box"
-                    placeholder="Create Password"
-                  />
-                </div>
 
-                <div className="form-control">
-                  <span>
-                    <label htmlFor="confirmPassword">Confirm Password</label>
-                    {formik.touched.confirmPassword &&
-                    formik.errors.confirmPassword ? (
-                      <div className="error">
-                        {formik.errors.confirmPassword}
-                      </div>
-                    ) : null}
-                  </span>
-                  <input
-                    type="password"
-                    autoComplete="off"
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.confirmPassword}
-                    className="input-box"
-                    placeholder="Confirm Password"
-                  />
-                </div>
-                <div className="form-control">
-                  <span>
-                    <label htmlFor="confirmPassword">Roles</label>
-                    {formik.touched.roles && formik.errors.roles ? (
-                      <div className="error">{formik.errors.roles}</div>
-                    ) : null}
-                  </span>
                   <select
                     id="roles"
                     name="roles"
                     className="input-box"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.roles}
+                    onChange={formik_edit.handleChange}
+                    onBlur={formik_edit.handleBlur}
+                    value={formik_edit.values.roles}
                   >
                     <option value={0}>Admin</option>
                     <option value={1}>Employee</option>
