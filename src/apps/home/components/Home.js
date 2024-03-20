@@ -56,7 +56,6 @@ const Home = () => {
     setIsLoading(true);
     await getStyles()
       .then((res) => {
-        console.log("ehllo style data-----------------", res.data);
         setStyleData(res.data);
         setIsLoading(false);
       })
