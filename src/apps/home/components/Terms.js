@@ -151,8 +151,7 @@ const Terms = () => {
   Trade Controls. You must comply with all applicable trade laws, including sanctions and export control laws. Our Services may not be used in or for the benefit of, or exported or re-exported to (a) any U.S. embargoed country or territory or (b) any individual or entity with whom dealings are prohibited or restricted under applicable trade laws. Our Services may not be used for any end use prohibited by applicable trade laws, and your Input may not include material or information that requires a government license for release or export. 
   
   Entire Agreement. These Terms contain the entire agreement between you and IYKYK NYC LLC regarding the Services and, other than any Service-specific terms, supersedes any prior or contemporaneous agreements between you and IYKYK NYC LLC. 
-  
-  Governing Law for NYC?`;
+  `;
   return (
     <>
       <div className="mt-3 px-24 z-[999]">

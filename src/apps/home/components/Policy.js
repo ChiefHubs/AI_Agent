@@ -53,9 +53,7 @@ const Policy = () => {
   
   **User Responsibilities**
   - Users are responsible for maintaining the confidentiality of their account credentials and for any activities conducted through their accounts.
-  - Users should notify us immediately if they suspect any unauthorized use of their account or any other breach of security.
-  
-  These policies are intended to provide a framework for the responsible use, management, and protection of data associated with [Your Company Name]'s AI chatbot services. It's important to review and update these policies regularly to ensure they remain aligned with current laws, regulations, and industry best practices.`;
+  - Users should notify us immediately if they suspect any unauthorized use of their account or any other breach of security.`;
   return (
     <>
       <div className="mt-3 px-24 z-[999]">

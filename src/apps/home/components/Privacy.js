@@ -71,8 +71,7 @@ const Privacy = () => {
   148 W 24th St Ste 3
   New York, NY
   Attn: Privacy Officer
-  
-  This Privacy Policy provides a framework for managing personal information in compliance with legal obligations while ensuring transparency with users. It is essential to periodically review and update this policy to reflect changes in services or legal requirements.`;
+  `;
   return (
     <>
       <div className="mt-3 px-24 z-[999]">
