@@ -13,7 +13,7 @@ export const editProfile = (values) => {
 
 // change password api
 export const updatePassword = (values) => {
-  return axios.put(`${API_URL}/auth/updatepassword`, values);
+  return axios.put(`${API_URL}/profile/updatepassword`, values);
 };
 
 // upload file

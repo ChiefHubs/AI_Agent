@@ -62,7 +62,6 @@ const CustomModal = ({ isOpen, onClose, getUsers, showToast }) => {
   };
 
   const onSubmitEdit = async (values) => {
-    console.log("values--------------", values);
     let data = { ...values, state: "user", is_EV: true };
     changeIsLoading(true);
     try {
