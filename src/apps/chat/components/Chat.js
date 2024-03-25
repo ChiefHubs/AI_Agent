@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { getStyles } from "../../admin/apis";
+import { getStyles } from "../../menu/apis";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from "react-toastify";
@@ -123,7 +123,7 @@ function Chat({
             className={`${
               (questionList.length > 0 || activeChat.queries.length > 0) &&
               (theme === true
-                ? `${chat_back}  text-white`
+                ? `bg-[${chat_back}]  text-white`
                 : "white border-slate-300")
             } rounded overflow-y-scroll h-[70vh] md:h-[75vh] w-full md:w-[70%] mx-auto md:p-0 p-4 flex flex-col`}
           >

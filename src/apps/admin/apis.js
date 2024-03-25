@@ -15,13 +15,3 @@ export const deleteUser = (id) => {
 export const addUsers = (value) => {
   return axios.post(`${API_URL}/admin/addUsers`, { value });
 };
-
-// set page style api
-export const getStyles = () => {
-  return axios.get(`${API_URL}/user_style`);
-};
-
-// add page style api
-export const addStyle = (value) => {
-  return axios.post(`${API_URL}/user_style/addStyle`, { value });
-};

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getStyles } from "../../admin/apis";
+import { getStyles } from "../../menu/apis";
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -106,6 +106,11 @@ const settingMenu = {
       icon: faPalette,
       state: true,
     },
+    {
+      title: "Others",
+      icon: faGear,
+      state: true,
+    },
   ],
   employee: [
     {
@@ -113,11 +118,21 @@ const settingMenu = {
       icon: faPalette,
       state: true,
     },
+    {
+      title: "Others",
+      icon: faGear,
+      state: true,
+    },
   ],
   user: [
     {
       title: "Theme Mode",
       icon: faPalette,
+      state: true,
+    },
+    {
+      title: "Others",
+      icon: faGear,
       state: true,
     },
   ],
@@ -143,7 +158,7 @@ const Sidebar = ({
   const navigate = useNavigate();
 
   const { sidebar_back, sidebar_setting_back, font_size, font_color } =
-    setStyle.length > 0 ? setStyle[0] : {};
+    setStyle.length > 0 ? setStyle[0] : { sidebar_back: "#000000" };
 
   const handleDeleteChat = async (id) => {
     try {
@@ -192,307 +207,12 @@ const Sidebar = ({
   return (
     <>
       {isLoading && <div className="coverSpinner"></div>}
-      {!sidebar_back ? (
+      {
         <div
-          className={`${
-            theme === true ? `bg-sidebar_back ` : `bg-gray-50`
-          } flex flex-col items-start p-4 h-screen`}
-        >
-          {/* new chat button */}
-          <div
-            className={`flex items-center w-full p-1 rounded-lg ${
-              theme === true
-                ? "hover:bg-sidebar_setting_back"
-                : "hover:bg-gray-100"
-            } `}
-          >
-            <div className="flex items-center space-x-2 cursor-pointer">
-              <div
-                className={`${
-                  theme === true ? `text-[#ececf1] ` : `text-black`
-                } p-1 h-8 w-8`}
-              >
-                <FontAwesomeIcon
-                  icon={faRecordVinyl}
-                  fontSize="1.5em"
-                  className="icon-style"
-                />
-              </div>
-              <h2
-                onClick={handleCreateNewChat}
-                className={`${
-                  theme === true ? `text-[#ececf1] ` : `text-black`
-                } font-semibold`}
-              >
-                New Chat
-              </h2>
-            </div>
-          </div>
-          <div className="flex flex-col justify-between h-full w-full">
-            {/* recent chats title */}
-
-            <div>
-              <p className="text-[#666666] text-sm mt-1">Today</p>
-              <div className="text-[#fff] text-sm space-y-4 mt-4 w-full overflow-y-scroll h-[70vh]">
-                {queries.length !== 0 &&
-                  queries.map((q, index) => (
-                    <div
-                      key={index}
-                      className={`${
-                        q.id === activeChat.id && theme === true
-                          ? "bg-[#434b49] "
-                          : q.id === activeChat.id && theme === false
-                          ? "inherit hover:bg-gray-100"
-                          : q.id !== activeChat.id && theme === true
-                          ? "inherit hover:bg-[#434b49]"
-                          : "inherit hover:bg-gray-100"
-                      } flex justify-around rounded p-1 pointer `}
-                    >
-                      <div
-                        key={index}
-                        onClick={() => {
-                          setActiveChat(q);
-                          setCurrentPage("");
-                          setQuestionList([]);
-                          const question = q.queries.map((q) => q.question);
-                          setQuestionList(question);
-                          setIsMenuOpen && setIsMenuOpen(false);
-                        }}
-                        className={`px-2 py-2 truncate w-full rounded-lg cursor-pointer ${
-                          theme === true ? "inherit " : "text-black"
-                        }`}
-                      >
-                        {q.title}
-                      </div>
-                      <button
-                        style={{ marginLeft: "10px" }}
-                        onClick={() => handleDeleteChat(q.id)}
-                      >
-                        <img
-                          src={`${
-                            theme === true
-                              ? "/images/delete.png"
-                              : "/images/bin.png"
-                          }`}
-                          alt="delete"
-                          className="w-5 h-5 rounded-full"
-                        />
-                      </button>
-                    </div>
-                  ))}
-              </div>
-            </div>
-
-            {/* left side bottom menu */}
-            <div className="flex flex-col space-y-4 relative">
-              {isOpen && (
-                <div
-                  className={`absolute bottom-10 w-full ${
-                    theme === true ? "bg-sidebar_setting_back" : "bg-gray-100"
-                  }  origin-top-right rounded-md `}
-                >
-                  {menu[role].map((item, i) => (
-                    <div
-                      className={`py-2 rounded-md w-full ${
-                        theme === true
-                          ? "hover:bg-sidebar_hover"
-                          : "hover:bg-gray-200"
-                      }`}
-                      key={i}
-                    >
-                      <div
-                        className={`block px-3 py-2 mt-2 ${
-                          theme === true ? "text-[#fff]" : "text-black"
-                        } text-sm font-semibold rounded-lg md:mt-0  focus:outline-none focus:shadow-outline`}
-                      >
-                        {item.title === "Setting" ? (
-                          <div className="cursor-pointer">
-                            <div
-                              className="flex items-center"
-                              onClick={() => setIsSettingOpen(!isSettingOpen)}
-                            >
-                              <FontAwesomeIcon
-                                icon={item.icon}
-                                fontSize="1em"
-                                className="icon-style px-3"
-                              />
-                              <div
-                                className={`flex flex-row justify-between items-center w-full cursor-pointer ${
-                                  theme === true ? "text-[#fff]" : "text-black"
-                                } `}
-                              >
-                                {item.title}
-                                {!isSettingOpen ? (
-                                  <FontAwesomeIcon
-                                    icon={faAngleDown}
-                                    fontSize="1em"
-                                    className="icon-style"
-                                  />
-                                ) : (
-                                  <FontAwesomeIcon
-                                    icon={faAngleUp}
-                                    fontSize="1em"
-                                    className="icon-style"
-                                  />
-                                )}
-                              </div>
-                            </div>
-
-                            {/* setting submenu */}
-                            {isSettingOpen &&
-                              settingMenu[role].map((item, i) => {
-                                if (item.title === "Theme Mode") {
-                                  return (
-                                    <div
-                                      className={`flex flex-row py-2 rounded-md w-full cursor-pointer ${
-                                        theme === true
-                                          ? "hover:bg-gray-500"
-                                          : "hover:bg-gray-100"
-                                      } `}
-                                      key={i}
-                                    >
-                                      <div
-                                        className={`flex justify-center  items-center block px-3 py-2 mt-2 ${
-                                          theme === true
-                                            ? "text-[#fff]"
-                                            : "text-black"
-                                        } text-sm font-semibold rounded-lg md:mt-0  focus:outline-none focus:shadow-outline`}
-                                      >
-                                        <FontAwesomeIcon
-                                          icon={item.icon}
-                                          fontSize="1em"
-                                          className="icon-style px-3"
-                                        />
-                                        {item.title}
-                                        <label
-                                          htmlFor="toggle-example"
-                                          className="flex items-center cursor-pointer relative ml-4 mb-0"
-                                        >
-                                          <input
-                                            type="checkbox"
-                                            id="toggle-example"
-                                            className="sr-only"
-                                            onChange={handleChangeTheme}
-                                          />
-                                          <div className="toggle-bg bg-gray-200 border-2 border-gray-200 h-6 w-11 rounded-full"></div>
-                                        </label>
-                                      </div>
-                                    </div>
-                                  );
-                                } else {
-                                  return (
-                                    <div
-                                      className={`flex flex-row py-2 rounded-md w-full  cursor-pointer ${
-                                        theme === true
-                                          ? "hover:bg-gray-500"
-                                          : "hover:bg-gray-100"
-                                      }`}
-                                      key={i}
-                                      onClick={() => {
-                                        setCurrentPage(item.title);
-                                        setIsMenuOpen && setIsMenuOpen(false);
-                                      }}
-                                    >
-                                      <div
-                                        className={`block px-3 py-2 mt-2 ${
-                                          theme === true
-                                            ? "text-[#fff]"
-                                            : "text-black"
-                                        } text-sm font-semibold rounded-lg md:mt-0  focus:outline-none focus:shadow-outline`}
-                                      >
-                                        <FontAwesomeIcon
-                                          icon={item.icon}
-                                          fontSize="1em"
-                                          className="icon-style px-3"
-                                        />
-                                        {item.title}
-                                      </div>
-                                    </div>
-                                  );
-                                }
-                              })}
-                          </div>
-                        ) : item.title === "Logout" ? (
-                          <div
-                            className={`cursor-pointer }`}
-                            onClick={() => {
-                              dispatch(logout);
-                            }}
-                          >
-                            <FontAwesomeIcon
-                              icon={item.icon}
-                              fontSize="1em"
-                              className="icon-style px-3 "
-                            />
-                            {item.title}
-                          </div>
-                        ) : item.title === "GoAdmin" && user.roles === 0 ? (
-                          <div
-                            className={`cursor-pointer }`}
-                            onClick={() => {
-                              setCurrentPage(item.title);
-                              setIsMenuOpen && setIsMenuOpen(false);
-                            }}
-                          >
-                            <FontAwesomeIcon
-                              icon={item.icon}
-                              fontSize="1em"
-                              className="icon-style px-3 "
-                            />
-                            {item.title}
-                          </div>
-                        ) : (
-                          <div
-                            className="cursor-pointer"
-                            onClick={() => {
-                              setCurrentPage(item.title);
-                              setIsMenuOpen && setIsMenuOpen(false);
-                            }}
-                          >
-                            <FontAwesomeIcon
-                              icon={item.icon}
-                              fontSize="1em"
-                              className="icon-style px-3 "
-                            />
-                            {item.title}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-              {/* user account details */}
-              <div
-                onClick={() => setIsOpen(!isOpen)}
-                className={`flex items-center w-full p-2 rounded-lg ${
-                  theme === true
-                    ? "hover:bg-sidebar_setting_back"
-                    : "hover:bg-gray-100"
-                } cursor-pointer`}
-              >
-                <img
-                  src="/images/default_user.jpg"
-                  alt="account"
-                  className="w-8 h-8 rounded-full"
-                />
-                <p
-                  className={`${
-                    theme === true ? "text-[#fff]" : "text-black"
-                  }  h-8 p-1`}
-                >
-                  {user.firstName +
-                    " " +
-                    (user.lastName == undefined ? "" : user.lastName)}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div
-          style={{ background: theme === true ? sidebar_back : !originColor }}
-          className="flex flex-col items-start p-4 h-screen"
+          className={`flex abc flex-col items-start p-4 h-screen`}
+          style={{
+            backgroundColor: theme === true ? sidebar_back : originColor,
+          }}
         >
           {/* new chat button */}
           <div
@@ -790,7 +510,7 @@ const Sidebar = ({
             </div>
           </div>
         </div>
-      )}
+      }
     </>
   );
 };

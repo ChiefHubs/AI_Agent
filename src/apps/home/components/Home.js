@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
-import { getStyles } from "../../admin/apis";
+import { getStyles } from "../../menu/apis";
 import Sidebar from "./Sidebar";
 import Chat from "../../chat/components/Chat";
 import ChangePassword from "../../menu/components/ChangePassword";
@@ -13,6 +13,7 @@ import FileUpload from "../../menu/components/FileUpload";
 import LLMKey from "../../menu/components/LLMKey";
 import SetPrompt from "../../menu/components/SetPrompt";
 import UpgradeGPT from "../../menu/components/UpgradeGPT";
+import Others from "../../menu/components/Others";
 import "../style.css";
 import { getAllQueries } from "../apis";
 import setAuthHeader from "../../../_helpers/setAuthHeader";
@@ -80,6 +81,8 @@ const Home = () => {
     return <div className="coverSpinner"></div>;
   }
   const originColor = theme === true ? "block" : "#171717";
+
+  console.log("chat----", chat_back);
   return (
     <>
       {text_title ? (
@@ -90,7 +93,7 @@ const Home = () => {
         <></>
       )}
 
-      {!chat_back ? (
+      {
         <div className="md:w-full h-screen flex">
           <div className={`hidden md:block  md:w-[40%] lg:w-[20%]`}>
             <Sidebar
@@ -109,9 +112,10 @@ const Home = () => {
             />
           </div>
           <div
-            className={`w-full md:w-[80%] h-screen md:h-screen ${
-              theme === true ? "bg-chat_back" : "bg-gray-100"
-            }`}
+            style={{
+              backgroundColor: theme === true ? chat_back : !originColor,
+            }}
+            className="w-full md:w-[80%] h-screen md:h-screen"
           >
             <div className="flex flex-row justify-between">
               <h1
@@ -119,7 +123,9 @@ const Home = () => {
                   theme === true ? "text-[#ececf1]" : "text-black"
                 } p-4`}
               >
-                {!text_title ? "IYKYK Agent" : text_title}
+                <span className="font-bold">
+                  {!text_title ? "IYKYK Agent" : text_title}
+                </span>
               </h1>
               <div className="md:hidden p-4 cursor-pointer">
                 <FontAwesomeIcon
@@ -165,90 +171,14 @@ const Home = () => {
                 {currentPage === "System Prompt" && (
                   <SetPrompt setCurrentPage={setCurrentPage} />
                 )}
-              </>
-            )}
-          </div>
-        </div>
-      ) : (
-        <div className="md:w-full h-screen flex">
-          <div className={`hidden md:block  md:w-[40%] lg:w-[20%]`}>
-            <Sidebar
-              queries={queries}
-              setCurrentPage={setCurrentPage}
-              setActiveChat={setActiveChat}
-              setQueries={setQueries}
-              getQueries={getQueries}
-              activeChat={activeChat}
-              currentPage={currentPage}
-              isCurrentMenuOpen={isCurrentMenuOpen}
-              setIsCurrentMenuOpen={setIsCurrentMenuOpen}
-              handleCreateNewChat={handleCreateNewChat}
-              questionList={questionList}
-              setQuestionList={setQuestionList}
-            />
-          </div>
-          <div
-            style={{ background: theme === true ? chat_back : !originColor }}
-            className="w-full md:w-[80%] h-screen md:h-screen"
-          >
-            <div className="flex flex-row justify-between">
-              <h1
-                className={`font-bold text-xl ${
-                  theme === true ? "text-[#ececf1]" : "text-black"
-                } p-4`}
-              >
-                <span className="font-bold">
-                  {!text_title ? "IYKYK Agent" : text_title}
-                </span>
-              </h1>
-              <div className="md:hidden p-4 cursor-pointer">
-                <FontAwesomeIcon
-                  icon={isMenuOpen ? faXmark : faBars}
-                  onClick={() => setIsMenuOpen(!isMenuOpen)}
-                />
-              </div>
-            </div>
-            {currentPage === "GoAdmin" && (
-              <Admin setCurrentPage={setCurrentPage} />
-            )}
-            {currentPage === "" ? (
-              <Chat
-                setIsMenuOpen={setIsMenuOpen}
-                isMenuOpen={isMenuOpen}
-                activeChat={activeChat}
-                setActiveChat={setActiveChat}
-                setQueries={setQueries}
-                questionList={questionList}
-                setQuestionList={setQuestionList}
-              />
-            ) : (
-              <>
-                {currentPage === "Change Password" && (
-                  <ChangePassword setCurrentPage={setCurrentPage} />
-                )}
-                {currentPage === "Upgrade GPT" && (
-                  <UpgradeGPT setCurrentPage={setCurrentPage} />
-                )}
-                {currentPage === "LLM Temperature" && (
-                  <LLMTemperature setCurrentPage={setCurrentPage} />
-                )}
-                {currentPage === "Profile" && (
-                  <Profile setCurrentPage={setCurrentPage} />
-                )}
-                {currentPage === "LLM Key" && (
-                  <LLMKey setCurrentPage={setCurrentPage} />
-                )}
-                {currentPage === "File Upload" && (
-                  <FileUpload setCurrentPage={setCurrentPage} />
-                )}
-                {currentPage === "System Prompt" && (
-                  <SetPrompt setCurrentPage={setCurrentPage} />
+                {currentPage === "Others" && (
+                  <Others setCurrentPage={setCurrentPage} />
                 )}
               </>
             )}
           </div>
         </div>
-      )}
+      }
     </>
   );
 };

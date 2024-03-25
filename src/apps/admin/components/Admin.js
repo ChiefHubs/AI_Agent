@@ -2,7 +2,6 @@ import { ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import { getAllUsers, deleteUser } from "../apis";
 import ReactPaginate from "react-paginate";
 import CustomModal from "../../admin/components/Modal/CustomModal";
-import Setting from "../../admin/components/Modal/Setting";
 import React, { useState, useEffect } from "react";
 import { TrashIcon, DocumentCheckIcon } from "@heroicons/react/24/solid";
 import { Typography, Button, Tooltip } from "@material-tailwind/react";
@@ -18,7 +17,7 @@ const Admin = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [userData, setUserData] = useState([]);
   const [open, setOpen] = useState(false);
-  const [tabState, setTabState] = useState(true);
+  // const [tabState, setTabState] = useState(true);
 
   const [currentPage, setCurrentPage] = useState(0);
   const [PER_PAGE, setPER_PAGE] = useState(5);
@@ -90,9 +89,9 @@ const Admin = () => {
       });
   };
 
-  const handleChange = () => {
-    setTabState(!tabState);
-  };
+  // const handleChange = () => {
+  //   setTabState(!tabState);
+  // };
 
   const handleEdit = (e) => {
     const filterUser = userData.filter((user) => user._id === e);
@@ -143,7 +142,7 @@ const Admin = () => {
         showToast={showToast}
       />
       {isLoading && <div className="coverSpinner"></div>}
-      <select
+      {/* <select
         id="roles"
         name="roles"
         className="input-box m-4 p-3 rounded-xl"
@@ -152,8 +151,8 @@ const Admin = () => {
       >
         <option value={0}>user</option>
         <option value={1}>setting</option>
-      </select>
-      {tabState === true ? (
+      </select> */}
+      {
         <div className="w-full p-4 ">
           <div className="w-full bg-white p-3 rounded-xl">
             <div className="rounded-none">
@@ -359,9 +358,7 @@ const Admin = () => {
             </div>
           </div>
         </div>
-      ) : (
-        <Setting />
-      )}
+      }
       <ToastContainer />
     </>
   );

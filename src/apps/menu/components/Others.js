@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { addStyle } from "../../apis";
+import { addStyle, getStyles } from "../apis";
 import { useFormik } from "formik";
-import "../../style.css";
-import { getStyles } from "../../apis";
 
-const CustomModal = () => {
+const Others = () => {
   const user = useSelector((store) => store.auth.user);
   const [isLoading, changeIsLoading] = useState(false);
 
@@ -85,7 +83,6 @@ const CustomModal = () => {
     };
     await addStyle(data)
       .then((res) => {
-        // alert("good");
         window.location.reload();
         changeIsLoading(false);
       })
@@ -233,4 +230,4 @@ const CustomModal = () => {
   );
 };
 
-export default CustomModal;
+export default Others;

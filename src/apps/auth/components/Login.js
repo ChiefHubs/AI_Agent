@@ -22,7 +22,7 @@ import {
   URL_VERIFY_ERROR,
   URL_VERIFY_ERROR_MSG,
 } from "../constants";
-import { getStyles } from "../../admin/apis";
+import { getStyles } from "../../menu/apis";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -65,7 +65,7 @@ const Login = () => {
 
   const getStyle = async () => {
     setIsLoading(true);
-    await getStyles()
+    await getStyles("default")
       .then((res) => {
         setStyleData(res.data);
         setIsLoading(false);

@@ -83,3 +83,17 @@ export const setGPT = (value) => {
 export const getUserGPT = () => {
   return axios.get(`${API_URL}/user_gpt/get`);
 };
+
+// get page style api
+export const getStyles = (value) => {
+  return axios.get(`${API_URL}/user_style/get`, {
+    params: {
+      type: value,
+    },
+  });
+};
+
+// add page style api
+export const addStyle = (value) => {
+  return axios.post(`${API_URL}/user_style/addStyle`, { value });
+};
