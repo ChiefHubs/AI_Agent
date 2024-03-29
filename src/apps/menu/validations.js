@@ -34,3 +34,7 @@ export const SetPromptSchema = Yup.object({
 export const GPTSchema = Yup.object({
   gpt: Yup.string().required("GPT is required"),
 });
+
+export const ScrapURL = Yup.object({
+  url: Yup.string().required("URL is required"),
+});

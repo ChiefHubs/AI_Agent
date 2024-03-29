@@ -78,7 +78,6 @@ const UIKey = ({ setCurrentPage }) => {
             <div className="flex cursor-pointer">
               <FontAwesomeIcon
                 icon={faXmark}
-                size={25}
                 onClick={() => setCurrentPage("")}
               />
             </div>

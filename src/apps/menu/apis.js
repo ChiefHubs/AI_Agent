@@ -17,7 +17,7 @@ export const updatePassword = (values) => {
 };
 
 // upload file
-export const uploadFile = (file) => {
+export const uploadFile = ({ file }) => {
   const formData = new FormData();
   formData.append("file", file);
   const config = {
@@ -96,4 +96,18 @@ export const getStyles = (value) => {
 // add page style api
 export const addStyle = (value) => {
   return axios.post(`${API_URL}/user_style/addStyle`, { value });
+};
+
+//store files to vector db
+
+// retrain all models (files)
+export const storeVectorDB = (file_id, path) => {
+  return axios.post(`${API_URL}/user_query/storeVectorDB`, {
+    file_id,
+    path,
+  });
+};
+
+export const uploadURL = ({ url }) => {
+  return axios.post(`${API_URL}/user_query/uploadURL`, { url });
 };

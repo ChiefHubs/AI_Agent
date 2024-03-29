@@ -179,13 +179,13 @@ const Admin = () => {
                           color="blue-gray"
                           className="flex items-center justify-between gap-2 font-normal leading-none opacity-70"
                         >
-                          {head}{" "}
-                          {index !== TABLE_HEAD.length - 1 && (
+                          {head}
+                          {/* {index !== TABLE_HEAD.length - 1 && (
                             <ChevronUpDownIcon
                               strokeWidth={2}
                               className="h-4 w-4"
                             />
-                          )}
+                          )} */}
                         </Typography>
                       </th>
                     ))}

@@ -114,6 +114,10 @@ const settingMenu = {
   ],
   employee: [
     {
+      title: "File Upload",
+      icon: faFileArrowUp,
+    },
+    {
       title: "Theme Mode",
       icon: faPalette,
       state: true,
@@ -125,6 +129,10 @@ const settingMenu = {
     },
   ],
   user: [
+    {
+      title: "File Upload",
+      icon: faFileArrowUp,
+    },
     {
       title: "Theme Mode",
       icon: faPalette,
@@ -211,7 +219,7 @@ const Sidebar = ({
         <div
           className={`flex abc flex-col items-start p-4 h-screen`}
           style={{
-            backgroundColor: theme === true ? sidebar_back : originColor,
+            backgroundColor: theme === true ? sidebar_back : !originColor,
           }}
         >
           {/* new chat button */}

@@ -82,7 +82,6 @@ const Home = () => {
   }
   const originColor = theme === true ? "block" : "#171717";
 
-  console.log("chat----", chat_back);
   return (
     <>
       {text_title ? (
