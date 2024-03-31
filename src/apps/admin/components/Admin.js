@@ -1,5 +1,5 @@
 import { ChevronUpDownIcon } from "@heroicons/react/24/outline";
-import { getAllUsers, deleteUser } from "../apis";
+import { getAllUsers, deleteUser, getRoles } from "../apis";
 import ReactPaginate from "react-paginate";
 import CustomModal from "../../admin/components/Modal/CustomModal";
 import React, { useState, useEffect } from "react";
@@ -21,6 +21,7 @@ const Admin = () => {
 
   const [currentPage, setCurrentPage] = useState(0);
   const [PER_PAGE, setPER_PAGE] = useState(5);
+  const [user_roles, setRoles] = useState([]);
 
   const handlePageClick = ({ selected: selectedPage }) => {
     setCurrentPage(selectedPage);
@@ -79,8 +80,11 @@ const Admin = () => {
   const getUsers = async () => {
     setIsLoading(true);
     await getAllUsers()
-      .then((res) => {
+      .then(async (res) => {
         setUserData(res.data);
+        const role_res = await getRoles();
+        console.log("role-------", role_res);
+        setRoles(role_res.data);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -129,8 +133,8 @@ const Admin = () => {
     }
   };
 
-  useEffect(() => {
-    getUsers();
+  useEffect(async () => {
+    await getUsers();
   }, []);
 
   return (
@@ -140,18 +144,9 @@ const Admin = () => {
         onClose={handleClose}
         getUsers={getUsers}
         showToast={showToast}
+        roles={user_roles}
       />
       {isLoading && <div className="coverSpinner"></div>}
-      {/* <select
-        id="roles"
-        name="roles"
-        className="input-box m-4 p-3 rounded-xl"
-        onChange={handleChange}
-        defaultValue={0}
-      >
-        <option value={0}>user</option>
-        <option value={1}>setting</option>
-      </select> */}
       {
         <div className="w-full p-4 ">
           <div className="w-full bg-white p-3 rounded-xl">
@@ -168,10 +163,10 @@ const Admin = () => {
             <div className="px-0">
               <table className="mt-4 w-full min-w-max table-auto text-left">
                 <thead>
-                  <tr>
+                  <tr key={-1}>
                     {TABLE_HEAD.map((head, index) => (
                       <th
-                        key={head}
+                        key={index}
                         className="cursor-pointer border-y border-blue-gray-100 bg-blue-gray-50/50 p-4 transition-colors hover:bg-blue-gray-50"
                       >
                         <Typography
@@ -207,19 +202,10 @@ const Admin = () => {
                         },
                         index
                       ) => {
-                        let Croles = parseInt(roles);
-                        const getRoleName = (Croles) => {
-                          switch (Croles) {
-                            case 0:
-                              return "Admin";
-                            case 1:
-                              return "Employee";
-                            case 2:
-                              return "User";
-                            default:
-                              return "";
-                          }
-                        };
+                        const Croles = parseInt(roles);
+                        const role = user_roles.find(
+                          (item) => item.value === Croles
+                        );
                         let name =
                           firstName +
                           " " +
@@ -272,7 +258,7 @@ const Admin = () => {
                                 color="blue-gray"
                                 className="font-normal"
                               >
-                                {getRoleName(Croles)}
+                                {role?.title}
                               </Typography>
                             </td>
                             <td className={classes}>

@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { useFormik } from "formik";
 import "../../style.css";
 
-const CustomModal = ({ isOpen, onClose, getUsers, showToast }) => {
+const CustomModal = ({ isOpen, onClose, getUsers, showToast, roles }) => {
   const dispatch = useDispatch();
   const { messages, error, isAuthenticated, errorType } = useSelector(
     (state) => state.auth
@@ -304,9 +304,13 @@ const CustomModal = ({ isOpen, onClose, getUsers, showToast }) => {
                     onBlur={formik.handleBlur}
                     value={formik.values.roles}
                   >
-                    <option value={0}>Admin</option>
-                    <option value={1}>Employee</option>
-                    <option value={2}>User</option>
+                    {roles.map((item, i) => {
+                      return (
+                        <option key={i} value={item.value}>
+                          {item.title}
+                        </option>
+                      );
+                    })}
                   </select>
                 </div>
                 <div style={{ display: "flex" }}>
@@ -447,9 +451,13 @@ const CustomModal = ({ isOpen, onClose, getUsers, showToast }) => {
                     onBlur={formik_edit.handleBlur}
                     value={formik_edit.values.roles}
                   >
-                    <option value={0}>Admin</option>
-                    <option value={1}>Employee</option>
-                    <option value={2}>User</option>
+                    {roles.map((item, i) => {
+                      return (
+                        <option key={i} value={item.value}>
+                          {item.title}
+                        </option>
+                      );
+                    })}
                   </select>
                 </div>
                 <div style={{ display: "flex" }}>

@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { getStyles } from "../../menu/apis";
 import Sidebar from "./Sidebar";
 import Chat from "../../chat/components/Chat";
+import BubbleChat from "../../chat/components/BubbleChat";
 import ChangePassword from "../../menu/components/ChangePassword";
 import Admin from "../../admin/components/Admin";
 import LLMTemperature from "../../menu/components/LLMTemperature";
@@ -31,6 +32,8 @@ const Home = () => {
   const theme = useSelector((store) => store.setting.isDark);
 
   const [questionList, setQuestionList] = useState([]);
+
+  const my_role = JSON.parse(sessionStorage.getItem("user")).roles;
 
   const { chat_back, text_title, font_size, font_color } =
     setStyle.length > 0 ? setStyle[0] : {};
@@ -94,27 +97,36 @@ const Home = () => {
 
       {
         <div className="md:w-full h-screen flex">
-          <div className={`hidden md:block  md:w-[40%] lg:w-[20%]`}>
-            <Sidebar
-              queries={queries}
-              setCurrentPage={setCurrentPage}
-              setActiveChat={setActiveChat}
-              setQueries={setQueries}
-              getQueries={getQueries}
-              activeChat={activeChat}
-              currentPage={currentPage}
-              isCurrentMenuOpen={isCurrentMenuOpen}
-              setIsCurrentMenuOpen={setIsCurrentMenuOpen}
-              handleCreateNewChat={handleCreateNewChat}
-              questionList={questionList}
-              setQuestionList={setQuestionList}
-            />
-          </div>
+          {my_role !== 3 ? (
+            <div className={`hidden md:block  md:w-[40%] lg:w-[20%]`}>
+              <Sidebar
+                queries={queries}
+                setCurrentPage={setCurrentPage}
+                setActiveChat={setActiveChat}
+                setQueries={setQueries}
+                getQueries={getQueries}
+                activeChat={activeChat}
+                currentPage={currentPage}
+                isCurrentMenuOpen={isCurrentMenuOpen}
+                setIsCurrentMenuOpen={setIsCurrentMenuOpen}
+                handleCreateNewChat={handleCreateNewChat}
+                questionList={questionList}
+                setQuestionList={setQuestionList}
+              />
+            </div>
+          ) : (
+            <></>
+          )}
+
           <div
             style={{
               backgroundColor: theme === true ? chat_back : !originColor,
             }}
-            className="w-full md:w-[80%] h-screen md:h-screen"
+            className={
+              my_role !== 3
+                ? "w-full md:w-[80%] h-screen md:h-screen"
+                : "w-full md:w-[100%] h-screen md:h-screen"
+            }
           >
             <div className="flex flex-row justify-between">
               <h1
@@ -138,15 +150,27 @@ const Home = () => {
               <Admin setCurrentPage={setCurrentPage} />
             )}
             {currentPage === "" ? (
-              <Chat
-                setIsMenuOpen={setIsMenuOpen}
-                isMenuOpen={isMenuOpen}
-                activeChat={activeChat}
-                setActiveChat={setActiveChat}
-                setQueries={setQueries}
-                questionList={questionList}
-                setQuestionList={setQuestionList}
-              />
+              my_role !== 3 ? (
+                <Chat
+                  setIsMenuOpen={setIsMenuOpen}
+                  isMenuOpen={isMenuOpen}
+                  activeChat={activeChat}
+                  setActiveChat={setActiveChat}
+                  setQueries={setQueries}
+                  questionList={questionList}
+                  setQuestionList={setQuestionList}
+                />
+              ) : (
+                <BubbleChat
+                  setIsMenuOpen={setIsMenuOpen}
+                  isMenuOpen={isMenuOpen}
+                  activeChat={activeChat}
+                  setActiveChat={setActiveChat}
+                  setQueries={setQueries}
+                  questionList={questionList}
+                  setQuestionList={setQuestionList}
+                />
+              )
             ) : (
               <>
                 {currentPage === "Change Password" && (

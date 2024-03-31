@@ -15,3 +15,8 @@ export const deleteUser = (id) => {
 export const addUsers = (value) => {
   return axios.post(`${API_URL}/admin/addUsers`, { value });
 };
+
+// get users api
+export const getRoles = () => {
+  return axios.get(`${API_URL}/admin/getRoles`);
+};
