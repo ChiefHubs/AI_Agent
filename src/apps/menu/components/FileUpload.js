@@ -25,7 +25,7 @@ import { useFormik } from "formik";
 import { ScrapURL, ScrapFile } from "../validations";
 import { FileUploader } from "react-drag-drop-files";
 
-const fileTypes = ["PDF", "TXT"];
+const fileTypes = ["PDF", "TXT", "DOC"];
 
 const FileUpload = () => {
   const fileRef = useRef();
