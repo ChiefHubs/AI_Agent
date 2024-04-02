@@ -17,7 +17,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCirclePlus,
   faTimesCircle,
-  faSync,
   faStore,
 } from "@fortawesome/free-solid-svg-icons";
 import UploadModal from "./UploadModal";
@@ -25,7 +24,7 @@ import { useFormik } from "formik";
 import { ScrapURL, ScrapFile } from "../validations";
 import { FileUploader } from "react-drag-drop-files";
 
-const fileTypes = ["PDF", "TXT", "DOC"];
+const fileTypes = ["PDF", "TXT", "DOCX"];
 
 const FileUpload = () => {
   const fileRef = useRef();
@@ -158,7 +157,6 @@ const FileUpload = () => {
   const handleGetAllFiles = async () => {
     try {
       const res = await getAllFiles();
-      console.log("hia------", res.data);
       setUploadData(res.data.result);
       setTimeout(() => {
         setIsLoading(false);
