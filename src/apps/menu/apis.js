@@ -42,16 +42,6 @@ export const deleteModel = (payload) => {
   return axios.post(`${API_URL}/user_query/deleteModel`, payload);
 };
 
-// LLM Key
-export const setLLMKey = (value) => {
-  return axios.post(`${API_URL}/user_query/setLlmKey`, value);
-};
-
-// LLM Temperature
-export const setLLMTemperature = (value) => {
-  return axios.post(`${API_URL}/user_query/setllmTemp`, value);
-};
-
 // retrain all models (files)
 export const retrainAllModels = (files) => {
   return axios.post(`${API_URL}/user_query/retrainAllModels`, { files });
@@ -76,12 +66,12 @@ export const getUserPrompt = () => {
 
 //set GPT model name
 
-export const setGPT = (value) => {
-  return axios.post(`${API_URL}/user_gpt/setGPT`, value);
+export const setLLMOption = (value) => {
+  return axios.post(`${API_URL}/llm_option/setLLMOption`, value);
 };
 
-export const getUserGPT = () => {
-  return axios.get(`${API_URL}/user_gpt/get`);
+export const getLLMOption = () => {
+  return axios.get(`${API_URL}/llm_option/getLLMOption`);
 };
 
 // get page style api

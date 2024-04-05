@@ -60,6 +60,10 @@ const menu = {
       icon: faLock,
     },
     {
+      title: "Upgrade GPT",
+      icon: faStar,
+    },
+    {
       title: "Setting",
       icon: faGear,
     },
@@ -116,6 +120,16 @@ const settingMenu = {
     {
       title: "File Upload",
       icon: faFileArrowUp,
+    },
+    {
+      title: "LLM Key",
+      icon: faKey,
+      state: false,
+    },
+    {
+      title: "LLM Temperature",
+      icon: faTemperatureThreeQuarters,
+      state: false,
     },
     {
       title: "Theme Mode",

@@ -20,3 +20,8 @@ export const addUsers = (value) => {
 export const getRoles = () => {
   return axios.get(`${API_URL}/admin/getRoles`);
 };
+
+// get llm option with users api
+export const getLLMOptionWithUser = () => {
+  return axios.get(`${API_URL}/llm_option/getOptionWithUser`);
+};

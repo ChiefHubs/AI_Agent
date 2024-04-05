@@ -5,7 +5,7 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from "react-toastify";
 
 import { GPTSchema } from "../validations";
-import { setGPT, getUserGPT } from "../apis";
+import { setLLMOption, getLLMOption } from "../apis";
 
 const UpgradeGPT = ({ setCurrentPage }) => {
   const formik = useFormik({
@@ -25,8 +25,8 @@ const UpgradeGPT = ({ setCurrentPage }) => {
 
   const handleGetGPT = async () => {
     try {
-      const res = await getUserGPT();
-      formik.setFieldValue("gpt", res.data?.gpt);
+      const res = await getLLMOption();
+      formik.setFieldValue("gpt", res.data?.gpt_name);
     } catch (e) {
       console.log(e.message);
     }
@@ -34,10 +34,10 @@ const UpgradeGPT = ({ setCurrentPage }) => {
 
   const onSubmit = async (values) => {
     setIsLoading(true);
-    await setGPT(values)
+    await setLLMOption(values)
       .then((res) => {
         // console.log("Res", res);
-        toast.success("GPT added successfully!", {
+        toast.success("GPT name is saved successfully!", {
           position: "bottom-right",
           autoClose: 5000,
           hideProgressBar: false,

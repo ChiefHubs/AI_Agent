@@ -286,42 +286,42 @@ function Chat({
           <p className="text-xs text-white p-2 text-center"></p>
           <ToastContainer />
         </div>
-      </div>
-      <div className="flex justify-center -ml-[4%]">
-        <div className="w-[500px] flex justify-between">
-          <div>
-            <Link
-              to={"/policy"}
-              target="_blank"
-              className={`${
-                theme === true ? `text-white ` : `text-black`
-              } underline fixed bottom-0`}
-            >
-              Our Policy
-            </Link>
-          </div>
-          <div>
-            <Link
-              to={"/terms"}
-              target="_blank"
-              className={`${
-                theme === true ? `text-white ` : `text-black`
-              } underline fixed bottom-0`}
-            >
-              Term and Condition
-            </Link>
-          </div>
-          <div>
-            <Link
-              to={"/privacy"}
-              target="_blank"
-              className={`${
-                theme === true ? `text-white ` : `text-black`
-              } underline fixed bottom-0`}
-            >
-              Privacy Policy
-            </Link>
-          </div>
+        <div className="flex justify-between p-6">
+          <Link
+            to={"/policy"}
+            target="_blank"
+            className={`${
+              theme === true ? `text-white ` : `text-black`
+            } underline`}
+          >
+            Our Policy
+          </Link>
+          <Link
+            to={"/terms"}
+            target="_blank"
+            className={`${
+              theme === true ? `text-white ` : `text-black`
+            } underline `}
+          >
+            Term and Condition
+          </Link>
+          <Link
+            to={"/privacy"}
+            target="_blank"
+            className={`${
+              theme === true ? `text-white ` : `text-black`
+            } underline `}
+          >
+            Privacy Policy
+          </Link>
+          <Link
+            to="mailto:support-team@iykyknow.ai"
+            className={`${
+              theme === true ? `text-white ` : `text-black`
+            } underline `}
+          >
+            Contact Us
+          </Link>
         </div>
       </div>
     </>

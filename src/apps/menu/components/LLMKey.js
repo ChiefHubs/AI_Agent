@@ -6,7 +6,7 @@ import { ToastContainer, toast } from "react-toastify";
 import CryptoJS from "crypto-js";
 
 import { LLMKeySchema } from "../validations";
-import { setLLMKey } from "../apis";
+import { setLLMOption } from "../apis";
 
 const secretKey = process.env.REACT_APP_SECRET_KEY;
 
@@ -31,7 +31,7 @@ const UIKey = ({ setCurrentPage }) => {
   const onSubmit = async (values) => {
     setIsLoading(true);
     const data = encryptLLMKey(values.llmKey);
-    await setLLMKey(data)
+    await setLLMOption(data)
       .then((res) => {
         // console.log("Res", res);
         toast.success("LLM Key added successfully!", {

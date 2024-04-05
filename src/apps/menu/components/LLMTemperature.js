@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from "react-toastify";
 
 import { LLMTempSchema } from "../validations";
-import { setLLMTemperature } from "../apis";
+import { setLLMOption, getLLMOption } from "../apis";
 
 const LLMTemperature = ({ setCurrentPage }) => {
   const formik = useFormik({
@@ -18,11 +18,24 @@ const LLMTemperature = ({ setCurrentPage }) => {
     },
   });
 
+  useEffect(() => {
+    getTempValue();
+  }, []);
+
+  const getTempValue = async () => {
+    try {
+      const res = await getLLMOption();
+      formik.setFieldValue("llmTemp", res.data?.llm_temperature);
+    } catch (e) {
+      console.log(e.message);
+    }
+  };
+
   const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit = async (values) => {
     setIsLoading(true);
-    await setLLMTemperature(values)
+    await setLLMOption(values)
       .then((res) => {
         // console.log("Res", res);
         toast.success("LLM Temperature added successfully!", {
@@ -86,15 +99,19 @@ const LLMTemperature = ({ setCurrentPage }) => {
                 </span>
 
                 <input
-                  type="text"
+                  type="range"
                   id="llmTemp"
                   name="llmTemp"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.llmTemp}
-                  className="input-box"
+                  className="input-box !border-0 !p-0"
                   placeholder="Enter temparature"
+                  min={0}
+                  max={1}
+                  step={0.1}
                 />
+                <span>{formik.values.llmTemp}</span>
               </div>
 
               <div
