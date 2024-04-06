@@ -1,7 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
 import { getStyles } from "../../menu/apis";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import {
+  faMicrophone,
+  faPaperPlane,
+  faVoicemail,
+} from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from "react-toastify";
 import { generateChat } from "../apis";
 import "../style.css";
@@ -113,6 +117,59 @@ function Chat({
     setQuestion(e.target.value);
   };
 
+  const handleSpeechInput = () => {
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.interimResults = true; // Enable interim results
+
+    let finalTranscript = "";
+
+    recognition.onsoundstart = () => {
+      // Audio capture started
+      console.log("Audio capture started");
+    };
+
+    recognition.onspeechstart = () => {
+      // Speech recognition started
+      console.log("Speech recognition started");
+    };
+
+    recognition.onspeechdataavailable = (event) => {
+      // Interim speech data available
+      let interimTranscript = "sorry I can't here";
+
+      if (event.results && event.results.length > 0) {
+        interimTranscript = Array.from(event.results)
+          .map((result) => result[0].transcript)
+          .join("");
+      }
+      // Update the interim transcript
+      setQuestion(interimTranscript);
+    };
+
+    recognition.onspeechend = () => {
+      // Speech recognition ended
+      recognition.stop();
+      console.log("Speech recognition ended");
+
+      // Get the final transcript
+      finalTranscript = Array.from(recognition.results)
+        .map((result) => result[0].transcript)
+        .join("");
+      setQuestion(finalTranscript);
+      // Send the final transcript to the backend
+      handleSendMessage();
+      // sendMessageToBackend(finalTranscript);
+    };
+
+    recognition.onerror = (event) => {
+      console.error("Speech recognition error:", event.error);
+    };
+
+    recognition.start();
+  };
+
   return (
     <>
       <div className="flex flex-col justify-between mb-2">
@@ -200,7 +257,7 @@ function Chat({
                       </p>
                     )}
                     {activeChat.queries.map((ans, index) => (
-                      <p
+                      <div
                         style={
                           theme === true
                             ? { fontSize: font_size, color: font_color }
@@ -214,48 +271,11 @@ function Chat({
                         <Markdown remarkPlugins={[remarkGfm]}>
                           {m === ans.question && ans.solution}
                         </Markdown>
-                      </p>
+                      </div>
                     ))}
                   </div>
                 </div>
               ))}
-            {/* {questionList.length > 0
-              ? questionList.map((m, index) => (
-                  <div
-                    key={index}
-                    className="flex items-start space-x-4 my-6 p-2"
-                  >
-                    <div className="flex flex-col items-start">
-                      <p className="text-gray font-bold">{m && "You"}</p>
-                      <p className="text-black">{m}</p>
-
-                      <p className="text-gray font-bold">{m && "Answer"}</p>
-                      {activeChat.queries.map((ans) => (
-                        <p className="text-black">
-                          {m === ans.question && ans.solution}
-                        </p>
-                      ))}
-                    </div>
-                  </div>
-                ))
-              : activeChat.queries.map((m, index) => (
-                  <div
-                    key={index}
-                    className="flex items-start space-x-4 my-6 p-2"
-                  >
-                    <div className="flex flex-col items-start">
-                      <p className="text-gray font-bold">
-                        {m.question && "You"}
-                      </p>
-                      <p className="text-black">{m.question}</p>
-
-                      <p className="text-gray font-bold">
-                        {m.solution && "Answer"}
-                      </p>
-                      <p className="text-black">{m.solution}</p>
-                    </div>
-                  </div>
-                ))} */}
             <div ref={bottomRef} />
           </div>
         </div>
@@ -264,7 +284,15 @@ function Chat({
             Loading...
           </p>
         )} */}
-        <div className="w-full flex justify-center items-center flex-col p-4 md:p-0">
+        <div className="w-full flex  justify-center items-center flex-row p-4 md:p-0">
+          <button className="mr-2 p-3" onClick={handleSpeechInput}>
+            <FontAwesomeIcon
+              icon={faMicrophone}
+              className={`${
+                theme === true ? "text-white" : "text-black"
+              } text-2xl`}
+            />
+          </button>
           <div className="w-full md:w-[65%] h-[55px] border border-gray-600 flex items-center rounded-lg p-2">
             <input
               value={question}

@@ -224,7 +224,7 @@ const Sidebar = ({
   const role =
     user.roles === 0 ? "manager" : user.roles === 1 ? "employee" : "user";
 
-  const originColor = theme === true ? "block" : "#171717";
+  const originColor = theme === true ? "#000000" : "#171717";
 
   return (
     <>

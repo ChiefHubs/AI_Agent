@@ -431,11 +431,11 @@ const Admin = () => {
             </TabPanel>
 
             <TabPanel key={"llminfo"} value={"llminfo"}>
-              <div className="w-full bg-white p-3 rounded-xl">
+              <div className="w-[70%] md:w-full bg-white p-3 rounded-xl">
                 <div className="px-0">
                   <table className="mt-4 w-full min-w-max table-auto text-left">
                     <thead>
-                      <tr key={-1}>
+                      <tr key={-1} className="">
                         {TABLE_HEAD_LLM.map((head, index) => (
                           <th
                             key={index}
@@ -494,7 +494,7 @@ const Admin = () => {
                                 </div>
                               </td>
                               <td className={classes}>
-                                <div className="w-max">
+                                <div className="flex flex-col">
                                   <p
                                     variant="small"
                                     color="blue-gray"
@@ -504,11 +504,11 @@ const Admin = () => {
                                   </p>
                                 </div>
                               </td>
-                              <td className={classes}>
+                              <td className={`${classes} `}>
                                 <p
                                   variant="small"
                                   color="blue-gray"
-                                  className="font-normal"
+                                  className="font-normal truncate w-18 md:w-24"
                                 >
                                   {option.llm_data?.llm_key}
                                 </p>
