@@ -92,7 +92,6 @@ export default function Profile({ setCurrentPage }) {
               <div className="flex">
                 <FontAwesomeIcon
                   icon={faXmark}
-                  size={25}
                   onClick={() => setCurrentPage("")}
                 />
               </div>

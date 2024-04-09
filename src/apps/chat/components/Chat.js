@@ -1,10 +1,12 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useReducer } from "react";
 import { getStyles } from "../../menu/apis";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faClose,
   faMicrophone,
+  faMicrophoneSlash,
   faPaperPlane,
-  faVoicemail,
+  faWindowClose,
 } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from "react-toastify";
 import { generateChat } from "../apis";
@@ -13,6 +15,10 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { getTokenOrRefresh } from "./speech";
+import speechsdk, {
+  ResultReason,
+} from "microsoft-cognitiveservices-speech-sdk";
 
 function Chat({
   activeChat,
@@ -28,6 +34,12 @@ function Chat({
 
   const [isLoading, setIsLoading] = useState(false);
   const [setStyle, setStyleData] = useState(false);
+  const [recording, setRecording] = useState(false);
+  const [timer, dispatch] = useReducer(reducer, 0);
+  const interval = useRef();
+  const audioCtxContainer = useRef();
+  const mediaRecorder = useRef();
+  const chunks = [];
 
   const bottomRef = useRef(null);
 
@@ -117,57 +129,63 @@ function Chat({
     setQuestion(e.target.value);
   };
 
-  const handleSpeechInput = () => {
-    const SpeechRecognition =
-      window.SpeechRecognition || window.webkitSpeechRecognition;
-    const recognition = new SpeechRecognition();
-    recognition.interimResults = true; // Enable interim results
+  function reducer(state, action) {
+    if (action.type === "increment") {
+      return state + 1;
+    }
+    if (action.type === "reset") {
+      return 0;
+    }
+    throw Error("Unknown action.");
+  }
+  const startTimer = () => {
+    interval.current = setInterval(() => {
+      dispatch({ type: "increment" });
+    }, 1000);
+  };
 
-    let finalTranscript = "";
+  const generateText = async (content) => {
+    "use server";
 
-    recognition.onsoundstart = () => {
-      // Audio capture started
-      console.log("Audio capture started");
-    };
+    // const response = await speechToText(content);
+    // return response;
+  };
 
-    recognition.onspeechstart = () => {
-      // Speech recognition started
-      console.log("Speech recognition started");
-    };
+  const handleRecording = () => {
+    console.log("recording-------", recording);
+    recording ? stopRecording() : startRecording();
+    setRecording(!recording);
+  };
 
-    recognition.onspeechdataavailable = (event) => {
-      // Interim speech data available
-      let interimTranscript = "sorry I can't here";
+  const stopRecording = () => {
+    setQuestion("speaking done.........");
+  };
 
-      if (event.results && event.results.length > 0) {
-        interimTranscript = Array.from(event.results)
-          .map((result) => result[0].transcript)
-          .join("");
+  const startRecording = async () => {
+    const tokenObj = await getTokenOrRefresh();
+    const speechConfig = speechsdk.SpeechConfig.fromAuthorizationToken(
+      tokenObj.authToken,
+      tokenObj.region
+    );
+    speechConfig.speechRecognitionLanguage = "en-US";
+
+    const audioConfig = speechsdk.AudioConfig.fromDefaultMicrophoneInput();
+    const recognizer = new speechsdk.SpeechRecognizer(
+      speechConfig,
+      audioConfig
+    );
+
+    setQuestion("speak into your microphone...");
+
+    recognizer.recognizeOnceAsync((result) => {
+      if (result.reason === ResultReason.RecognizedSpeech) {
+        setQuestion(`RECOGNIZED: Text=${result.text}`);
+      } else {
+        setQuestion(
+          "ERROR: Speech was cancelled or could not be recognized. Ensure your microphone is working properly."
+        );
       }
-      // Update the interim transcript
-      setQuestion(interimTranscript);
-    };
-
-    recognition.onspeechend = () => {
-      // Speech recognition ended
-      recognition.stop();
-      console.log("Speech recognition ended");
-
-      // Get the final transcript
-      finalTranscript = Array.from(recognition.results)
-        .map((result) => result[0].transcript)
-        .join("");
-      setQuestion(finalTranscript);
-      // Send the final transcript to the backend
-      handleSendMessage();
-      // sendMessageToBackend(finalTranscript);
-    };
-
-    recognition.onerror = (event) => {
-      console.error("Speech recognition error:", event.error);
-    };
-
-    recognition.start();
+    });
   };
 
   return (
@@ -285,15 +303,21 @@ function Chat({
           </p>
         )} */}
         <div className="w-full flex  justify-center items-center flex-row p-4 md:p-0">
-          <button className="mr-2 p-3" onClick={handleSpeechInput}>
+          <button className="mr-2 p-3" onClick={() => handleRecording()}>
             <FontAwesomeIcon
-              icon={faMicrophone}
+              icon={recording ? faMicrophoneSlash : faMicrophone}
               className={`${
                 theme === true ? "text-white" : "text-black"
               } text-2xl`}
             />
           </button>
           <div className="w-full md:w-[65%] h-[55px] border border-gray-600 flex items-center rounded-lg p-2">
+            <button
+              onClick={() => setQuestion("")}
+              className="h-full p-2 rounded-lg icon-style text-[#ececf1]"
+            >
+              <FontAwesomeIcon icon={faWindowClose} />
+            </button>
             <input
               value={question}
               onChange={handleInputChange}
