@@ -1,11 +1,11 @@
-import React, { useState, useRef, useEffect, useReducer } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { getStyles } from "../../menu/apis";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faClose,
   faMicrophone,
   faMicrophoneSlash,
   faPaperPlane,
+  faVolumeHigh,
   faWindowClose,
 } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from "react-toastify";
@@ -16,9 +16,9 @@ import { Link } from "react-router-dom";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { getTokenOrRefresh } from "./speech";
-import speechsdk, {
-  ResultReason,
-} from "microsoft-cognitiveservices-speech-sdk";
+import { ResultReason } from "microsoft-cognitiveservices-speech-sdk";
+
+const speechsdk = require("microsoft-cognitiveservices-speech-sdk");
 
 function Chat({
   activeChat,
@@ -35,11 +35,7 @@ function Chat({
   const [isLoading, setIsLoading] = useState(false);
   const [setStyle, setStyleData] = useState(false);
   const [recording, setRecording] = useState(false);
-  const [timer, dispatch] = useReducer(reducer, 0);
-  const interval = useRef();
-  const audioCtxContainer = useRef();
-  const mediaRecorder = useRef();
-  const chunks = [];
+  const [player, updatePlayer] = useState({ p: undefined, muted: false });
 
   const bottomRef = useRef(null);
 
@@ -83,7 +79,7 @@ function Chat({
       })
       .catch((err) => {
         console.log("error ", err);
-        toast("Something went wrong. Please check retrain model status", {
+        toast(err.response?.data?.error || err.message, {
           position: "bottom-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -129,36 +125,13 @@ function Chat({
     setQuestion(e.target.value);
   };
 
-  function reducer(state, action) {
-    if (action.type === "increment") {
-      return state + 1;
-    }
-    if (action.type === "reset") {
-      return 0;
-    }
-    throw Error("Unknown action.");
-  }
-  const startTimer = () => {
-    interval.current = setInterval(() => {
-      dispatch({ type: "increment" });
-    }, 1000);
-  };
-
-  const generateText = async (content) => {
-    "use server";
-
-    // const response = await speechToText(content);
-    // return response;
-  };
-
   const handleRecording = () => {
-    console.log("recording-------", recording);
     recording ? stopRecording() : startRecording();
     setRecording(!recording);
   };
 
   const stopRecording = () => {
-    setQuestion("speaking done.........");
+    console.log("stop recording-----");
   };
 
   const startRecording = async () => {
@@ -175,18 +148,60 @@ function Chat({
       audioConfig
     );
 
-    setQuestion("speak into your microphone...");
-
     recognizer.recognizeOnceAsync((result) => {
       if (result.reason === ResultReason.RecognizedSpeech) {
-        setQuestion(`RECOGNIZED: Text=${result.text}`);
+        setQuestion(`${result.text}`);
       } else {
-        setQuestion(
+        console.log(
           "ERROR: Speech was cancelled or could not be recognized. Ensure your microphone is working properly."
         );
       }
     });
   };
+
+  async function textToSpeech(texts) {
+    const tokenObj = await getTokenOrRefresh();
+    const speechConfig = speechsdk.SpeechConfig.fromAuthorizationToken(
+      tokenObj.authToken,
+      tokenObj.region
+    );
+    const myPlayer = new speechsdk.SpeakerAudioDestination();
+    updatePlayer((p) => {
+      p.p = myPlayer;
+      return p;
+    });
+    const audioConfig = speechsdk.AudioConfig.fromSpeakerOutput(player.p);
+
+    let synthesizer = new speechsdk.SpeechSynthesizer(
+      speechConfig,
+      audioConfig
+    );
+
+    console.log("texts------", texts);
+    setQuestion(`${texts}...`);
+    synthesizer.speakTextAsync(
+      texts,
+      (result) => {
+        let text;
+        if (
+          result.reason === speechsdk.ResultReason.SynthesizingAudioCompleted
+        ) {
+          text = `synthesis finished for "${texts}".\n`;
+        } else if (result.reason === speechsdk.ResultReason.Canceled) {
+          text = `synthesis failed. Error detail: ${result.errorDetails}.\n`;
+        }
+        synthesizer.close();
+        synthesizer = undefined;
+        setQuestion(text);
+      },
+      function (err) {
+        console.log(`Error: ${err}.\n`);
+
+        synthesizer.close();
+        synthesizer = undefined;
+      }
+    );
+  }
 
   return (
     <>
@@ -291,6 +306,18 @@ function Chat({
                         </Markdown>
                       </div>
                     ))}
+                    {activeChat.queries.map(
+                      (ans, index) =>
+                        m === ans.question && (
+                          <button
+                            onClick={() => {
+                              textToSpeech(ans.solution);
+                            }}
+                          >
+                            <FontAwesomeIcon icon={faVolumeHigh} />
+                          </button>
+                        )
+                    )}
                   </div>
                 </div>
               ))}
@@ -305,7 +332,7 @@ function Chat({
         <div className="w-full flex  justify-center items-center flex-row p-4 md:p-0">
           <button className="mr-2 p-3" onClick={() => handleRecording()}>
             <FontAwesomeIcon
-              icon={recording ? faMicrophoneSlash : faMicrophone}
+              icon={recording ? faMicrophone : faMicrophoneSlash}
               className={`${
                 theme === true ? "text-white" : "text-black"
               } text-2xl`}
