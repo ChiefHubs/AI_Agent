@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { getStyles } from "../../menu/apis";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faCircleStop,
   faMicrophone,
   faMicrophoneSlash,
   faPaperPlane,
@@ -36,6 +37,7 @@ function Chat({
   const [setStyle, setStyleData] = useState(false);
   const [recording, setRecording] = useState(false);
   const [player, updatePlayer] = useState({ p: undefined, muted: false });
+  const [isPlay, setPlayStatus] = useState(false);
 
   const bottomRef = useRef(null);
 
@@ -134,7 +136,7 @@ function Chat({
     console.log("stop recording-----");
   };
 
-  const startRecording = async () => {
+  async function startRecording() {
     const tokenObj = await getTokenOrRefresh();
     const speechConfig = speechsdk.SpeechConfig.fromAuthorizationToken(
       tokenObj.authToken,
@@ -148,16 +150,17 @@ function Chat({
       audioConfig
     );
 
-    recognizer.recognizeOnceAsync((result) => {
+    recognizer.startContinuousRecognitionAsync((result) => {
       if (result.reason === ResultReason.RecognizedSpeech) {
         setQuestion(`${result.text}`);
       } else {
+        setRecording(false);
         console.log(
           "ERROR: Speech was cancelled or could not be recognized. Ensure your microphone is working properly."
         );
       }
     });
-  };
+  }
 
   async function textToSpeech(texts) {
     const tokenObj = await getTokenOrRefresh();
@@ -178,21 +181,20 @@ function Chat({
     );
 
     console.log("texts------", texts);
-    setQuestion(`${texts}...`);
     synthesizer.speakTextAsync(
       texts,
       (result) => {
-        let text;
         if (
           result.reason === speechsdk.ResultReason.SynthesizingAudioCompleted
         ) {
-          text = `synthesis finished for "${texts}".\n`;
+          setPlayStatus(false);
         } else if (result.reason === speechsdk.ResultReason.Canceled) {
-          text = `synthesis failed. Error detail: ${result.errorDetails}.\n`;
+          console.error(
+            `synthesis failed. Error detail: ${result.errorDetails}.\n`
+          );
         }
         synthesizer.close();
         synthesizer = undefined;
-        setQuestion(text);
       },
       function (err) {
         console.log(`Error: ${err}.\n`);
@@ -202,7 +204,17 @@ function Chat({
       }
     );
   }
-
+  async function handleMute() {
+    updatePlayer((p) => {
+      if (!p.muted) {
+        p.p.pause();
+        return { p: p.p, muted: true };
+      } else {
+        p.p.resume();
+        return { p: p.p, muted: false };
+      }
+    });
+  }
   return (
     <>
       <div className="flex flex-col justify-between mb-2">
@@ -308,11 +320,14 @@ function Chat({
                     ))}
                     {activeChat.queries.map(
                       (ans, index) =>
-                        m === ans.question && (
+                        m === ans.question &&
+                        !isPlay && (
                           <button
                             onClick={() => {
+                              setPlayStatus(true);
                               textToSpeech(ans.solution);
                             }}
+                            key={index}
                           >
                             <FontAwesomeIcon icon={faVolumeHigh} />
                           </button>
@@ -330,6 +345,22 @@ function Chat({
           </p>
         )} */}
         <div className="w-full flex  justify-center items-center flex-row p-4 md:p-0">
+          {isPlay && (
+            <button
+              onClick={() => {
+                setPlayStatus(false);
+                handleMute();
+              }}
+              className="mr-2 p-3"
+            >
+              <FontAwesomeIcon
+                icon={faCircleStop}
+                className={`${
+                  theme === true ? "text-white" : "text-black"
+                } text-2xl`}
+              />
+            </button>
+          )}
           <button className="mr-2 p-3" onClick={() => handleRecording()}>
             <FontAwesomeIcon
               icon={recording ? faMicrophone : faMicrophoneSlash}
@@ -365,7 +396,7 @@ function Chat({
           <p className="text-xs text-white p-2 text-center"></p>
           <ToastContainer />
         </div>
-        <div className="flex justify-between p-6">
+        <div className="flex justify-between px-6 pt-6">
           <Link
             to={"/policy"}
             target="_blank"
