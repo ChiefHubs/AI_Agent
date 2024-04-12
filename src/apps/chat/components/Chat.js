@@ -17,9 +17,13 @@ import { Link } from "react-router-dom";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { getTokenOrRefresh } from "./speech";
-import { ResultReason } from "microsoft-cognitiveservices-speech-sdk";
+import * as sdk from "microsoft-cognitiveservices-speech-sdk";
+// import { ResultReason } from "microsoft-cognitiveservices-speech-sdk";
 
-const speechsdk = require("microsoft-cognitiveservices-speech-sdk");
+// const speechsdk = require("microsoft-cognitiveservices-speech-sdk");
+
+const SPEECH_KEY = "f13aae8580694ea9a1062b7fe8e08f7b";
+const SPEECH_REGION = "eastus";
 
 function Chat({
   activeChat,
@@ -35,11 +39,16 @@ function Chat({
 
   const [isLoading, setIsLoading] = useState(false);
   const [setStyle, setStyleData] = useState(false);
-  const [recording, setRecording] = useState(false);
   const [player, updatePlayer] = useState({ p: undefined, muted: false });
   const [isPlay, setPlayStatus] = useState(false);
+  // const [recognizer, setRecognizer] = useState(null);
 
   const bottomRef = useRef(null);
+  const [isListening, setIsListening] = useState(false);
+  const speechConfig = useRef(null);
+  const audioConfig = useRef(null);
+  const recognizer = useRef(null);
+  const myPlayer = useRef(null);
 
   const { first_question, font_size, font_color, chat_back } =
     setStyle.length > 0 ? setStyle[0] : {};
@@ -114,7 +123,84 @@ function Chat({
 
   useEffect(() => {
     getStyle();
+
+    speechConfig.current = sdk.SpeechConfig.fromSubscription(
+      SPEECH_KEY,
+      SPEECH_REGION
+    );
+    speechConfig.current.speechRecognitionLanguage = "en-US";
+
+    audioConfig.current = sdk.AudioConfig.fromDefaultMicrophoneInput();
+    recognizer.current = new sdk.SpeechRecognizer(
+      speechConfig.current,
+      audioConfig.current
+    );
+
+    const processRecognizedTranscript = (event) => {
+      const result = event.result;
+      console.log("Speech to text-past: ", result);
+
+      if (result.reason === sdk.ResultReason.RecognizedSpeech) {
+        const transcript = result.text;
+        console.log("Transcript: -->", transcript);
+        // Call a function to process the transcript as needed
+        setQuestion(transcript);
+      }
+    };
+
+    const processRecognizingTranscript = (event) => {
+      const result = event.result;
+      console.log("Speech to text-is doing:", result);
+      if (result.reason === sdk.ResultReason.RecognizingSpeech) {
+        const transcript = result.text;
+        console.log("Transcript: -->", transcript);
+        setQuestion(transcript);
+        // Call a function to process the transcript as needed
+      }
+    };
+
+    recognizer.current.recognized = (s, e) => processRecognizedTranscript(e);
+    recognizer.current.recognizing = (s, e) => processRecognizingTranscript(e);
+
+    // recognizer.current.startContinuousRecognitionAsync(() => {
+    //   console.log("Speech recognition started.");
+    //   setIsListening(true);
+    // });
+
+    return () => {
+      recognizer.current.stopContinuousRecognitionAsync(() => {
+        setIsListening(false);
+      });
+    };
   }, []);
+
+  const pauseListening = () => {
+    setIsListening(false);
+    recognizer.current.stopContinuousRecognitionAsync();
+    console.log("Paused listening.");
+  };
+
+  const resumeListening = () => {
+    if (!isListening) {
+      setIsListening(true);
+      recognizer.current.startContinuousRecognitionAsync(() => {
+        console.log("Start microphone listening...");
+      });
+    }
+  };
+
+  const stopListening = () => {
+    setIsListening(false);
+    recognizer.current.stopContinuousRecognitionAsync(() => {
+      console.log("Speech recognition stopped.");
+    });
+  };
+
+  const handleRecording = () => {
+    console.log(isListening, "----isListening");
+    isListening ? pauseListening() : resumeListening();
+    setIsListening(!isListening);
+  };
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
@@ -127,68 +213,28 @@ function Chat({
     setQuestion(e.target.value);
   };
 
-  const handleRecording = () => {
-    recording ? stopRecording() : startRecording();
-    setRecording(!recording);
-  };
-
-  const stopRecording = () => {
-    console.log("stop recording-----");
-  };
-
-  async function startRecording() {
-    const tokenObj = await getTokenOrRefresh();
-    const speechConfig = speechsdk.SpeechConfig.fromAuthorizationToken(
-      tokenObj.authToken,
-      tokenObj.region
-    );
-    speechConfig.speechRecognitionLanguage = "en-US";
-
-    const audioConfig = speechsdk.AudioConfig.fromDefaultMicrophoneInput();
-    const recognizer = new speechsdk.SpeechRecognizer(
-      speechConfig,
-      audioConfig
-    );
-
-    recognizer.startContinuousRecognitionAsync((result) => {
-      if (result.reason === ResultReason.RecognizedSpeech) {
-        setQuestion(`${result.text}`);
-      } else {
-        setRecording(false);
-        console.log(
-          "ERROR: Speech was cancelled or could not be recognized. Ensure your microphone is working properly."
-        );
-      }
-    });
-  }
-
   async function textToSpeech(texts) {
-    const tokenObj = await getTokenOrRefresh();
-    const speechConfig = speechsdk.SpeechConfig.fromAuthorizationToken(
-      tokenObj.authToken,
-      tokenObj.region
-    );
-    const myPlayer = new speechsdk.SpeakerAudioDestination();
+    myPlayer.current = new sdk.SpeakerAudioDestination();
+    myPlayer.current.onAudioEnd = () => {
+      setPlayStatus(false);
+    };
     updatePlayer((p) => {
-      p.p = myPlayer;
+      p.p = myPlayer.current;
       return p;
     });
-    const audioConfig = speechsdk.AudioConfig.fromSpeakerOutput(player.p);
 
-    let synthesizer = new speechsdk.SpeechSynthesizer(
-      speechConfig,
+    const audioConfig = sdk.AudioConfig.fromSpeakerOutput(myPlayer.current);
+    let synthesizer = new sdk.SpeechSynthesizer(
+      speechConfig.current,
       audioConfig
     );
-
-    console.log("texts------", texts);
     synthesizer.speakTextAsync(
       texts,
       (result) => {
-        if (
-          result.reason === speechsdk.ResultReason.SynthesizingAudioCompleted
-        ) {
-          setPlayStatus(false);
-        } else if (result.reason === speechsdk.ResultReason.Canceled) {
+        console.log("----resutl----------", result);
+        if (result.reason === sdk.ResultReason.SynthesizingAudioCompleted) {
+          console.log("synthesizer is finished");
+        } else if (result.reason === sdk.ResultReason.Canceled) {
           console.error(
             `synthesis failed. Error detail: ${result.errorDetails}.\n`
           );
@@ -198,7 +244,6 @@ function Chat({
       },
       function (err) {
         console.log(`Error: ${err}.\n`);
-
         synthesizer.close();
         synthesizer = undefined;
       }
@@ -206,7 +251,8 @@ function Chat({
   }
   async function handleMute() {
     updatePlayer((p) => {
-      if (!p.muted) {
+      if (p.muted === false) {
+        p.p.privIsPaused = false;
         p.p.pause();
         return { p: p.p, muted: true };
       } else {
@@ -348,8 +394,8 @@ function Chat({
           {isPlay && (
             <button
               onClick={() => {
-                setPlayStatus(false);
                 handleMute();
+                setPlayStatus(false);
               }}
               className="mr-2 p-3"
             >
@@ -363,7 +409,7 @@ function Chat({
           )}
           <button className="mr-2 p-3" onClick={() => handleRecording()}>
             <FontAwesomeIcon
-              icon={recording ? faMicrophone : faMicrophoneSlash}
+              icon={isListening ? faMicrophone : faMicrophoneSlash}
               className={`${
                 theme === true ? "text-white" : "text-black"
               } text-2xl`}
