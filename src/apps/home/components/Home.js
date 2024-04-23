@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
-import { useSelector } from "react-redux";
 import { getStyles } from "../../menu/apis";
 import Sidebar from "./Sidebar";
 import Chat from "../../chat/components/Chat";
@@ -19,6 +18,9 @@ import "../style.css";
 import { getAllQueries } from "../apis";
 import setAuthHeader from "../../../_helpers/setAuthHeader";
 import { Helmet } from "react-helmet";
+import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { verifyURL } from "../../auth/actions";
 
 const Home = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -28,15 +30,25 @@ const Home = () => {
   const [queries, setQueries] = useState([]);
   const [setStyle, setStyleData] = useState(false);
   const [activeChat, setActiveChat] = useState({ queries: [] });
+  const [my_role, setRole] = useState(null);
+  // const [my_role, setRole] = useState(null);
+  const dispatch = useDispatch();
 
   const theme = useSelector((store) => store.setting.isDark);
+  const userData = useSelector((store) => store.auth.user);
 
   const [questionList, setQuestionList] = useState([]);
 
-  const my_role = JSON.parse(sessionStorage.getItem("user")).roles;
-
   const { chat_back, text_title, font_size, font_color } =
     setStyle.length > 0 ? setStyle[0] : {};
+  //---------------
+  const { tokens } = useParams();
+  console.log("token-------------", tokens);
+  if (tokens) {
+    const [u_token, c_token, b_token, r_token] = tokens?.split("&");
+    dispatch(verifyURL({ u_token, c_token, b_token, r_token }));
+  }
+
   const getQueries = async () => {
     setIsLoading(true);
     await getAllQueries()
@@ -51,10 +63,14 @@ const Home = () => {
   };
 
   useEffect(() => {
-    setAuthHeader(sessionStorage.getItem("user"));
-    getQueries();
-    setCurrentPage("");
-  }, []);
+    if (userData) {
+      setRole(userData.roles);
+      console.log("userData-----------", userData);
+      setAuthHeader(userData.token); // Pass the user data directly instead of using sessionStorage
+      getQueries();
+      setCurrentPage("");
+    }
+  }, [userData]);
 
   const getStyle = async () => {
     setIsLoading(true);
@@ -120,7 +136,12 @@ const Home = () => {
 
           <div
             style={{
-              backgroundColor: theme === true ? chat_back : !originColor,
+              backgroundColor:
+                my_role !== 3
+                  ? theme === true
+                    ? chat_back
+                    : !originColor
+                  : "",
             }}
             className={
               my_role !== 3
@@ -134,17 +155,21 @@ const Home = () => {
                   theme === true ? "text-[#ececf1]" : "text-black"
                 } p-4`}
               >
-                <span className="font-bold">
-                  {!text_title ? "IYKYK Agent" : text_title}
-                </span>
+                {my_role !== 3 && (
+                  <span className="font-bold">
+                    {!text_title ? "IYKYK Agent" : text_title}
+                  </span>
+                )}
               </h1>
-              <div className="md:hidden p-4 cursor-pointer">
-                <FontAwesomeIcon
-                  icon={isMenuOpen ? faXmark : faBars}
-                  // size={25}
-                  onClick={() => setIsMenuOpen(!isMenuOpen)}
-                />
-              </div>
+              {my_role !== 3 && (
+                <div className="md:hidden p-4 cursor-pointer">
+                  <FontAwesomeIcon
+                    icon={isMenuOpen ? faXmark : faBars}
+                    // size={25}
+                    onClick={() => setIsMenuOpen(!isMenuOpen)}
+                  />
+                </div>
+              )}
             </div>
             {currentPage === "GoAdmin" && (
               <Admin setCurrentPage={setCurrentPage} />

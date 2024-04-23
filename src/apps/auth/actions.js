@@ -117,6 +117,7 @@ export const verifyURL = (tokens) => async (dispatch) => {
       },
     });
     sessionStorage.setItem("user", JSON.stringify(data));
+    console.log("setdata--------", JSON.stringify(data));
     dispatch(setUser(data));
     dispatch({
       type: URL_VERIFY_SUCCESS,

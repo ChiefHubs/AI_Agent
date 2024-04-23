@@ -214,6 +214,7 @@ function Chat({
   };
 
   async function textToSpeech(texts) {
+    const filtered_text = texts.replace(/#/g, "");
     myPlayer.current = new sdk.SpeakerAudioDestination();
     myPlayer.current.onAudioEnd = () => {
       setPlayStatus(false);
@@ -229,7 +230,7 @@ function Chat({
       audioConfig
     );
     synthesizer.speakTextAsync(
-      texts,
+      filtered_text,
       (result) => {
         console.log("----resutl----------", result);
         if (result.reason === sdk.ResultReason.SynthesizingAudioCompleted) {

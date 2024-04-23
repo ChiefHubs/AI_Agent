@@ -31,6 +31,7 @@ function App() {
               </RequireAuth>
             }
           />
+          <Route exact path="/:tokens" element={<Home />} />
 
           <Route path="/policy" element={<Policy />} />
           <Route path="/terms" element={<Terms />} />

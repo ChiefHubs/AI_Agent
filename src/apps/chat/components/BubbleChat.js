@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from "react";
-import { getStyles } from "../../menu/apis";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronDown,
@@ -25,12 +24,9 @@ function BubbleChat({
   const [isOpen, setOpen] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [setStyle, setStyleData] = useState(false);
 
   const bottomRef = useRef(null);
 
-  const { first_question, font_size, font_color, chat_back } =
-    setStyle.length > 0 ? setStyle[0] : {};
   const handleSendMessage = async () => {
     // e.preventDefault();
     setQuestionList([...questionList, question]);
@@ -83,26 +79,9 @@ function BubbleChat({
       });
   };
 
-  const getStyle = async () => {
-    setIsLoading(true);
-    await getStyles()
-      .then((res) => {
-        setStyleData(res.data);
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        console.log("error ", err);
-        setIsLoading(false);
-      });
-  };
-
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [activeChat.queries.length]);
-
-  useEffect(() => {
-    getStyle();
-  }, []);
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
@@ -118,14 +97,14 @@ function BubbleChat({
   return (
     <div>
       <div
-        className={`flex flex-col justify-between  mb-2 bg-white h-[400px] w-[350px] fixed right-4 bottom-12 shadow-lg border-1 rounded-lg overflow-hidden transition-transform duration-300  ${
+        className={`flex flex-col justify-between  mb-2 bg-white h-full w-full pt-16 px-4 fixed right-4 bottom-12 shadow-lg border-1 rounded-lg overflow-hidden transition-transform duration-300  ${
           isOpen ? "" : "transform translate-y-full opacity-0"
         } `}
       >
         <div className="bg-sky-900 w-full h-12 flex justify-start items-center rounded-t-lg">
           <img src="/images/bot.png" className="w-10 ml-2" />
         </div>
-        <div className="h-[230px] overflow-y-scroll">
+        <div className="h-full overflow-y-scroll">
           <div
             className={`${
               questionList.length > 0 || activeChat.queries.length > 0
@@ -137,12 +116,12 @@ function BubbleChat({
                 className="w-10 h-10 rounded-lg ml-1"
               />
               <span className="font-bold ml-1 bg-gray-300 p-2 rounded-lg">
-                {!first_question ? "How can I help you?" : first_question}
+                {"How can I help you?"}
               </span>
             </div>
             {questionList.length > 0 &&
               questionList.map((m, index) => (
-                <>
+                <div key={index}>
                   <div className="flex flex-col items-end w-full my-1 ">
                     <p className="p-2 rounded-lg bg-indigo-700 text-white">
                       {m}
@@ -172,7 +151,7 @@ function BubbleChat({
                       )}
                     </span>
                   </div>
-                </>
+                </div>
               ))}
             <div ref={bottomRef} />
           </div>

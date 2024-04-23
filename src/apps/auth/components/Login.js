@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
@@ -29,22 +29,10 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [setStyle, setStyleData] = useState(false);
 
-  const [queryParam] = useSearchParams();
-
   const { chat_back, text_title, font_size, font_color } =
     setStyle.length > 0 ? setStyle[0] : {};
 
   console.log("text_title------", text_title);
-
-  useEffect(() => {
-    if (queryParam.size > 0) {
-      const u_token = queryParam.get("u_token");
-      const c_token = queryParam.get("c_token");
-      const b_token = queryParam.get("b_token");
-      const r_token = queryParam.get("r_token");
-      dispatch(verifyURL({ u_token, c_token, b_token, r_token }));
-    }
-  }, [queryParam]);
 
   const formik = useFormik({
     initialValues: {
