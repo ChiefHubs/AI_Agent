@@ -125,6 +125,7 @@ const Admin = () => {
   };
 
   const handleOpen = () => {
+    setUModalData(null);
     setIsOpenUModal(true);
   };
 

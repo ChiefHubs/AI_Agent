@@ -18,9 +18,7 @@ import "../style.css";
 import { getAllQueries } from "../apis";
 import setAuthHeader from "../../../_helpers/setAuthHeader";
 import { Helmet } from "react-helmet";
-import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { verifyURL } from "../../auth/actions";
 
 const Home = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -30,24 +28,14 @@ const Home = () => {
   const [queries, setQueries] = useState([]);
   const [setStyle, setStyleData] = useState(false);
   const [activeChat, setActiveChat] = useState({ queries: [] });
-  const [my_role, setRole] = useState(null);
-  // const [my_role, setRole] = useState(null);
   const dispatch = useDispatch();
 
   const theme = useSelector((store) => store.setting.isDark);
-  const userData = useSelector((store) => store.auth.user);
-
+  const my_role = JSON.parse(sessionStorage.getItem("user")).roles;
   const [questionList, setQuestionList] = useState([]);
 
   const { chat_back, text_title, font_size, font_color } =
     setStyle.length > 0 ? setStyle[0] : {};
-  //---------------
-  const { tokens } = useParams();
-  console.log("token-------------", tokens);
-  if (tokens) {
-    const [u_token, c_token, b_token, r_token] = tokens?.split("&");
-    dispatch(verifyURL({ u_token, c_token, b_token, r_token }));
-  }
 
   const getQueries = async () => {
     setIsLoading(true);
@@ -63,14 +51,10 @@ const Home = () => {
   };
 
   useEffect(() => {
-    if (userData) {
-      setRole(userData.roles);
-      console.log("userData-----------", userData);
-      setAuthHeader(userData.token); // Pass the user data directly instead of using sessionStorage
-      getQueries();
-      setCurrentPage("");
-    }
-  }, [userData]);
+    setAuthHeader(sessionStorage.getItem("user"));
+    getQueries();
+    setCurrentPage("");
+  }, []);
 
   const getStyle = async () => {
     setIsLoading(true);

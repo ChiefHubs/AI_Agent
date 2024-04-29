@@ -109,30 +109,6 @@ export const verifyEmail = (tokens) => async (dispatch) => {
   }
 };
 
-export const verifyURL = (tokens) => async (dispatch) => {
-  try {
-    const { data } = await axios.post(`${API_URL}/auth/verifyHashURL`, tokens, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    sessionStorage.setItem("user", JSON.stringify(data));
-    console.log("setdata--------", JSON.stringify(data));
-    dispatch(setUser(data));
-    dispatch({
-      type: URL_VERIFY_SUCCESS,
-      error: URL_VERIFY_SUCCESS_MSG,
-    });
-    window.location = "/";
-  } catch (error) {
-    console.log("error: ", error);
-    dispatch({
-      type: URL_VERIFY_ERROR,
-      error: URL_VERIFY_ERROR_MSG,
-    });
-  }
-};
-
 export const login = (loginInput) => async (dispatch) => {
   try {
     const { data } = await axios.post(`${API_URL}/auth/login`, loginInput, {

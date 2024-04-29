@@ -9,6 +9,7 @@ import Privacy from "./apps/home/components/Privacy.js";
 import Signup from "./apps/auth/components/Signup";
 import ForgotPassword from "./apps/auth/components/ForgotPassword";
 import Home from "./apps/home/components/Home";
+import Bot from "./apps/home/components/Bot";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
@@ -31,7 +32,7 @@ function App() {
               </RequireAuth>
             }
           />
-          <Route exact path="/:tokens" element={<Home />} />
+          <Route path="/bot/:tokens" element={<Bot />} />
 
           <Route path="/policy" element={<Policy />} />
           <Route path="/terms" element={<Terms />} />
