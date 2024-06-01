@@ -47,6 +47,7 @@ const Admin = () => {
   // const [tabState, setTabState] = useState(true);
 
   const [currentPage, setCurrentPage] = useState(0);
+  const [_currentPage, setCurrentPage1] = useState(0);
   const [PER_PAGE] = useState(5);
   const [user_roles, setRoles] = useState([]);
   const [selectedTab, setSelectedTab] = useState("userinfo");
@@ -59,6 +60,13 @@ const Admin = () => {
 
   const offset = currentPage * PER_PAGE;
   const pageCount = Math.ceil(userData.length / PER_PAGE);
+
+  const _offset = _currentPage * PER_PAGE;
+  const _pageCount = Math.ceil(options.length / PER_PAGE);
+
+  const _handlePageClick = ({ selected: selectedPage }) => {
+    setCurrentPage1(selectedPage);
+  };
 
   const showToast = (value) => {
     if (value === 0) {
@@ -108,10 +116,13 @@ const Admin = () => {
     }
   };
 
-  const handleEditLLM = (e) => {
-    setOptionUserId(options[e].user._id);
+  const handleEditLLM = (userid) => {
+    setOptionUserId(userid);
     setIsOpenOModal(true);
-    setOModalData(options[e]);
+    const option = options.find((item) => {
+      return item.user._id == userid;
+    });
+    setOModalData(option);
   };
 
   const handleCloseLLM = () => {
@@ -455,7 +466,7 @@ const Admin = () => {
                     </thead>
                     <tbody>
                       {options
-                        .slice(offset, offset + PER_PAGE)
+                        .slice(_offset, _offset + PER_PAGE)
                         .map((option, index) => {
                           let name =
                             option.user.firstName +
@@ -532,8 +543,10 @@ const Admin = () => {
                                   <button
                                     className="select-none rounded-lg bg-gray-900 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none flex justify-center items-center"
                                     type="button"
-                                    data-dialog-target={`sign-in-dialog${index}`}
-                                    onClick={() => handleEditLLM(index)}
+                                    data-dialog-target={`sign-in-dialog${option.user._id}`}
+                                    onClick={() =>
+                                      handleEditLLM(option.user._id)
+                                    }
                                   >
                                     <FontAwesomeIcon
                                       icon={faEdit}
@@ -552,8 +565,8 @@ const Admin = () => {
                     <ReactPaginate
                       previousLabel={"Previous"}
                       nextLabel={"Next"}
-                      pageCount={pageCount}
-                      onPageChange={handlePageClick}
+                      pageCount={_pageCount}
+                      onPageChange={_handlePageClick}
                       containerClassName={"pagination"}
                       pageClassName="page-item"
                       pageLinkClassName="page-link"
