@@ -18,6 +18,16 @@ const UpgradeGPT = ({ setCurrentPage }) => {
     },
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [customModel, setCustomModel] = useState("");
+
+  const gptModels = [
+    "gpt-4o",
+    "gpt-4-turbo",
+    "gpt-3.5-turbo-0125",
+    "claude-3-opus-20240229",
+    "claude-3-sonnet-20240229",
+    "claude-3-haiku-20240307"
+  ];
 
   useEffect(() => {
     handleGetGPT();
@@ -34,7 +44,11 @@ const UpgradeGPT = ({ setCurrentPage }) => {
 
   const onSubmit = async (values) => {
     setIsLoading(true);
-    await setLLMOption(values)
+    const finalValues = {
+      ...values,
+      gpt: values.gpt === "custom" ? customModel : values.gpt
+    };
+    await setLLMOption(finalValues)
       .then((res) => {
         // console.log("Res", res);
         toast.success("GPT name is saved successfully!", {
@@ -92,21 +106,40 @@ const UpgradeGPT = ({ setCurrentPage }) => {
               <div className="form-control">
                 <span className="input-error">
                   {/* <label>Prompt </label> */}
-                  {formik.touched.prompt && formik.errors.prompt ? (
-                    <div className="error">{formik.errors.prompt}</div>
+                  {formik.touched.gpt && formik.errors.gpt ? (
+                    <div className="error">{formik.errors.gpt}</div>
                   ) : null}
                 </span>
 
-                <input
-                  type="text"
+            
+                <select
                   id="gpt"
                   name="gpt"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.gpt}
                   className="input-box"
-                  placeholder="Enter GPT name"
-                />
+                >
+                  <option value="" label="Select GPT model" />
+                  {gptModels.map((model) => (
+                    <option key={model} value={model}>
+                      {model}
+                    </option>
+                  ))}
+                  <option value="custom" label="Custom (Enter below)" />
+                </select>
+                {formik.values.gpt === "custom" && (
+                  <input
+                    type="text"
+                    id="customModel"
+                    name="customModel"
+                    onChange={(e) => setCustomModel(e.target.value)}
+                    onBlur={formik.handleBlur}
+                    value={customModel}
+                    className="input-box"
+                    placeholder="Enter custom GPT model"
+                  />
+                )}
               </div>
 
               <div
