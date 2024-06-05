@@ -46,23 +46,20 @@ const Bot = () => {
   return (
     <>
       {
-        <div className="md:w-full h-screen flex">
-          <div
-            style={{
-              backgroundColor: !originColor,
-            }}
-            className={"w-full md:w-[100%] h-screen md:h-screen"}
-          >
-            <BubbleChat
-              setIsMenuOpen={setIsMenuOpen}
-              isMenuOpen={isMenuOpen}
-              activeChat={activeChat}
-              setActiveChat={setActiveChat}
-              setQueries={setQueries}
-              questionList={questionList}
-              setQuestionList={setQuestionList}
-            />
-          </div>
+        <div
+          style={{
+            backgroundColor: !originColor,
+          }}
+        >
+          <BubbleChat
+            setIsMenuOpen={setIsMenuOpen}
+            isMenuOpen={isMenuOpen}
+            activeChat={activeChat}
+            setActiveChat={setActiveChat}
+            setQueries={setQueries}
+            questionList={questionList}
+            setQuestionList={setQuestionList}
+          />
         </div>
       }
     </>

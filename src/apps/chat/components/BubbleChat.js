@@ -94,6 +94,17 @@ function BubbleChat({
     setQuestion(e.target.value);
   };
 
+  const handleBubbleClick = () => {
+    setOpen(!isOpen);
+    window.parent.postMessage(
+      {
+        type: "toggleChat",
+        isOpen: !isOpen,
+      },
+      "*"
+    );
+  };
+
   return (
     <div>
       <div
@@ -178,9 +189,7 @@ function BubbleChat({
         </div>
       </div>
       <button
-        onClick={() => {
-          setOpen(!isOpen);
-        }}
+        onClick={handleBubbleClick}
         className="bg-sky-900 rounded-full w-[50px] h-[50px] p-2 shadow-lg text-white fixed bottom-1 right-4"
       >
         <FontAwesomeIcon icon={isOpen ? faChevronDown : faMessage} />
