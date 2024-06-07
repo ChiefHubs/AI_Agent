@@ -27,15 +27,23 @@ function BubbleChat({
 
   const bottomRef = useRef(null);
 
-  const handleSendMessage = async () => {
-    // e.preventDefault();
-    setQuestionList([...questionList, question]);
+  const timestampedQuestions = useRef([]);
 
+  const handleSendMessage = async () => {
     if (!question) {
       return;
     }
+
+    const timestamp = new Date().toLocaleString();
+    const messageWithTimestamp = `${question} (Sent at: ${timestamp})`;
+
+    // Add the user-visible message without the timestamp to the question list
+    setQuestionList([...questionList, question]);
+    // Add the timestamped question to the list
+    timestampedQuestions.current.push(messageWithTimestamp);
+
     let payload = {
-      question: question,
+      question: messageWithTimestamp,
       modelId: activeModel,
     };
 
@@ -81,7 +89,7 @@ function BubbleChat({
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [activeChat.queries.length]);
+  }, [questionList, activeChat.queries.length]);
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
@@ -131,11 +139,11 @@ function BubbleChat({
               </span>
             </div>
             {questionList.length > 0 &&
-              questionList.map((m, index) => (
+              questionList.map((message, index) => (
                 <div key={index}>
                   <div className="flex flex-col items-end w-full my-1 ">
                     <p className="p-2 rounded-lg bg-indigo-700 text-white">
-                      {m}
+                      {message}
                     </p>
                   </div>
 
@@ -150,15 +158,18 @@ function BubbleChat({
                           <img src="/images/dots.gif" className="w-12" />
                         </span>
                       ) : (
-                        <p>
-                          {activeChat.queries.map((ans, index) => (
-                            <p key={index}>
+                        activeChat.queries
+                          .filter(
+                            (ans) =>
+                              ans.question === timestampedQuestions.current[index]
+                          )
+                          .map((ans, ansIndex) => (
+                            <p key={ansIndex}>
                               <Markdown remarkPlugins={[remarkGfm]}>
-                                {m === ans.question && ans.solution}
+                                {ans.solution}
                               </Markdown>
                             </p>
-                          ))}
-                        </p>
+                          ))
                       )}
                     </span>
                   </div>
