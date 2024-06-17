@@ -76,3 +76,11 @@ export const forgotPasswordSchema = Yup.object({
     .email("Invalid email address")
     .required("Email is required"),
 });
+
+export const appRegSchema = Yup.object({
+  name: Yup.string().required("App name is required"),
+});
+
+export const appUpdateSchema = Yup.object({
+  name: Yup.string().required("App name is required"),
+});

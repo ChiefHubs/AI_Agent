@@ -6,7 +6,7 @@ import Sidebar from "./Sidebar";
 import Chat from "../../chat/components/Chat";
 import BubbleChat from "../../chat/components/BubbleChat";
 import ChangePassword from "../../menu/components/ChangePassword";
-import Admin from "../../admin/components/Admin";
+import UserManager from "../../admin/components/UserManager";
 import LLMTemperature from "../../menu/components/LLMTemperature";
 import Profile from "../../menu/components/Profile";
 import FileUpload from "../../menu/components/FileUpload";
@@ -19,6 +19,9 @@ import { getAllQueries } from "../apis";
 import setAuthHeader from "../../../_helpers/setAuthHeader";
 import { Helmet } from "react-helmet";
 import { useDispatch, useSelector } from "react-redux";
+import LLMManager from "../../admin/components/LLMManager";
+import AppRegister from "../../admin/components/AppRegister";
+import BotIntegration from "../../admin/components/BotIntegration";
 
 const Home = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -84,7 +87,6 @@ const Home = () => {
     return <div className="coverSpinner"></div>;
   }
   const originColor = theme === true ? "block" : "#171717";
-
   return (
     <>
       {text_title ? (
@@ -155,9 +157,7 @@ const Home = () => {
                 </div>
               )}
             </div>
-            {currentPage === "GoAdmin" && (
-              <Admin setCurrentPage={setCurrentPage} />
-            )}
+
             {currentPage === "" ? (
               my_role !== 3 ? (
                 <Chat
@@ -205,6 +205,18 @@ const Home = () => {
                 )}
                 {currentPage === "Others" && (
                   <Others setCurrentPage={setCurrentPage} />
+                )}
+                {currentPage === "User Manage" && (
+                  <UserManager setCurrentPage={setCurrentPage} />
+                )}
+                {currentPage === "LLM Manage" && (
+                  <LLMManager setCurrentPage={setCurrentPage} />
+                )}
+                {currentPage === "App Register" && (
+                  <AppRegister setCurrentPage={setCurrentPage} />
+                )}
+                {currentPage === "Chatbot Integration" && (
+                  <BotIntegration setCurrentPage={setCurrentPage} />
                 )}
               </>
             )}

@@ -17,6 +17,11 @@ import {
   faComment,
   faStar,
   faShieldHalved,
+  faUserGroup,
+  faBrain,
+  faRobot,
+  faCashRegister,
+  faHandsBubbles,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { logout, setTheme } from "../../auth/actions";
@@ -160,6 +165,35 @@ const settingMenu = {
   ],
 };
 
+const adminMenu = [
+  {
+    title: "User Manage",
+    icon: faUserGroup,
+  },
+  {
+    title: "LLM Manage",
+    icon: faBrain,
+    state: false,
+  },
+  {
+    title: "Chatbot Manage",
+    icon: faRobot,
+    state: false,
+  },
+];
+
+const chatbotMenu = [
+  {
+    title: "App Register",
+    icon: faCashRegister,
+  },
+  {
+    title: "Chatbot Integration",
+    icon: faHandsBubbles,
+    state: false,
+  },
+];
+
 const Sidebar = ({
   queries,
   setCurrentPage,
@@ -176,6 +210,8 @@ const Sidebar = ({
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isSettingOpen, setIsSettingOpen] = useState(false);
+  const [isAdminOpen, setIsAdminOpen] = useState(false);
+  const [isChatbotOpen, setIsChatbotOpen] = useState(false);
   const [setStyle, setStyleData] = useState(false);
   const navigate = useNavigate();
 
@@ -455,26 +491,154 @@ const Sidebar = ({
                                 }
                               })}
                           </div>
+                        ) : item.title === "GoAdmin" && user.roles === 0 ? (
+                          <div className="cursor-pointer">
+                            <div
+                              className="flex items-center"
+                              onClick={() => setIsAdminOpen(!isAdminOpen)}
+                            >
+                              <FontAwesomeIcon
+                                icon={item.icon}
+                                fontSize="1em"
+                                className="icon-style px-3"
+                              />
+                              <div
+                                className={`flex flex-row justify-between items-center w-full cursor-pointer ${
+                                  theme === true ? "text-[#fff]" : "text-black"
+                                } `}
+                              >
+                                {item.title}
+                                {!isAdminOpen ? (
+                                  <FontAwesomeIcon
+                                    icon={faAngleDown}
+                                    fontSize="1em"
+                                    className="icon-style"
+                                  />
+                                ) : (
+                                  <FontAwesomeIcon
+                                    icon={faAngleUp}
+                                    fontSize="1em"
+                                    className="icon-style"
+                                  />
+                                )}
+                              </div>
+                            </div>
+
+                            {/* setting submenu */}
+                            {isAdminOpen &&
+                              adminMenu.map((item, i) => {
+                                if (item.title === "Chatbot Manage") {
+                                  return (
+                                    <div className="cursor-pointer" key={i}>
+                                      <div
+                                        className="flex items-center pl-3 py-2"
+                                        onClick={() =>
+                                          setIsChatbotOpen(!isChatbotOpen)
+                                        }
+                                      >
+                                        <FontAwesomeIcon
+                                          icon={item.icon}
+                                          fontSize="1em"
+                                          className="icon-style px-3"
+                                        />
+                                        <div
+                                          className={`flex flex-row justify-between items-center w-full cursor-pointer ${
+                                            theme === true
+                                              ? "text-[#fff]"
+                                              : "text-black"
+                                          } `}
+                                        >
+                                          {item.title}
+                                          {!isChatbotOpen ? (
+                                            <FontAwesomeIcon
+                                              icon={faAngleDown}
+                                              fontSize="1em"
+                                              className="icon-style"
+                                            />
+                                          ) : (
+                                            <FontAwesomeIcon
+                                              icon={faAngleUp}
+                                              fontSize="1em"
+                                              className="icon-style"
+                                            />
+                                          )}
+                                        </div>
+                                      </div>
+
+                                      {/* setting submenu */}
+                                      {isChatbotOpen &&
+                                        chatbotMenu.map((item, i) => {
+                                          return (
+                                            <div
+                                              className={`flex flex-row py-2 rounded-md w-full  cursor-pointer ${
+                                                theme === true
+                                                  ? "hover:bg-gray-500"
+                                                  : "hover:bg-gray-100"
+                                              }`}
+                                              key={i}
+                                              onClick={() => {
+                                                setCurrentPage(item.title);
+                                                setIsMenuOpen &&
+                                                  setIsMenuOpen(false);
+                                              }}
+                                            >
+                                              <div
+                                                className={`block pl-5 py-2 mt-2 ${
+                                                  theme === true
+                                                    ? "text-[#fff]"
+                                                    : "text-black"
+                                                } text-sm font-semibold rounded-lg md:mt-0  focus:outline-none focus:shadow-outline`}
+                                              >
+                                                <FontAwesomeIcon
+                                                  icon={item.icon}
+                                                  fontSize="1em"
+                                                  className="icon-style px-3"
+                                                />
+                                                {item.title}
+                                              </div>
+                                            </div>
+                                          );
+                                        })}
+                                    </div>
+                                  );
+                                } else {
+                                  return (
+                                    <div
+                                      className={`flex flex-row py-2 rounded-md w-full  cursor-pointer ${
+                                        theme === true
+                                          ? "hover:bg-gray-500"
+                                          : "hover:bg-gray-100"
+                                      }`}
+                                      key={i}
+                                      onClick={() => {
+                                        setCurrentPage(item.title);
+                                        setIsMenuOpen && setIsMenuOpen(false);
+                                      }}
+                                    >
+                                      <div
+                                        className={`block px-3 py-2 mt-2 ${
+                                          theme === true
+                                            ? "text-[#fff]"
+                                            : "text-black"
+                                        } text-sm font-semibold rounded-lg md:mt-0  focus:outline-none focus:shadow-outline`}
+                                      >
+                                        <FontAwesomeIcon
+                                          icon={item.icon}
+                                          fontSize="1em"
+                                          className="icon-style px-3"
+                                        />
+                                        {item.title}
+                                      </div>
+                                    </div>
+                                  );
+                                }
+                              })}
+                          </div>
                         ) : item.title === "Logout" ? (
                           <div
                             className={`cursor-pointer }`}
                             onClick={() => {
                               dispatch(logout);
-                            }}
-                          >
-                            <FontAwesomeIcon
-                              icon={item.icon}
-                              fontSize="1em"
-                              className="icon-style px-3 "
-                            />
-                            {item.title}
-                          </div>
-                        ) : item.title === "GoAdmin" && user.roles === 0 ? (
-                          <div
-                            className={`cursor-pointer }`}
-                            onClick={() => {
-                              setCurrentPage(item.title);
-                              setIsMenuOpen && setIsMenuOpen(false);
                             }}
                           >
                             <FontAwesomeIcon

@@ -22,6 +22,7 @@ import {
   faBrain,
   faCopy,
   faEdit,
+  faRobot,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { getLLMOptionWithUser } from "../apis";
@@ -214,37 +215,56 @@ const Admin = () => {
       {isLoading && <div className="coverSpinner"></div>}
 
       {
-        <Tabs value="userinfo" className="p-2">
-          <TabsHeader className=" bg-gray-300">
+        <Tabs value="userinfo" className="m-2 p-2 bg-gray-200 rounded-lg">
+          <TabsHeader
+            className="rounded-none border-b border-blue-gray-50 bg-transparent p-0"
+            indicatorProps={{
+              className:
+                "bg-transparent border-b-2 border-gray-900 shadow-none rounded-none",
+            }}
+          >
             <Tab
               key={"userinfo"}
               value={"userinfo"}
               onClick={() => setSelectedTab("userinfo")}
+              className={
+                selectedTab === "userinfo"
+                  ? "text-gray-900 border-b-4 border-gray-900 p-2"
+                  : " p-2"
+              }
             >
-              <div
-                className={`flex items-center gap-2 border p-2 rounded-lg z-50 relative ${
-                  selectedTab === "userinfo" ? "bg-white" : "bg-gray-200"
-                } `}
-              >
-                <FontAwesomeIcon icon={faUser} />
-                {"User Information"}
-              </div>
+              <FontAwesomeIcon icon={faUser} className="mr-2" />
+              {"User Information"}
+            </Tab>
+
+            <Tab
+              key={"chatbotinfo"}
+              value={"chatbotinfo"}
+              onClick={() => setSelectedTab("chatbotinfo")}
+              className={
+                selectedTab === "chatbotinfo"
+                  ? "text-gray-900 border-b-4 border-gray-900 p-2"
+                  : " p-2"
+              }
+            >
+              <FontAwesomeIcon icon={faRobot} className="mr-2" />
+              {"Chatbot Information"}
             </Tab>
             <Tab
               key={"llminfo"}
               value={"llminfo"}
               onClick={() => setSelectedTab("llminfo")}
+              className={
+                selectedTab === "llminfo"
+                  ? "text-gray-900 border-b-4 border-gray-900  p-2"
+                  : " p-2"
+              }
             >
-              <div
-                className={`flex items-center gap-2 border p-2 rounded-lg z-50 relative ${
-                  selectedTab === "userinfo" ? "bg-white" : "bg-gray-200"
-                }`}
-              >
-                <FontAwesomeIcon icon={faBrain} />
-                {"LLM Information"}
-              </div>
+              <FontAwesomeIcon icon={faUser} className="mr-2" />
+              {"LLM Information"}
             </Tab>
           </TabsHeader>
+
           <TabsBody
             animate={{
               initial: { y: 250 },
@@ -276,7 +296,197 @@ const Admin = () => {
                             <p
                               variant="small"
                               color="blue-gray"
-                              className="flex items-center justify-between gap-2 font-normal leading-none opacity-70"
+                              className="flex items-center justify-between gap-2 font-bold italic leading-none opacity-70"
+                            >
+                              {head}
+                              {/* {index !== TABLE_HEAD.length - 1 && (
+                            <ChevronUpDownIcon
+                              strokeWidth={2}
+                              className="h-4 w-4"
+                            />
+                          )} */}
+                            </p>
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {userData
+                        .slice(offset, offset + PER_PAGE)
+                        .map(
+                          (
+                            {
+                              firstName,
+                              lastName,
+                              email,
+                              mobile_no,
+                              roles,
+                              _id,
+                              direct_URL,
+                            },
+                            index
+                          ) => {
+                            const Croles = parseInt(roles);
+                            const role = user_roles.find(
+                              (item) => item.value === Croles
+                            );
+                            let name =
+                              firstName +
+                              " " +
+                              (lastName === undefined ? "" : lastName);
+                            const isLast = index === userData.length - 1;
+                            const classes = isLast
+                              ? "p-4"
+                              : "p-4 border-b border-blue-gray-50";
+
+                            return (
+                              <tr key={index} id={_id}>
+                                <td className={classes}>
+                                  <div className="flex items-center gap-3">
+                                    <div className="flex flex-col">
+                                      <p
+                                        variant="small"
+                                        color="blue-gray"
+                                        className="font-normal"
+                                      >
+                                        {name}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td className={classes}>
+                                  <div className="flex flex-col">
+                                    <p
+                                      variant="small"
+                                      color="blue-gray"
+                                      className="font-normal"
+                                    >
+                                      {email}
+                                    </p>
+                                  </div>
+                                </td>
+                                <td className={classes}>
+                                  <div className="w-max">
+                                    <p
+                                      variant="small"
+                                      color="blue-gray"
+                                      className="font-normal"
+                                    >
+                                      {mobile_no}
+                                    </p>
+                                  </div>
+                                </td>
+                                <td className={classes}>
+                                  <p
+                                    variant="small"
+                                    color="blue-gray"
+                                    className="font-normal"
+                                  >
+                                    {role?.title}
+                                  </p>
+                                </td>
+                                <td className={classes}>
+                                  <p
+                                    variant="small"
+                                    color="blue-gray"
+                                    className="font-normal"
+                                  >
+                                    {direct_URL ? (
+                                      <button
+                                        onClick={() => {
+                                          navigator.clipboard.writeText(
+                                            direct_URL
+                                          );
+                                          showToast(3);
+                                        }}
+                                      >
+                                        <FontAwesomeIcon icon={faCopy} />
+                                      </button>
+                                    ) : (
+                                      ""
+                                    )}
+                                  </p>
+                                </td>
+                                <td className={classes}>
+                                  <p
+                                    variant="small"
+                                    color="blue-gray"
+                                    className="font-normal"
+                                  >
+                                    <Tooltip content="Delete">
+                                      <Button
+                                        onClick={() => handleDelete(_id)}
+                                        variant="text"
+                                      >
+                                        <TrashIcon className="h-4 w-4" />
+                                      </Button>
+                                    </Tooltip>
+                                    <Tooltip content="Edit">
+                                      <Button
+                                        onClick={() => handleEdit(_id)}
+                                        variant="text"
+                                      >
+                                        <FontAwesomeIcon
+                                          icon={faEdit}
+                                          className="mr-1"
+                                        />
+                                      </Button>
+                                    </Tooltip>
+                                  </p>
+                                </td>
+                              </tr>
+                            );
+                          }
+                        )}
+                    </tbody>
+                  </table>
+                  <div className="tableFooter">
+                    <ReactPaginate
+                      previousLabel={"Previous"}
+                      nextLabel={"Next"}
+                      pageCount={pageCount}
+                      onPageChange={handlePageClick}
+                      containerClassName={"pagination"}
+                      pageClassName="page-item"
+                      pageLinkClassName="page-link"
+                      previousClassName="page-item"
+                      previousLinkClassName={"page-link"}
+                      nextClassName={"page-item"}
+                      nextLinkClassName={"page-link"}
+                      disabledClassName={"page-item"}
+                      activeClassName={"page-item active"}
+                      activeLinkClassName="page-link"
+                    />
+                  </div>
+                </div>
+              </div>
+            </TabPanel>
+
+            <TabPanel key={"chatbotinfo"} value={"chatbotinfo"}>
+              <div className="w-full bg-white p-3 rounded-xl">
+                <div className="rounded-none">
+                  <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
+                    <Button
+                      className="btn danger bg-neutral-950 hover:bg-neutral-800"
+                      onClick={handleOpen}
+                    >
+                      Add Chatbot
+                    </Button>
+                  </div>
+                </div>
+                <div className="px-0">
+                  <table className="mt-4 w-full min-w-max table-auto text-left">
+                    <thead>
+                      <tr key={-1}>
+                        {TABLE_HEAD.map((head, index) => (
+                          <th
+                            key={index}
+                            className="cursor-pointer border-y border-blue-gray-100 bg-blue-gray-50/50 p-4 transition-colors hover:bg-blue-gray-50"
+                          >
+                            <p
+                              variant="small"
+                              color="blue-gray"
+                              className="flex items-center justify-between gap-2 font-bold italic leading-none opacity-70"
                             >
                               {head}
                               {/* {index !== TABLE_HEAD.length - 1 && (

@@ -25,3 +25,20 @@ export const getRoles = () => {
 export const getLLMOptionWithUser = () => {
   return axios.get(`${API_URL}/llm_option/getOptionWithUser`);
 };
+
+export const createChatbotApp = (values) => {
+  return axios.post(`${API_URL}/admin/createChatbotApp`, { values });
+};
+
+export const updateChatbotApp = (values) => {
+  return axios.post(`${API_URL}/admin/updateChatbotApp`, { values });
+};
+
+export const deleteApp = (id) => {
+  return axios.post(`${API_URL}/admin/deleteApp`, { id });
+};
+
+// get apps for chatbot integration
+export const getAllApps = () => {
+  return axios.get(`${API_URL}/admin/getApps`);
+};
