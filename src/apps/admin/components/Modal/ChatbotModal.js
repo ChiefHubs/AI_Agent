@@ -3,10 +3,11 @@ import { appRegSchema, appUpdateSchema } from "../../../admin/validations";
 import { createChatbotApp, updateChatbotApp } from "../../apis";
 import { setTheme } from "../../../auth/actions";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import { useFormik } from "formik";
 import "../../style.css";
 
-const AppRegisterModal = ({ data, onClose, getApps, showToast, roles }) => {
+const ChatbotModal = ({ data, onClose, getApps, showToast, apps }) => {
   const dispatch = useDispatch();
   // const { messages, error, isAuthenticated, errorType } = useSelector(
   //   (state) => state.auth
@@ -94,6 +95,7 @@ const AppRegisterModal = ({ data, onClose, getApps, showToast, roles }) => {
     } else {
       dispatch(setTheme(true));
     }
+    getApps();
   }, []);
 
   if (isLoading) {
@@ -114,7 +116,7 @@ const AppRegisterModal = ({ data, onClose, getApps, showToast, roles }) => {
           ></div>
           <div className="login-area fixed top-[15%]">
             <h1 align="center" className="title">
-              Register an app for chatbot Integration
+              Add Chatbot
             </h1>
             <div className="form-area">
               <form onSubmit={formik.handleSubmit}>
@@ -262,4 +264,4 @@ const AppRegisterModal = ({ data, onClose, getApps, showToast, roles }) => {
   );
 };
 
-export default AppRegisterModal;
+export default ChatbotModal;

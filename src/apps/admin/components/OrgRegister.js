@@ -1,6 +1,6 @@
-import { getAllApps, deleteApp } from "../apis";
+import { getAllOrgs, deleteOrg } from "../apis";
 import ReactPaginate from "react-paginate";
-import AppRegisterModal from "./Modal/AppRegisterModal";
+import OrgRegisterModal from "./Modal/OrgRegisterModal";
 import React, { useState, useEffect } from "react";
 import { TrashIcon } from "@heroicons/react/24/solid";
 import { Button, Tooltip } from "@material-tailwind/react";
@@ -11,23 +11,21 @@ import { faEdit } from "@fortawesome/free-solid-svg-icons";
 
 const TABLE_HEAD = ["No", "Name", "Description", "Action"];
 
-const AppRegister = () => {
+const OrgRegister = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [appData, setAppData] = useState([]);
+  const [orgData, setOrgData] = useState([]);
   const [isOpenModal, setIsOpenModal] = useState(false);
-  // const [user_modal_data, setUModalData] = useState(null);
   const [modalData, setModalData] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(0);
   const [PER_PAGE] = useState(5);
-  const [user_roles, setRoles] = useState([]);
 
   const handlePageClick = ({ selected: selectedPage }) => {
     setCurrentPage(selectedPage);
   };
 
   const offset = currentPage * PER_PAGE;
-  const pageCount = Math.ceil(appData.length / PER_PAGE);
+  const pageCount = Math.ceil(orgData.length / PER_PAGE);
 
   const showToast = (msg, flag) => {
     if (flag === 0) {
@@ -67,7 +65,7 @@ const AppRegister = () => {
   };
 
   const handleEdit = (e) => {
-    const filterUser = appData.filter((user) => user._id === e);
+    const filterUser = orgData.filter((user) => user._id === e);
     setModalData(filterUser);
     setIsOpenModal(true);
   };
@@ -82,15 +80,15 @@ const AppRegister = () => {
   };
 
   const handleDelete = async (id) => {
-    const appConfirmed = window.confirm(
-      "Are you sure you want to delete this App?"
+    const orgConfirmed = window.confirm(
+      "Are you sure you want to delete this Organization?"
     );
-    if (appConfirmed) {
+    if (orgConfirmed) {
       setIsLoading(true);
-      await deleteApp(id)
+      await deleteOrg(id)
         .then((res) => {
-          setAppData((appData) =>
-            appData.filter((user) => user._id !== res.data._id)
+          setOrgData((orgData) =>
+            orgData.filter((user) => user._id !== res.data._id)
           );
           setIsLoading(false);
         })
@@ -103,32 +101,31 @@ const AppRegister = () => {
       return false;
     }
   };
-  const getApps = async () => {
+  const getOrgs = async () => {
     setIsLoading(true);
-    await getAllApps()
+    await getAllOrgs()
       .then(async (res) => {
-        setAppData(res.data);
+        setOrgData(res.data);
         setIsLoading(false);
       })
       .catch((err) => {
-        console.log("error in get apps ---------- ", err);
+        console.log("error in get orgs ---------- ", err);
         setIsLoading(false);
       });
   };
 
   useEffect(() => {
-    getApps();
+    getOrgs();
   }, []);
 
   return (
     <>
       {isOpenModal && (
-        <AppRegisterModal
+        <OrgRegisterModal
           data={modalData}
           onClose={handleClose}
-          getApps={getApps}
+          getOrgs={getOrgs}
           showToast={showToast}
-          roles={user_roles}
         />
       )}
       {isLoading && <div className="coverSpinner"></div>}
@@ -137,14 +134,14 @@ const AppRegister = () => {
         <div className="bg-white p-3 rounded-xl m-2">
           <div className="rounded-none">
             <p className="flex justify-center items-center text-xl font-bold">
-              App Register for Chatbot Integration
+              Organization Register for Chatbot Integration
             </p>
             <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
               <Button
                 className="btn danger bg-neutral-950 hover:bg-neutral-800"
                 onClick={handleOpen}
               >
-                Add App
+                Add Organization
               </Button>
             </div>
           </div>
@@ -169,10 +166,10 @@ const AppRegister = () => {
                 </tr>
               </thead>
               <tbody>
-                {appData
+                {orgData
                   .slice(offset, offset + PER_PAGE)
                   .map(({ name, description, _id }, index) => {
-                    const isLast = index === appData.length - 1;
+                    const isLast = index === orgData.length - 1;
                     const classes = isLast
                       ? "p-4"
                       : "p-4 border-b border-blue-gray-50";
@@ -275,4 +272,4 @@ const AppRegister = () => {
   );
 };
 
-export default AppRegister;
+export default OrgRegister;

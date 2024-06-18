@@ -84,3 +84,11 @@ export const appRegSchema = Yup.object({
 export const appUpdateSchema = Yup.object({
   name: Yup.string().required("App name is required"),
 });
+
+export const orgRegSchema = Yup.object({
+  name: Yup.string().required("Organization name is required"),
+});
+
+export const orgUpdateSchema = Yup.object({
+  name: Yup.string().required("Organization name is required"),
+});

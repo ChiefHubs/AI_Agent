@@ -21,6 +21,7 @@ import { Helmet } from "react-helmet";
 import { useDispatch, useSelector } from "react-redux";
 import LLMManager from "../../admin/components/LLMManager";
 import AppRegister from "../../admin/components/AppRegister";
+import OrgRegister from "../../admin/components/OrgRegister";
 import BotIntegration from "../../admin/components/BotIntegration";
 
 const Home = () => {
@@ -214,6 +215,9 @@ const Home = () => {
                 )}
                 {currentPage === "App Register" && (
                   <AppRegister setCurrentPage={setCurrentPage} />
+                )}
+                {currentPage === "Organization Register" && (
+                  <OrgRegister setCurrentPage={setCurrentPage} />
                 )}
                 {currentPage === "Chatbot Integration" && (
                   <BotIntegration setCurrentPage={setCurrentPage} />

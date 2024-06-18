@@ -42,3 +42,24 @@ export const deleteApp = (id) => {
 export const getAllApps = () => {
   return axios.get(`${API_URL}/admin/getApps`);
 };
+
+export const deleteOrg = (id) => {
+  return axios.post(`${API_URL}/admin/deleteOrg`, { id });
+};
+
+export const getAllOrgs = () => {
+  return axios.get(`${API_URL}/admin/getOrgs`);
+};
+
+export const createChatbotOrg = (values) => {
+  return axios.post(`${API_URL}/admin/createChatbotOrg`, { values });
+};
+
+export const updateChatbotOrg = (values) => {
+  return axios.post(`${API_URL}/admin/updateChatbotOrg`, { values });
+};
+
+// get chatbots
+export const getChatbots = () => {
+  return axios.get(`${API_URL}/admin/getChatbots`);
+};

@@ -22,6 +22,7 @@ import {
   faRobot,
   faCashRegister,
   faHandsBubbles,
+  faRegistered,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { logout, setTheme } from "../../auth/actions";
@@ -186,6 +187,10 @@ const chatbotMenu = [
   {
     title: "App Register",
     icon: faCashRegister,
+  },
+  {
+    title: "Organization Register",
+    icon: faRegistered,
   },
   {
     title: "Chatbot Integration",

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { appRegSchema, appUpdateSchema } from "../../../admin/validations";
-import { createChatbotApp, updateChatbotApp } from "../../apis";
+import { orgRegSchema, orgUpdateSchema } from "../../../admin/validations";
+import { createChatbotOrg, updateChatbotOrg } from "../../apis";
 import { setTheme } from "../../../auth/actions";
 import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import "../../style.css";
 
-const AppRegisterModal = ({ data, onClose, getApps, showToast, roles }) => {
+const OrgRegisterModal = ({ data, onClose, getOrgs, showToast }) => {
   const dispatch = useDispatch();
   // const { messages, error, isAuthenticated, errorType } = useSelector(
   //   (state) => state.auth
@@ -18,7 +18,7 @@ const AppRegisterModal = ({ data, onClose, getApps, showToast, roles }) => {
       name: "",
       description: "",
     },
-    validationSchema: appRegSchema,
+    validationSchema: orgRegSchema,
     onSubmit: (values) => {
       onSubmit(values);
     },
@@ -29,7 +29,7 @@ const AppRegisterModal = ({ data, onClose, getApps, showToast, roles }) => {
       name: "",
       description: "",
     },
-    validationSchema: appUpdateSchema,
+    validationSchema: orgUpdateSchema,
     onSubmit: (values) => {
       onSubmitEdit(values);
     },
@@ -38,13 +38,13 @@ const AppRegisterModal = ({ data, onClose, getApps, showToast, roles }) => {
   const onSubmit = async (values) => {
     changeIsLoading(true);
     try {
-      const response = await createChatbotApp(values);
+      const response = await createChatbotOrg(values);
       changeIsLoading(false);
       onClose();
-      getApps();
+      getOrgs();
     } catch (e) {
       showToast(
-        e.response?.data?.error || "Server error in registering apps",
+        e.response?.data?.error || "Server error in registering orgs",
         2
       );
       console.log("error ", e);
@@ -55,13 +55,13 @@ const AppRegisterModal = ({ data, onClose, getApps, showToast, roles }) => {
   const onSubmitEdit = async (values) => {
     changeIsLoading(true);
     try {
-      const response = await updateChatbotApp(values);
+      const response = await updateChatbotOrg(values);
       changeIsLoading(false);
       onClose();
-      getApps();
+      getOrgs();
     } catch (e) {
       showToast(
-        e.response?.data?.error || "Server error in registering apps",
+        e.response?.data?.error || "Server error in registering orgs",
         2
       );
       console.log("error ", e);
@@ -114,13 +114,13 @@ const AppRegisterModal = ({ data, onClose, getApps, showToast, roles }) => {
           ></div>
           <div className="login-area fixed top-[15%]">
             <h1 align="center" className="title">
-              Register an app for chatbot Integration
+              Register an org for chatbot Integration
             </h1>
             <div className="form-area">
               <form onSubmit={formik.handleSubmit}>
                 <div className="form-control">
                   <span>
-                    <label htmlFor="name">App Name</label>
+                    <label htmlFor="name">Organization Name</label>
                     {formik.touched.name && formik.errors.name ? (
                       <div className="error">{formik.errors.name}</div>
                     ) : null}
@@ -134,7 +134,7 @@ const AppRegisterModal = ({ data, onClose, getApps, showToast, roles }) => {
                     onBlur={formik.handleBlur}
                     value={formik.values.name}
                     className="input-box"
-                    placeholder="Enter App Name"
+                    placeholder="Enter Organization Name"
                   />
                 </div>
                 <div className="form-control">
@@ -186,7 +186,7 @@ const AppRegisterModal = ({ data, onClose, getApps, showToast, roles }) => {
         >
           <div className="login-area fixed top-[15%]">
             <h1 align="center" className="title">
-              Edit App
+              Edit Organization
             </h1>
             <div className="form-area">
               <form onSubmit={formik_edit.handleSubmit}>
@@ -262,4 +262,4 @@ const AppRegisterModal = ({ data, onClose, getApps, showToast, roles }) => {
   );
 };
 
-export default AppRegisterModal;
+export default OrgRegisterModal;

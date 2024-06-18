@@ -1,6 +1,5 @@
-import { getAllUsers, deleteUser, getRoles } from "../apis";
+import { getAllApps, deleteUser, getChatbots } from "../apis";
 import ReactPaginate from "react-paginate";
-import CustomModal from "../../admin/components/Modal/CustomModal";
 import React, { useState, useEffect } from "react";
 import { TrashIcon } from "@heroicons/react/24/solid";
 import { Button, Tooltip } from "@material-tailwind/react";
@@ -9,26 +8,35 @@ import { ToastContainer, toast } from "react-toastify";
 import { EMAIL_EXIST_MSG } from "../../auth/constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy, faEdit } from "@fortawesome/free-solid-svg-icons";
+import ChatbotModal from "./Modal/ChatbotModal";
 
-const TABLE_HEAD = ["Name", "Email", "Phone Number", "Role", "URL", "Action"];
+const TABLE_HEAD = [
+  "No",
+  "Organization",
+  "App",
+  "User",
+  "Icon",
+  "URL",
+  "Action",
+];
 
 const BotIntegration = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [userData, setUserData] = useState([]);
+  const [chatbots, setChatbots] = useState([]);
   const [is_open_user_modal, setIsOpenUModal] = useState(false);
   const [user_modal_data, setUModalData] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(0);
   const [_currentPage, setCurrentPage1] = useState(0);
   const [PER_PAGE] = useState(5);
-  const [user_roles, setRoles] = useState([]);
+  const [appData, setAppData] = useState([]);
 
   const handlePageClick = ({ selected: selectedPage }) => {
     setCurrentPage(selectedPage);
   };
 
   const offset = currentPage * PER_PAGE;
-  const pageCount = Math.ceil(userData.length / PER_PAGE);
+  const pageCount = Math.ceil(chatbots.length / PER_PAGE);
 
   const showToast = (value) => {
     if (value === 0) {
@@ -79,7 +87,7 @@ const BotIntegration = () => {
   };
 
   const handleEdit = (e) => {
-    const filterUser = userData.filter((user) => user._id === e);
+    const filterUser = chatbots.filter((user) => user._id === e);
     setUModalData(filterUser);
     setIsOpenUModal(true);
   };
@@ -94,15 +102,15 @@ const BotIntegration = () => {
   };
 
   const handleDelete = async (id) => {
-    const userConfirmed = window.confirm(
+    const botDelFlag = window.confirm(
       "Are you sure you want to delete this user?"
     );
-    if (userConfirmed) {
+    if (botDelFlag) {
       setIsLoading(true);
       await deleteUser(id)
         .then((res) => {
-          setUserData((userData) =>
-            userData.filter((user) => user._id !== res.data._id)
+          setChatbots((chatbot) =>
+            chatbot.filter((bot) => bot._id !== res.data._id)
           );
           setIsLoading(false);
         })
@@ -115,13 +123,12 @@ const BotIntegration = () => {
       return false;
     }
   };
-  const getUsers = async () => {
+
+  const getApps = async () => {
     setIsLoading(true);
-    await getAllUsers()
+    await getAllApps()
       .then(async (res) => {
-        setUserData(res.data);
-        const role_res = await getRoles();
-        setRoles(role_res.data);
+        setAppData(res.data);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -130,19 +137,33 @@ const BotIntegration = () => {
       });
   };
 
+  const getChatbots = async () => {
+    // setIsLoading(true);
+    // await getChatbots()
+    //   .then(async (res) => {
+    //     setChatbots(res.data);
+    //     setIsLoading(false);
+    //   })
+    //   .catch((err) => {
+    //     console.log("error ", err);
+    //     setIsLoading(false);
+    //   });
+  };
+
   useEffect(() => {
-    getUsers();
+    getApps();
+    getChatbots();
   }, []);
 
   return (
     <>
       {is_open_user_modal && (
-        <CustomModal
+        <ChatbotModal
           data={user_modal_data}
           onClose={handleClose}
-          getUsers={getUsers}
+          getChatbots={getChatbots}
           showToast={showToast}
-          roles={user_roles}
+          apps={appData}
         />
       )}
       {isLoading && <div className="coverSpinner"></div>}
@@ -151,14 +172,14 @@ const BotIntegration = () => {
         <div className="bg-white p-3 rounded-xl m-2">
           <div className="rounded-none">
             <p className="flex justify-center items-center text-xl font-bold">
-              User Manage
+              Chatbot Integration
             </p>
             <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
               <Button
                 className="btn danger bg-neutral-950 hover:bg-neutral-800"
                 onClick={handleOpen}
               >
-                Add user
+                Add Chatbot
               </Button>
             </div>
           </div>
@@ -183,30 +204,14 @@ const BotIntegration = () => {
                 </tr>
               </thead>
               <tbody>
-                {userData
+                {chatbots
                   .slice(offset, offset + PER_PAGE)
                   .map(
                     (
-                      {
-                        firstName,
-                        lastName,
-                        email,
-                        mobile_no,
-                        roles,
-                        _id,
-                        direct_URL,
-                      },
+                      { app_id, org_id, user_id, icon_path, _id, url },
                       index
                     ) => {
-                      const Croles = parseInt(roles);
-                      const role = user_roles.find(
-                        (item) => item.value === Croles
-                      );
-                      let name =
-                        firstName +
-                        " " +
-                        (lastName === undefined ? "" : lastName);
-                      const isLast = index === userData.length - 1;
+                      const isLast = index === chatbots.length - 1;
                       const classes = isLast
                         ? "p-4"
                         : "p-4 border-b border-blue-gray-50";
@@ -221,7 +226,7 @@ const BotIntegration = () => {
                                   color="blue-gray"
                                   className="font-normal"
                                 >
-                                  {name}
+                                  {index + 1}
                                 </p>
                               </div>
                             </div>
@@ -233,7 +238,7 @@ const BotIntegration = () => {
                                 color="blue-gray"
                                 className="font-normal"
                               >
-                                {email}
+                                {org_id}
                               </p>
                             </div>
                           </td>
@@ -244,7 +249,7 @@ const BotIntegration = () => {
                                 color="blue-gray"
                                 className="font-normal"
                               >
-                                {mobile_no}
+                                {app_id}
                               </p>
                             </div>
                           </td>
@@ -254,7 +259,7 @@ const BotIntegration = () => {
                               color="blue-gray"
                               className="font-normal"
                             >
-                              {role?.title}
+                              {user_id}
                             </p>
                           </td>
                           <td className={classes}>
@@ -263,10 +268,19 @@ const BotIntegration = () => {
                               color="blue-gray"
                               className="font-normal"
                             >
-                              {direct_URL ? (
+                              {icon_path}
+                            </p>
+                          </td>
+                          <td className={classes}>
+                            <p
+                              variant="small"
+                              color="blue-gray"
+                              className="font-normal"
+                            >
+                              {url ? (
                                 <button
                                   onClick={() => {
-                                    navigator.clipboard.writeText(direct_URL);
+                                    navigator.clipboard.writeText(url);
                                     showToast(3);
                                   }}
                                 >
