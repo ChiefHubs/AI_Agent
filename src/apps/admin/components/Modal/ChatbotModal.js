@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { useFormik } from "formik";
 import "../../style.css";
 
-const ChatbotModal = ({ data, onClose, getApps, showToast, apps }) => {
+const ChatbotModal = ({ data, onClose, getApps, showToast, apps, orgs }) => {
   const dispatch = useDispatch();
   // const { messages, error, isAuthenticated, errorType } = useSelector(
   //   (state) => state.auth
@@ -19,7 +19,7 @@ const ChatbotModal = ({ data, onClose, getApps, showToast, apps }) => {
       name: "",
       description: "",
     },
-    validationSchema: appRegSchema,
+    // validationSchema: chatbotRegSchema,
     onSubmit: (values) => {
       onSubmit(values);
     },
@@ -30,7 +30,7 @@ const ChatbotModal = ({ data, onClose, getApps, showToast, apps }) => {
       name: "",
       description: "",
     },
-    validationSchema: appUpdateSchema,
+    // validationSchema: chatbotUpdateSchema,
     onSubmit: (values) => {
       onSubmitEdit(values);
     },
@@ -95,7 +95,6 @@ const ChatbotModal = ({ data, onClose, getApps, showToast, apps }) => {
     } else {
       dispatch(setTheme(true));
     }
-    getApps();
   }, []);
 
   if (isLoading) {
@@ -127,7 +126,7 @@ const ChatbotModal = ({ data, onClose, getApps, showToast, apps }) => {
                       <div className="error">{formik.errors.name}</div>
                     ) : null}
                   </span>
-                  <input
+                  <select
                     type="text"
                     autoComplete="off"
                     id="name"
@@ -136,8 +135,15 @@ const ChatbotModal = ({ data, onClose, getApps, showToast, apps }) => {
                     onBlur={formik.handleBlur}
                     value={formik.values.name}
                     className="input-box"
-                    placeholder="Enter App Name"
-                  />
+                  >
+                    {apps.map((app, i) => {
+                      return (
+                        <option key={i} value={app._id}>
+                          {app.name}
+                        </option>
+                      );
+                    })}
+                  </select>
                 </div>
                 <div className="form-control">
                   <span>

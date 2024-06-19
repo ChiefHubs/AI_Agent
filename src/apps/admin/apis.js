@@ -60,6 +60,6 @@ export const updateChatbotOrg = (values) => {
 };
 
 // get chatbots
-export const getChatbots = () => {
+export const getAllChatbots = () => {
   return axios.get(`${API_URL}/admin/getChatbots`);
 };

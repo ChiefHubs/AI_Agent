@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import "../../style.css";
 
-const AppRegisterModal = ({ data, onClose, getApps, showToast, roles }) => {
+const AppRegisterModal = ({ data, onClose, getApps, showToast, orgs }) => {
   const dispatch = useDispatch();
   // const { messages, error, isAuthenticated, errorType } = useSelector(
   //   (state) => state.auth
@@ -15,6 +15,7 @@ const AppRegisterModal = ({ data, onClose, getApps, showToast, roles }) => {
   const [isLoading, changeIsLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
+      org_id: "",
       name: "",
       description: "",
     },
@@ -26,6 +27,7 @@ const AppRegisterModal = ({ data, onClose, getApps, showToast, roles }) => {
 
   const formik_edit = useFormik({
     initialValues: {
+      org_id: "",
       name: "",
       description: "",
     },
@@ -78,10 +80,12 @@ const AppRegisterModal = ({ data, onClose, getApps, showToast, roles }) => {
       formik_edit.setValues(data[0]);
     } else {
       formik.setValues({
+        org_id: "",
         name: "",
         description: "",
       });
       formik_edit.setValues({
+        org_id: "",
         name: "",
         description: "",
       });
@@ -118,6 +122,31 @@ const AppRegisterModal = ({ data, onClose, getApps, showToast, roles }) => {
             </h1>
             <div className="form-area">
               <form onSubmit={formik.handleSubmit}>
+                <div className="form-control">
+                  <span>
+                    <label htmlFor="org_id">Organization Name</label>
+                    {formik.touched.org_id && formik.errors.org_id ? (
+                      <div className="error">{formik.errors.org_id}</div>
+                    ) : null}
+                  </span>
+                  <select
+                    id="org_id"
+                    name="org_id"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.org_id}
+                    className="input-box"
+                  >
+                    <option value={""}>Select Organization</option>
+                    {orgs.map((org, i) => {
+                      return (
+                        <option key={i} value={org._id}>
+                          {org.name}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
                 <div className="form-control">
                   <span>
                     <label htmlFor="name">App Name</label>
@@ -193,7 +222,33 @@ const AppRegisterModal = ({ data, onClose, getApps, showToast, roles }) => {
                 <div className="signupForm">
                   <div className="form-control">
                     <span>
-                      <label htmlFor="name">First Name</label>
+                      <label htmlFor="org_id">Organization Name</label>
+                      {formik_edit.touched.org_id &&
+                      formik_edit.errors.org_id ? (
+                        <div className="error">{formik_edit.errors.org_id}</div>
+                      ) : null}
+                    </span>
+                    <select
+                      id="org_id"
+                      name="org_id"
+                      onChange={formik_edit.handleChange}
+                      onBlur={formik_edit.handleBlur}
+                      value={formik_edit.values.org_id}
+                      className="input-box"
+                    >
+                      <option value={""}>Select Organization</option>
+                      {orgs.map((org, i) => {
+                        return (
+                          <option key={i} value={org._id}>
+                            {org.name}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </div>
+                  <div className="form-control">
+                    <span>
+                      <label htmlFor="name">App Name</label>
                       {formik_edit.touched.name && formik_edit.errors.name ? (
                         <div className="error">{formik_edit.errors.name}</div>
                       ) : null}

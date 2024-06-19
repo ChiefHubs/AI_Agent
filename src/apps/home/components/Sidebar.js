@@ -185,12 +185,12 @@ const adminMenu = [
 
 const chatbotMenu = [
   {
-    title: "App Register",
-    icon: faCashRegister,
-  },
-  {
     title: "Organization Register",
     icon: faRegistered,
+  },
+  {
+    title: "App Register",
+    icon: faCashRegister,
   },
   {
     title: "Chatbot Integration",

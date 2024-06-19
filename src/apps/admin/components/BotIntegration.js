@@ -1,4 +1,4 @@
-import { getAllApps, deleteUser, getChatbots } from "../apis";
+import { getAllApps, getAllOrgs, getAllChatbots } from "../apis";
 import ReactPaginate from "react-paginate";
 import React, { useState, useEffect } from "react";
 import { TrashIcon } from "@heroicons/react/24/solid";
@@ -23,13 +23,13 @@ const TABLE_HEAD = [
 const BotIntegration = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [chatbots, setChatbots] = useState([]);
-  const [is_open_user_modal, setIsOpenUModal] = useState(false);
-  const [user_modal_data, setUModalData] = useState(null);
+  const [isOpenBotModal, setIsOpenBotModal] = useState(false);
+  const [botModalData, setBotModalData] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(0);
-  const [_currentPage, setCurrentPage1] = useState(0);
   const [PER_PAGE] = useState(5);
-  const [appData, setAppData] = useState([]);
+  const [orgs, setOrgs] = useState([]);
+  const [apps, setApps] = useState([]);
 
   const handlePageClick = ({ selected: selectedPage }) => {
     setCurrentPage(selectedPage);
@@ -88,17 +88,17 @@ const BotIntegration = () => {
 
   const handleEdit = (e) => {
     const filterUser = chatbots.filter((user) => user._id === e);
-    setUModalData(filterUser);
-    setIsOpenUModal(true);
+    setBotModalData(filterUser);
+    setIsOpenBotModal(true);
   };
 
   const handleOpen = () => {
-    setUModalData(null);
-    setIsOpenUModal(true);
+    setBotModalData(null);
+    setIsOpenBotModal(true);
   };
 
   const handleClose = () => {
-    setIsOpenUModal(false);
+    setIsOpenBotModal(false);
   };
 
   const handleDelete = async (id) => {
@@ -106,18 +106,18 @@ const BotIntegration = () => {
       "Are you sure you want to delete this user?"
     );
     if (botDelFlag) {
-      setIsLoading(true);
-      await deleteUser(id)
-        .then((res) => {
-          setChatbots((chatbot) =>
-            chatbot.filter((bot) => bot._id !== res.data._id)
-          );
-          setIsLoading(false);
-        })
-        .catch((err) => {
-          console.log("error ", err);
-          setIsLoading(false);
-        });
+      // setIsLoading(true);
+      // await deleteUser(id)
+      //   .then((res) => {
+      //     setChatbots((chatbot) =>
+      //       chatbot.filter((bot) => bot._id !== res.data._id)
+      //     );
+      //     setIsLoading(false);
+      //   })
+      //   .catch((err) => {
+      //     console.log("error ", err);
+      //     setIsLoading(false);
+      //   });
     } else {
       console.log("User deletion cancelled");
       return false;
@@ -125,10 +125,24 @@ const BotIntegration = () => {
   };
 
   const getApps = async () => {
+    // console.log("getapps");
     setIsLoading(true);
     await getAllApps()
       .then(async (res) => {
-        setAppData(res.data);
+        setApps(res.data);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.log("error getting apps", err);
+        setIsLoading(false);
+      });
+  };
+
+  const getOrgs = async () => {
+    setIsLoading(true);
+    await getAllApps()
+      .then(async (res) => {
+        setOrgs(res.data);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -152,18 +166,21 @@ const BotIntegration = () => {
 
   useEffect(() => {
     getApps();
+    getOrgs();
     getChatbots();
   }, []);
 
   return (
     <>
-      {is_open_user_modal && (
+      {isOpenBotModal && (
         <ChatbotModal
-          data={user_modal_data}
+          data={botModalData}
           onClose={handleClose}
           getChatbots={getChatbots}
           showToast={showToast}
-          apps={appData}
+          apps={apps}
+          orgs={orgs}
+          getApps={getApps}
         />
       )}
       {isLoading && <div className="coverSpinner"></div>}

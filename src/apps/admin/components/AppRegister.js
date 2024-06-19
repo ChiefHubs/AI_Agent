@@ -1,4 +1,4 @@
-import { getAllApps, deleteApp } from "../apis";
+import { getAllApps, deleteApp, getAllOrgs } from "../apis";
 import ReactPaginate from "react-paginate";
 import AppRegisterModal from "./Modal/AppRegisterModal";
 import React, { useState, useEffect } from "react";
@@ -9,7 +9,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 
-const TABLE_HEAD = ["No", "Name", "Description", "Action"];
+const TABLE_HEAD = ["No", "Organization", "App", "Description", "Action"];
 
 const AppRegister = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -20,7 +20,7 @@ const AppRegister = () => {
 
   const [currentPage, setCurrentPage] = useState(0);
   const [PER_PAGE] = useState(5);
-  const [user_roles, setRoles] = useState([]);
+  const [orgs, setOrgs] = useState([]);
 
   const handlePageClick = ({ selected: selectedPage }) => {
     setCurrentPage(selectedPage);
@@ -116,7 +116,21 @@ const AppRegister = () => {
       });
   };
 
+  const getOrgs = async () => {
+    setIsLoading(true);
+    await getAllOrgs()
+      .then(async (res) => {
+        setOrgs(res.data);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.log("error in get apps ---------- ", err);
+        setIsLoading(false);
+      });
+  };
+
   useEffect(() => {
+    getOrgs();
     getApps();
   }, []);
 
@@ -128,7 +142,7 @@ const AppRegister = () => {
           onClose={handleClose}
           getApps={getApps}
           showToast={showToast}
-          roles={user_roles}
+          orgs={orgs}
         />
       )}
       {isLoading && <div className="coverSpinner"></div>}
@@ -171,7 +185,7 @@ const AppRegister = () => {
               <tbody>
                 {appData
                   .slice(offset, offset + PER_PAGE)
-                  .map(({ name, description, _id }, index) => {
+                  .map(({ name, description, _id, org_id }, index) => {
                     const isLast = index === appData.length - 1;
                     const classes = isLast
                       ? "p-4"
@@ -200,6 +214,19 @@ const AppRegister = () => {
                                 color="blue-gray"
                                 className="font-normal"
                               >
+                                {org_id.name}
+                              </p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className={`${classes} w-24`}>
+                          <div className="flex items-center gap-3">
+                            <div className="flex flex-col">
+                              <p
+                                variant="small"
+                                color="blue-gray"
+                                className="font-normal"
+                              >
                                 {name}
                               </p>
                             </div>
@@ -210,7 +237,7 @@ const AppRegister = () => {
                             <p
                               variant="small"
                               color="blue-gray"
-                              className="font-normal truncate w-24 md:w-[700px]"
+                              className="font-normal truncate w-24 md:w-[500px]"
                             >
                               {description}
                             </p>

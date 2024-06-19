@@ -79,10 +79,12 @@ export const forgotPasswordSchema = Yup.object({
 
 export const appRegSchema = Yup.object({
   name: Yup.string().required("App name is required"),
+  org_id: Yup.string().required("Organization is required"),
 });
 
 export const appUpdateSchema = Yup.object({
   name: Yup.string().required("App name is required"),
+  org_id: Yup.string().required("Organization is required"),
 });
 
 export const orgRegSchema = Yup.object({
