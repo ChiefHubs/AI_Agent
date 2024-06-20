@@ -140,7 +140,7 @@ const BotIntegration = () => {
 
   const getOrgs = async () => {
     setIsLoading(true);
-    await getAllApps()
+    await getAllOrgs()
       .then(async (res) => {
         setOrgs(res.data);
         setIsLoading(false);

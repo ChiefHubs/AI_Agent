@@ -94,3 +94,19 @@ export const orgRegSchema = Yup.object({
 export const orgUpdateSchema = Yup.object({
   name: Yup.string().required("Organization name is required"),
 });
+
+export const chatbotRegSchema = Yup.object({
+  org: Yup.string().required("Organization is required"),
+  app: Yup.string().required("App is required"),
+  email: Yup.string()
+    .email("Invalid email address")
+    .required("Email is required"),
+});
+
+export const chatbotUpdateSchema = Yup.object({
+  org: Yup.string().required("Organization is required"),
+  app: Yup.string().required("App is required"),
+  email: Yup.string()
+    .email("Invalid email address")
+    .required("Email is required"),
+});

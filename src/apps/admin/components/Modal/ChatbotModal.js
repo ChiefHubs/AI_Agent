@@ -1,25 +1,31 @@
 import React, { useState, useEffect } from "react";
-import { appRegSchema, appUpdateSchema } from "../../../admin/validations";
+import {
+  chatbotRegSchema,
+  chatbotUpdateSchema,
+} from "../../../admin/validations";
 import { createChatbotApp, updateChatbotApp } from "../../apis";
 import { setTheme } from "../../../auth/actions";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
 import { useFormik } from "formik";
 import "../../style.css";
+import { Avatar } from "@material-tailwind/react";
 
 const ChatbotModal = ({ data, onClose, getApps, showToast, apps, orgs }) => {
   const dispatch = useDispatch();
-  // const { messages, error, isAuthenticated, errorType } = useSelector(
-  //   (state) => state.auth
-  // );
 
   const [isLoading, changeIsLoading] = useState(false);
+  const [appList, setAppList] = useState([]);
+  const [image, _setImage] = useState(null);
+  const [avatar, setImageData] = useState(null);
+
   const formik = useFormik({
     initialValues: {
-      name: "",
+      org: "",
+      app: "",
+      email: "",
       description: "",
     },
-    // validationSchema: chatbotRegSchema,
+    validationSchema: chatbotRegSchema,
     onSubmit: (values) => {
       onSubmit(values);
     },
@@ -27,10 +33,12 @@ const ChatbotModal = ({ data, onClose, getApps, showToast, apps, orgs }) => {
 
   const formik_edit = useFormik({
     initialValues: {
-      name: "",
+      org: "",
+      app: "",
+      email: "",
       description: "",
     },
-    // validationSchema: chatbotUpdateSchema,
+    validationSchema: chatbotUpdateSchema,
     onSubmit: (values) => {
       onSubmitEdit(values);
     },
@@ -42,7 +50,7 @@ const ChatbotModal = ({ data, onClose, getApps, showToast, apps, orgs }) => {
       const response = await createChatbotApp(values);
       changeIsLoading(false);
       onClose();
-      getApps();
+      // getApps();
     } catch (e) {
       showToast(
         e.response?.data?.error || "Server error in registering apps",
@@ -59,7 +67,7 @@ const ChatbotModal = ({ data, onClose, getApps, showToast, apps, orgs }) => {
       const response = await updateChatbotApp(values);
       changeIsLoading(false);
       onClose();
-      getApps();
+      // getApps();
     } catch (e) {
       showToast(
         e.response?.data?.error || "Server error in registering apps",
@@ -79,11 +87,15 @@ const ChatbotModal = ({ data, onClose, getApps, showToast, apps, orgs }) => {
       formik_edit.setValues(data[0]);
     } else {
       formik.setValues({
-        name: "",
+        org: "",
+        app: "",
+        email: "",
         description: "",
       });
       formik_edit.setValues({
-        name: "",
+        org: "",
+        app: "",
+        email: "",
         description: "",
       });
     }
@@ -97,9 +109,39 @@ const ChatbotModal = ({ data, onClose, getApps, showToast, apps, orgs }) => {
     }
   }, []);
 
+  useEffect(() => {
+    const selectedOrg = formik.values.org;
+    const filterApps = apps.filter((app) => {
+      return app.org_id._id == selectedOrg;
+    });
+    setAppList(filterApps);
+  }, [formik.values.org]);
+
   if (isLoading) {
     return <div className="coverSpinner"></div>;
   }
+
+  const handleAvatarChange = (e) => {
+    e.preventDefault();
+    const newImage = e.target?.files?.[0];
+    console.log("----file 11----------", e.target?.files?.[0]);
+    if (newImage) {
+      setImageData(newImage);
+      setImage(URL.createObjectURL(newImage));
+    }
+  };
+
+  const cleanup = () => {
+    URL.revokeObjectURL(image);
+    // inputFileRef.current.value = null;
+  };
+
+  const setImage = (newImage) => {
+    if (image) {
+      cleanup();
+    }
+    _setImage(newImage);
+  };
 
   return (
     <>
@@ -119,24 +161,70 @@ const ChatbotModal = ({ data, onClose, getApps, showToast, apps, orgs }) => {
             </h1>
             <div className="form-area">
               <form onSubmit={formik.handleSubmit}>
+                <div className="form-control justify-center items-center flex">
+                  <label htmlFor="input_file">
+                    <Avatar
+                      src={image || "/images/default_user.jpg"}
+                      className="cursor-pointer"
+                      variant="rounded"
+                    ></Avatar>
+                  </label>
+                  <div>
+                    <input
+                      type="file"
+                      id="input_file"
+                      accept=".jpg,.png"
+                      onChange={handleAvatarChange}
+                      className="hidden"
+                    />
+                  </div>
+                </div>
                 <div className="form-control">
                   <span>
-                    <label htmlFor="name">App Name</label>
-                    {formik.touched.name && formik.errors.name ? (
-                      <div className="error">{formik.errors.name}</div>
+                    <label htmlFor="org">Organization</label>
+                    {formik.touched.org && formik.errors.org ? (
+                      <div className="error">{formik.errors.org}</div>
                     ) : null}
                   </span>
                   <select
                     type="text"
                     autoComplete="off"
-                    id="name"
-                    name="name"
+                    id="org"
+                    name="org"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    value={formik.values.name}
+                    value={formik.values.org}
                     className="input-box"
                   >
-                    {apps.map((app, i) => {
+                    <option value={""}>Select Organization</option>
+                    {orgs.map((org, i) => {
+                      return (
+                        <option key={i} value={org._id}>
+                          {org.name}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
+                <div className="form-control">
+                  <span>
+                    <label htmlFor="app">App Name</label>
+                    {formik.touched.app && formik.errors.app ? (
+                      <div className="error">{formik.errors.app}</div>
+                    ) : null}
+                  </span>
+                  <select
+                    type="text"
+                    autoComplete="off"
+                    id="app"
+                    name="app"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.app}
+                    className="input-box"
+                  >
+                    <option value={""}>Select App</option>
+                    {appList.map((app, i) => {
                       return (
                         <option key={i} value={app._id}>
                           {app.name}
@@ -144,6 +232,23 @@ const ChatbotModal = ({ data, onClose, getApps, showToast, apps, orgs }) => {
                       );
                     })}
                   </select>
+                </div>
+                <div className="form-control">
+                  <span>
+                    <label htmlFor="email">Email</label>
+                    {formik.touched.email && formik.errors.email ? (
+                      <div className="error">{formik.errors.email}</div>
+                    ) : null}
+                  </span>
+                  <input
+                    id="email"
+                    name="email"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.email}
+                    className="input-box"
+                    placeholder="Enter Email"
+                  />
                 </div>
                 <div className="form-control">
                   <span>
