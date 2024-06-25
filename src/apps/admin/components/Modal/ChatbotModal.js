@@ -3,14 +3,21 @@ import {
   chatbotRegSchema,
   chatbotUpdateSchema,
 } from "../../../admin/validations";
-import { createChatbotApp, updateChatbotApp } from "../../apis";
+import { createChatbot, updateChatbot, uploadAvatar } from "../../apis";
 import { setTheme } from "../../../auth/actions";
 import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import "../../style.css";
 import { Avatar } from "@material-tailwind/react";
 
-const ChatbotModal = ({ data, onClose, getApps, showToast, apps, orgs }) => {
+const ChatbotModal = ({
+  data,
+  onClose,
+  getChatbots,
+  showToast,
+  apps,
+  orgs,
+}) => {
   const dispatch = useDispatch();
 
   const [isLoading, changeIsLoading] = useState(false);
@@ -37,6 +44,7 @@ const ChatbotModal = ({ data, onClose, getApps, showToast, apps, orgs }) => {
       app: "",
       email: "",
       description: "",
+      avatar: "",
     },
     validationSchema: chatbotUpdateSchema,
     onSubmit: (values) => {
@@ -47,14 +55,18 @@ const ChatbotModal = ({ data, onClose, getApps, showToast, apps, orgs }) => {
   const onSubmit = async (values) => {
     changeIsLoading(true);
     try {
-      const response = await createChatbotApp(values);
+      const res = await createChatbot(values);
+      // console.log("res-------", res.data);
+      if (avatar !== null) {
+        await uploadAvatar(avatar, res.data?.app_id);
+      }
       changeIsLoading(false);
       onClose();
-      // getApps();
+      getChatbots();
     } catch (e) {
       showToast(
-        e.response?.data?.error || "Server error in registering apps",
-        2
+        2,
+        e.response?.data?.error || "Server error in registering apps"
       );
       console.log("error ", e);
       changeIsLoading(false);
@@ -64,14 +76,18 @@ const ChatbotModal = ({ data, onClose, getApps, showToast, apps, orgs }) => {
   const onSubmitEdit = async (values) => {
     changeIsLoading(true);
     try {
-      const response = await updateChatbotApp(values);
+      const res = await updateChatbot(values);
+      console.log("edit--------", avatar);
+      if (avatar !== null) {
+        await uploadAvatar(avatar, res.data?.app_id);
+      }
       changeIsLoading(false);
       onClose();
-      // getApps();
+      getChatbots();
     } catch (e) {
       showToast(
-        e.response?.data?.error || "Server error in registering apps",
-        2
+        2,
+        e.response?.data?.error || "Server error in registering apps"
       );
       console.log("error ", e);
       changeIsLoading(false);
@@ -83,8 +99,17 @@ const ChatbotModal = ({ data, onClose, getApps, showToast, apps, orgs }) => {
 
   useEffect(() => {
     if (data?.length > 0) {
-      formik.setValues(data[0]);
-      formik_edit.setValues(data[0]);
+      console.log("hia--data0----------", data[0]);
+      const edit_data = {
+        app: data[0].app_id._id,
+        email: data[0].user_id,
+        org: data[0].org_id._id,
+        description: data[0].description,
+        avatar: data[0].avatar,
+        _id: data[0]._id,
+      };
+      formik.setValues(edit_data);
+      formik_edit.setValues(edit_data);
     } else {
       formik.setValues({
         org: "",
@@ -165,8 +190,7 @@ const ChatbotModal = ({ data, onClose, getApps, showToast, apps, orgs }) => {
                   <label htmlFor="input_file">
                     <Avatar
                       src={image || "/images/default_user.jpg"}
-                      className="cursor-pointer"
-                      variant="rounded"
+                      className="cursor-pointer rounded-full"
                     ></Avatar>
                   </label>
                   <div>
@@ -265,7 +289,7 @@ const ChatbotModal = ({ data, onClose, getApps, showToast, apps, orgs }) => {
                     onBlur={formik.handleBlur}
                     value={formik.values.description}
                     className="input-box"
-                    rows={10}
+                    rows={6}
                     placeholder="Enter Description"
                   />
                 </div>
@@ -299,29 +323,100 @@ const ChatbotModal = ({ data, onClose, getApps, showToast, apps, orgs }) => {
         >
           <div className="login-area fixed top-[15%]">
             <h1 align="center" className="title">
-              Edit App
+              Edit Chatbot Information
             </h1>
             <div className="form-area">
               <form onSubmit={formik_edit.handleSubmit}>
                 <div className="signupForm">
+                  <div className="form-control justify-center items-center flex">
+                    <label htmlFor="input_file">
+                      <Avatar
+                        src={
+                          image ||
+                          `${process.env.REACT_APP_URL}/avatar/${formik_edit.values.avatar}`
+                        }
+                        className="cursor-pointer rounded-full"
+                      ></Avatar>
+                    </label>
+                    <div>
+                      <input
+                        type="file"
+                        id="input_file"
+                        accept=".jpg,.png"
+                        onChange={handleAvatarChange}
+                        className="hidden"
+                      />
+                    </div>
+                  </div>
                   <div className="form-control">
                     <span>
-                      <label htmlFor="name">First Name</label>
-                      {formik_edit.touched.name && formik_edit.errors.name ? (
-                        <div className="error">{formik_edit.errors.name}</div>
+                      <label htmlFor="org">Organization</label>
+                      {formik_edit.touched.org && formik_edit.errors.org ? (
+                        <div className="error">{formik_edit.errors.org}</div>
+                      ) : null}
+                    </span>
+                    <select
+                      type="text"
+                      autoComplete="off"
+                      id="org"
+                      name="org"
+                      onChange={formik_edit.handleChange}
+                      onBlur={formik_edit.handleBlur}
+                      value={formik_edit.values.org}
+                      className="input-box"
+                    >
+                      <option value={""}>Select Organization</option>
+                      {orgs.map((org, i) => {
+                        return (
+                          <option key={i} value={org._id}>
+                            {org.name}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </div>
+                  <div className="form-control">
+                    <span>
+                      <label htmlFor="app">App Name</label>
+                      {formik_edit.touched.app && formik_edit.errors.app ? (
+                        <div className="error">{formik_edit.errors.app}</div>
+                      ) : null}
+                    </span>
+                    <select
+                      type="text"
+                      autoComplete="off"
+                      id="app"
+                      name="app"
+                      onChange={formik_edit.handleChange}
+                      onBlur={formik_edit.handleBlur}
+                      value={formik_edit.values.app}
+                      className="input-box"
+                    >
+                      <option value={""}>Select App</option>
+                      {appList.map((app, i) => {
+                        return (
+                          <option key={i} value={app._id}>
+                            {app.name}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </div>
+                  <div className="form-control">
+                    <span>
+                      <label htmlFor="email">Email</label>
+                      {formik_edit.touched.email && formik_edit.errors.email ? (
+                        <div className="error">{formik_edit.errors.email}</div>
                       ) : null}
                     </span>
                     <input
-                      type="text"
-                      autoComplete="off"
-                      id="name"
-                      name="name"
+                      id="email"
+                      name="email"
                       onChange={formik_edit.handleChange}
                       onBlur={formik_edit.handleBlur}
-                      value={formik_edit.values.name}
+                      value={formik_edit.values.email}
                       className="input-box"
-                      placeholder="Enter First Name"
-                      disabled
+                      placeholder="Enter Email"
                     />
                   </div>
                   <div className="form-control">
@@ -335,7 +430,6 @@ const ChatbotModal = ({ data, onClose, getApps, showToast, apps, orgs }) => {
                       ) : null}
                     </span>
                     <textarea
-                      type="text"
                       autoComplete="off"
                       id="description"
                       name="description"
@@ -343,28 +437,28 @@ const ChatbotModal = ({ data, onClose, getApps, showToast, apps, orgs }) => {
                       onBlur={formik_edit.handleBlur}
                       value={formik_edit.values.description}
                       className="input-box"
+                      rows={6}
                       placeholder="Enter Description"
-                      rows={10}
                     />
                   </div>
-                </div>
 
-                <div style={{ display: "flex" }}>
-                  <button
-                    type="submit"
-                    align="center"
-                    className="btn submit-btn"
-                  >
-                    Update
-                  </button>
-                  <button
-                    type="button"
-                    onClick={onClose}
-                    align="center"
-                    className="btn submit-btn"
-                  >
-                    Close
-                  </button>
+                  <div style={{ display: "flex" }}>
+                    <button
+                      type="submit"
+                      align="center"
+                      className="btn submit-btn"
+                    >
+                      Update
+                    </button>
+                    <button
+                      type="button"
+                      onClick={onClose}
+                      align="center"
+                      className="btn submit-btn"
+                    >
+                      Close
+                    </button>
+                  </div>
                 </div>
               </form>
             </div>

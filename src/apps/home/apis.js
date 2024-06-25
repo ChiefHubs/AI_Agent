@@ -8,11 +8,15 @@ export const getAllQueries = () => {
 
 export const verifyURL = async (tokens) => {
   try {
-    const { data } = await axios.post(`${API_URL}/auth/verifyHashURL`, tokens, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const { data } = await axios.post(
+      `${API_URL}/other/verifyHashURL`,
+      tokens,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
     sessionStorage.setItem("user", JSON.stringify(data));
     return data;
   } catch (error) {

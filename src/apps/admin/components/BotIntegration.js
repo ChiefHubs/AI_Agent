@@ -1,24 +1,26 @@
-import { getAllApps, getAllOrgs, getAllChatbots } from "../apis";
+import { getAllApps, getAllOrgs, getAllChatbots, deleteBot } from "../apis";
 import ReactPaginate from "react-paginate";
 import React, { useState, useEffect } from "react";
 import { TrashIcon } from "@heroicons/react/24/solid";
 import { Button, Tooltip } from "@material-tailwind/react";
 import "../style.css";
 import { ToastContainer, toast } from "react-toastify";
-import { EMAIL_EXIST_MSG } from "../../auth/constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy, faEdit } from "@fortawesome/free-solid-svg-icons";
 import ChatbotModal from "./Modal/ChatbotModal";
+import { Avatar } from "@material-tailwind/react";
 
 const TABLE_HEAD = [
   "No",
   "Organization",
   "App",
   "User",
-  "Icon",
+  "Avatar",
   "URL",
   "Action",
 ];
+
+const backendURL = process.env.REACT_APP_URL;
 
 const BotIntegration = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -38,9 +40,9 @@ const BotIntegration = () => {
   const offset = currentPage * PER_PAGE;
   const pageCount = Math.ceil(chatbots.length / PER_PAGE);
 
-  const showToast = (value) => {
-    if (value === 0) {
-      toast.error(EMAIL_EXIST_MSG, {
+  const showToast = (flag, msg) => {
+    if (flag === 0) {
+      toast.success(msg, {
         position: "bottom-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -50,8 +52,8 @@ const BotIntegration = () => {
         progress: undefined,
         theme: "dark",
       });
-    } else if (value === 1) {
-      toast.success("A new user was registerd succesfully", {
+    } else if (flag === 1) {
+      toast.warn(msg, {
         position: "bottom-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -61,19 +63,8 @@ const BotIntegration = () => {
         progress: undefined,
         theme: "dark",
       });
-    } else if (value === 2) {
-      toast.success("The user was updated succesfully", {
-        position: "bottom-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
-    } else if (value === 3) {
-      toast.success("The text is copied in clipboard succesfully", {
+    } else if (flag === 2) {
+      toast.error(msg, {
         position: "bottom-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -87,8 +78,9 @@ const BotIntegration = () => {
   };
 
   const handleEdit = (e) => {
-    const filterUser = chatbots.filter((user) => user._id === e);
-    setBotModalData(filterUser);
+    const filterBot = chatbots.filter((bot) => bot._id === e);
+    console.log("filterbot-------", filterBot);
+    setBotModalData(filterBot);
     setIsOpenBotModal(true);
   };
 
@@ -103,23 +95,23 @@ const BotIntegration = () => {
 
   const handleDelete = async (id) => {
     const botDelFlag = window.confirm(
-      "Are you sure you want to delete this user?"
+      "Are you sure you want to delete this chatbot?"
     );
     if (botDelFlag) {
-      // setIsLoading(true);
-      // await deleteUser(id)
-      //   .then((res) => {
-      //     setChatbots((chatbot) =>
-      //       chatbot.filter((bot) => bot._id !== res.data._id)
-      //     );
-      //     setIsLoading(false);
-      //   })
-      //   .catch((err) => {
-      //     console.log("error ", err);
-      //     setIsLoading(false);
-      //   });
+      setIsLoading(true);
+      await deleteBot(id)
+        .then((res) => {
+          setChatbots((chatbot) =>
+            chatbot.filter((bot) => bot._id !== res.data._id)
+          );
+          setIsLoading(false);
+        })
+        .catch((err) => {
+          console.log("error ", err);
+          setIsLoading(false);
+        });
     } else {
-      console.log("User deletion cancelled");
+      console.log("Chatbot deletion cancelled");
       return false;
     }
   };
@@ -152,16 +144,17 @@ const BotIntegration = () => {
   };
 
   const getChatbots = async () => {
-    // setIsLoading(true);
-    // await getChatbots()
-    //   .then(async (res) => {
-    //     setChatbots(res.data);
-    //     setIsLoading(false);
-    //   })
-    //   .catch((err) => {
-    //     console.log("error ", err);
-    //     setIsLoading(false);
-    //   });
+    setIsLoading(true);
+    await getAllChatbots()
+      .then(async (res) => {
+        console.log("getall chatbots---------------", res.data);
+        setChatbots(res.data);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.log("error ", err);
+        setIsLoading(false);
+      });
   };
 
   useEffect(() => {
@@ -170,6 +163,7 @@ const BotIntegration = () => {
     getChatbots();
   }, []);
 
+  const timestamp = new Date().getTime();
   return (
     <>
       {isOpenBotModal && (
@@ -180,7 +174,6 @@ const BotIntegration = () => {
           showToast={showToast}
           apps={apps}
           orgs={orgs}
-          getApps={getApps}
         />
       )}
       {isLoading && <div className="coverSpinner"></div>}
@@ -224,10 +217,7 @@ const BotIntegration = () => {
                 {chatbots
                   .slice(offset, offset + PER_PAGE)
                   .map(
-                    (
-                      { app_id, org_id, user_id, icon_path, _id, url },
-                      index
-                    ) => {
+                    ({ app_id, org_id, user_id, avatar, _id, url }, index) => {
                       const isLast = index === chatbots.length - 1;
                       const classes = isLast
                         ? "p-4"
@@ -255,7 +245,7 @@ const BotIntegration = () => {
                                 color="blue-gray"
                                 className="font-normal"
                               >
-                                {org_id}
+                                {org_id.name}
                               </p>
                             </div>
                           </td>
@@ -266,7 +256,7 @@ const BotIntegration = () => {
                                 color="blue-gray"
                                 className="font-normal"
                               >
-                                {app_id}
+                                {app_id.name}
                               </p>
                             </div>
                           </td>
@@ -280,13 +270,13 @@ const BotIntegration = () => {
                             </p>
                           </td>
                           <td className={classes}>
-                            <p
-                              variant="small"
-                              color="blue-gray"
-                              className="font-normal"
-                            >
-                              {icon_path}
-                            </p>
+                            {avatar === "" ? (
+                              <Avatar src="/images/default_user.jpg" />
+                            ) : (
+                              <Avatar
+                                src={`${process.env.REACT_APP_URL}/avatar/${avatar}?${timestamp}`}
+                              />
+                            )}
                           </td>
                           <td className={classes}>
                             <p
@@ -298,7 +288,7 @@ const BotIntegration = () => {
                                 <button
                                   onClick={() => {
                                     navigator.clipboard.writeText(url);
-                                    showToast(3);
+                                    showToast(0, "The URL was copied!");
                                   }}
                                 >
                                   <FontAwesomeIcon icon={faCopy} />

@@ -6,7 +6,7 @@ import {
   faPaperPlane,
 } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from "react-toastify";
-import { generateChat } from "../apis";
+import { generateBubbleChat } from "../apis";
 import "../style.css";
 import { useSelector } from "react-redux";
 import Markdown from "react-markdown";
@@ -18,7 +18,9 @@ function BubbleChat({
   setQueries,
   questionList,
   setQuestionList,
+  avatar,
 }) {
+  const serverAddress = process.env.REACT_APP_URL;
   const activeModel = useSelector((store) => store.auth.activeModel);
   const [question, setQuestion] = useState("");
   const [isOpen, setOpen] = useState(false);
@@ -58,7 +60,7 @@ function BubbleChat({
     }
     setIsLoading(true);
     setQuestion("");
-    await generateChat(payload)
+    await generateBubbleChat(payload)
       .then((res) => {
         setQueries(res.data.chats);
 
@@ -121,7 +123,10 @@ function BubbleChat({
         } `}
       >
         <div className="bg-sky-900 w-full h-12 flex justify-start items-center rounded-t-lg">
-          <img src="/images/bot.png" className="w-10 ml-2" />
+          <img
+            src={`${serverAddress}/avatar/${avatar}`}
+            className="w-10 ml-2 rounded-lg"
+          />
         </div>
         <div className="h-full overflow-y-scroll">
           <div
@@ -131,7 +136,7 @@ function BubbleChat({
           >
             <div className={`text-sm font-bold flex justify-start my-1`}>
               <img
-                src="/images/bot.png"
+                src={`${serverAddress}/avatar/${avatar}`}
                 className="w-10 h-10 rounded-lg ml-1"
               />
               <span className="font-bold ml-1 bg-gray-300 p-2 rounded-lg">
@@ -149,7 +154,7 @@ function BubbleChat({
 
                   <div className={`text-sm font-bold flex justify-start my-1`}>
                     <img
-                      src="/images/bot.png"
+                      src={`${serverAddress}/avatar/${avatar}`}
                       className="w-10 h-10 rounded-lg ml-1"
                     />
                     <span className="font-bold ml-1 bg-gray-300 p-2 rounded-lg">
@@ -161,7 +166,8 @@ function BubbleChat({
                         activeChat.queries
                           .filter(
                             (ans) =>
-                              ans.question === timestampedQuestions.current[index]
+                              ans.question ===
+                              timestampedQuestions.current[index]
                           )
                           .map((ans, ansIndex) => (
                             <p key={ansIndex}>

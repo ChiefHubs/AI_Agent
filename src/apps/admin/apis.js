@@ -26,6 +26,7 @@ export const getLLMOptionWithUser = () => {
   return axios.get(`${API_URL}/llm_option/getOptionWithUser`);
 };
 
+//app
 export const createChatbotApp = (values) => {
   return axios.post(`${API_URL}/admin/createChatbotApp`, { values });
 };
@@ -38,11 +39,11 @@ export const deleteApp = (id) => {
   return axios.post(`${API_URL}/admin/deleteApp`, { id });
 };
 
-// get apps for chatbot integration
 export const getAllApps = () => {
   return axios.get(`${API_URL}/admin/getApps`);
 };
 
+//Org
 export const deleteOrg = (id) => {
   return axios.post(`${API_URL}/admin/deleteOrg`, { id });
 };
@@ -59,7 +60,33 @@ export const updateChatbotOrg = (values) => {
   return axios.post(`${API_URL}/admin/updateChatbotOrg`, { values });
 };
 
-// get chatbots
+// chatbots
 export const getAllChatbots = () => {
   return axios.get(`${API_URL}/admin/getChatbots`);
+};
+
+export const createChatbot = (values) => {
+  return axios.post(`${API_URL}/admin/createChatbot`, { values });
+};
+
+export const updateChatbot = (values) => {
+  return axios.post(`${API_URL}/admin/updateChatbot`, { values });
+};
+
+export const deleteBot = (id) => {
+  return axios.post(`${API_URL}/admin/deleteChatbot`, { id });
+};
+
+// upload file
+export const uploadAvatar = (avatar, app_id) => {
+  const formData = new FormData();
+  formData.append("file", avatar);
+  formData.append("app_id", app_id);
+  const config = {
+    headers: {
+      "content-type": "multipart/form-data",
+    },
+  };
+
+  return axios.post(`${API_URL}/admin/uploadAvatar`, formData, config);
 };

@@ -10,9 +10,15 @@ export const generateChat = (query) => {
   });
 };
 
+export const generateBubbleChat = (query) => {
+  return axios.post(`${API_URL}/user_query_bubble/chat`, query, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
 
-  // delete chat 
-  export const deleteChat = (id) => {
-    return axios.post(`${API_URL}/user_query/deleteChat`,{id});
-  };
-
+// delete chat
+export const deleteChat = (id) => {
+  return axios.post(`${API_URL}/user_query/deleteChat`, { id });
+};

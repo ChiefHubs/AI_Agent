@@ -10,7 +10,7 @@ import { EMAIL_EXIST_MSG } from "../../auth/constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy, faEdit } from "@fortawesome/free-solid-svg-icons";
 
-const TABLE_HEAD = ["Name", "Email", "Phone Number", "Role", "URL", "Action"];
+const TABLE_HEAD = ["Name", "Email", "Phone Number", "Role", "Action"];
 
 const UserManager = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -187,15 +187,7 @@ const UserManager = () => {
                   .slice(offset, offset + PER_PAGE)
                   .map(
                     (
-                      {
-                        firstName,
-                        lastName,
-                        email,
-                        mobile_no,
-                        roles,
-                        _id,
-                        direct_URL,
-                      },
+                      { firstName, lastName, email, mobile_no, roles, _id },
                       index
                     ) => {
                       const Croles = parseInt(roles);
@@ -255,26 +247,6 @@ const UserManager = () => {
                               className="font-normal"
                             >
                               {role?.title}
-                            </p>
-                          </td>
-                          <td className={classes}>
-                            <p
-                              variant="small"
-                              color="blue-gray"
-                              className="font-normal"
-                            >
-                              {direct_URL ? (
-                                <button
-                                  onClick={() => {
-                                    navigator.clipboard.writeText(direct_URL);
-                                    showToast(3);
-                                  }}
-                                >
-                                  <FontAwesomeIcon icon={faCopy} />
-                                </button>
-                              ) : (
-                                ""
-                              )}
                             </p>
                           </td>
                           <td className={classes}>
