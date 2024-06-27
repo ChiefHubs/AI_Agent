@@ -73,6 +73,7 @@ function Chat({
     } else {
       payload.id = activeChat.id;
     }
+    payload.isBubble = false;
     setIsLoading(true);
     setQuestion("");
     await generateChat(payload)

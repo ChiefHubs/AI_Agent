@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import { ToastContainer, toast } from "react-toastify";
 import {
-  getAllFiles,
+  getAllBotFiles,
   retrainModel,
-  uploadFile,
-  deleteModel,
+  uploadFileForBot,
+  deleteModelForBot,
   uploadURL,
 } from "../apis";
 import { useSelector } from "react-redux";
@@ -19,10 +19,11 @@ import UploadModal from "./UploadModal";
 import { useFormik } from "formik";
 import { ScrapURL } from "../validations";
 import { FileUploader } from "react-drag-drop-files";
+import { getAllOrgs, getAllApps } from "../../admin/apis";
 
 const fileTypes = ["PDF", "TXT", "DOCX"];
 
-const FileUpload = () => {
+const BotFileUpload = () => {
   const theme = useSelector((store) => store.setting.isDark);
   const [uploaddata, setUploadData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -31,6 +32,14 @@ const FileUpload = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [PER_PAGE, setPER_PAGE] = useState(6);
   const [isFile, setIsFile] = useState(true);
+  const [role, setRole] = useState(true);
+  const [apps, setApps] = useState([]);
+  const [orgs, setOrgs] = useState([]);
+  const [appList, setAppList] = useState([]);
+  const [appListForFilter, setAppListForFilter] = useState([]);
+  const [currentApp, setCurrentApp] = useState("");
+  const [currentOrg, setCurrentOrg] = useState("");
+
   const [file, setFile] = useState(null);
   const handleFileChange = (file) => {
     setFile(file);
@@ -50,7 +59,11 @@ const FileUpload = () => {
     setIsLoading(true);
     if (isFile) {
       try {
-        await uploadFile({ file });
+        const res = await uploadFileForBot({
+          file,
+          app_id: values.app,
+          org_id: values.org,
+        });
         handleClose();
         handleGetAllFiles();
         // storeVectorDB(res.data.result._id, res.data.result.path);
@@ -80,7 +93,11 @@ const FileUpload = () => {
       }
     } else {
       try {
-        await uploadURL({ url: values.url });
+        await uploadURL({
+          url: values.url,
+          app_id: values.app,
+          org_id: values.org,
+        });
         handleClose();
         handleGetAllFiles();
         // // storeVectorDB(res.data.result._id, res.data.result.path);
@@ -120,11 +137,43 @@ const FileUpload = () => {
 
   useEffect(() => {
     handleGetAllFiles();
+    getRole();
+    getApps();
+    getOrgs();
   }, []);
+
+  const getApps = async () => {
+    const apps = await getAllApps();
+    setApps(apps.data);
+  };
+  const getOrgs = async () => {
+    const orgs = await getAllOrgs();
+    console.log("orgs-------------", orgs);
+    setOrgs(orgs.data);
+  };
+
+  useEffect(() => {
+    const selectedOrg = formik.values.org;
+    if (apps.length > 0) {
+      const filterApps = apps.filter((app) => {
+        return app.org_id._id == selectedOrg;
+      });
+      setAppList(filterApps);
+    }
+  }, [formik.values.org]);
+
+  useEffect(() => {
+    handleGetAllFiles();
+  }, [currentApp, currentOrg]);
+
+  const getRole = () => {
+    const role = sessionStorage.getItem("user");
+    setRole(JSON.parse(role).roles);
+  };
 
   const handleGetAllFiles = async () => {
     try {
-      const res = await getAllFiles();
+      const res = await getAllBotFiles(currentApp, currentOrg);
       setUploadData(res.data.result);
       setTimeout(() => {
         setIsLoading(false);
@@ -139,7 +188,7 @@ const FileUpload = () => {
     setIsLoading(true);
     setIsDelete(false);
     try {
-      await retrainModel();
+      await retrainModel(uploaddata);
       handleGetAllFiles();
       toast.success("Model retrained successfully", {
         position: "bottom-right",
@@ -171,7 +220,7 @@ const FileUpload = () => {
     setIsLoading(true);
     setIsDelete(true);
     try {
-      const res = await deleteModel({ id, path });
+      await deleteModelForBot({ id, path });
       handleGetAllFiles();
       // await retrainModel(files);
       toast.success("File deleted successfully!", {
@@ -200,39 +249,90 @@ const FileUpload = () => {
     }
   };
 
-  const TABLE_HEAD = ["Type", "Name", "Action"];
+  const TABLE_HEAD = ["Organization", "App", "Type", "Name", "Action"];
+
+  const handleChangeOrgFilter = (e) => {
+    const selectedOrg = e.target.value;
+    setCurrentOrg(selectedOrg);
+    if (apps.length > 0) {
+      const filterApps = apps.filter((app) => {
+        return app.org_id._id == selectedOrg;
+      });
+      setAppListForFilter(filterApps);
+    }
+  };
+
+  const handleChangeAppFilter = (e) => {
+    const selectedApp = e.target.value;
+    setCurrentApp(selectedApp);
+  };
 
   return (
     <div className="w-full bg-white p-3 rounded-xl border border-gray-500">
       {isLoading && <div className="coverSpinner"></div>}
       <div className="firstSection">
         <div className="flex justify-between items-center">
-          <p className="font-bold text-lg">File Upload</p>
-          <div>
-            <button
-              className={` ${
-                theme === true
-                  ? "bg-white text-black hover:bg-gray-300"
-                  : "bg-black text-white"
-              }  p-2 text-base font-bold rounded cursor-pointer`}
-              onClick={handleOpen}
-            >
-              <FontAwesomeIcon icon={faCirclePlus} className="mr-2" />
-              Upload
-            </button>
-            <button
-              className={` ${
-                theme === true
-                  ? "bg-white text-black hover:bg-gray-300"
-                  : "bg-black text-white"
-              }  p-2 text-base font-bold rounded cursor-pointer`}
-              onClick={() => {
-                handleRetrainModel();
-              }}
-            >
-              <FontAwesomeIcon icon={faStore} className="mr-2" />
-              Retrain
-            </button>
+          <p className="font-bold text-lg">File Upload for Integration Bot</p>
+          <div className="flex">
+            <div className="flex ">
+              <select
+                className="border-2 border-gray-500"
+                onChange={handleChangeOrgFilter}
+              >
+                <option value={""}>Select Organization</option>
+                {orgs.map((org, i) => {
+                  return (
+                    <option key={i} value={org._id}>
+                      {org.name}
+                    </option>
+                  );
+                })}
+              </select>
+
+              <select
+                className="border-2 border-gray-500 ml-2"
+                onChange={handleChangeAppFilter}
+              >
+                <option value={""}>Select App</option>
+                {appListForFilter.map((app, i) => {
+                  return (
+                    <option key={i} value={app._id}>
+                      {app.name}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+            <div>
+              <button
+                className={` ${
+                  theme === true
+                    ? "bg-white text-black hover:bg-gray-300"
+                    : "bg-black text-white"
+                }  p-2 text-base font-bold rounded cursor-pointer`}
+                onClick={handleOpen}
+              >
+                <FontAwesomeIcon icon={faCirclePlus} className="mr-2" />
+                Upload
+              </button>
+              {currentApp === "" || uploaddata.length === 0 ? (
+                <></>
+              ) : (
+                <button
+                  className={` ${
+                    theme === true
+                      ? "bg-white text-black hover:bg-gray-300"
+                      : "bg-black text-white"
+                  }  p-2 text-base font-bold rounded cursor-pointer`}
+                  onClick={() => {
+                    handleRetrainModel();
+                  }}
+                >
+                  <FontAwesomeIcon icon={faStore} className="mr-2" />
+                  Retrain
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -269,11 +369,11 @@ const FileUpload = () => {
                 return (
                   <>
                     <tr key={i}>
+                      {/* <td className={classes}>{item.status}</td>*/}
+                      <td className={classes}>{item.org_id.name}</td>
+                      <td className={classes}>{item.app_id.name}</td>
                       <td className={classes}>{item.type}</td>
                       <td className={classes}>{item.name}</td>
-                      {/* <td className={classes}>{item.status}</td>
-                      <td className={classes}>{item.size}</td>
-                      <td className={classes}>{item.last_modified}</td> */}
                       <td className="p-4 btn-container">
                         {/* <button
                           onClick={() => handleDeleteFile(item.id, item.path)}
@@ -319,13 +419,74 @@ const FileUpload = () => {
           </h2>
         </div>
       )}
-      <UploadModal isOpen={open} onClose={handleClose} height={"400px"}>
+      <UploadModal isOpen={open} onClose={handleClose}>
         <div className="p-1">
           <form onSubmit={formik.handleSubmit}>
             <div className="form-content-area">
               <p className="text-xl my-1 font-bold">{`Add new ${
                 isFile ? "document" : "URL"
               } `}</p>
+              {role === 0 ? (
+                <>
+                  <label>For Chatbot Integration</label>
+                  <div className="flex border-2 rounded border-gray-600">
+                    <div className="form-control flex-1">
+                      <span className="input-error">
+                        <label>Organization</label>
+                        {formik.touched.org && formik.errors.org ? (
+                          <div className="error">{formik.errors.org}</div>
+                        ) : null}
+                      </span>
+
+                      <select
+                        id="org"
+                        name="org"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.org}
+                        className="input-box"
+                      >
+                        <option value={""}>Select Organization</option>
+                        {orgs.map((org, i) => {
+                          return (
+                            <option key={i} value={org._id}>
+                              {org.name}
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </div>
+                    <div className="form-control flex-1">
+                      <span className="input-error">
+                        <label>App</label>
+                        {formik.touched.app && formik.errors.app ? (
+                          <div className="error">{formik.errors.app}</div>
+                        ) : null}
+                      </span>
+
+                      <select
+                        id="app"
+                        name="app"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.app}
+                        className="input-box"
+                      >
+                        <option value={""}>Select App</option>
+                        {appList.map((app, i) => {
+                          return (
+                            <option key={i} value={app._id}>
+                              {app.name}
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <></>
+              )}
 
               <div className="flex justify-center items-center my-2">
                 <button
@@ -375,6 +536,19 @@ const FileUpload = () => {
                         Submit
                       </button>
                     </div>
+                    {/* <label
+                      className="btn bg-black text-white !w-full"
+                      htmlFor="customFile"
+                    >
+                      Upload File
+                    </label>
+                    <input
+                      ref={fileRef}
+                      type="file"
+                      onChange={handleUploadFile}
+                      id="customFile"
+                      style={{ display: "none", height: "0px", width: "0px" }}
+                    /> */}
                   </>
                 ) : (
                   <div>
@@ -424,4 +598,4 @@ const FileUpload = () => {
   );
 };
 
-export default FileUpload;
+export default BotFileUpload;

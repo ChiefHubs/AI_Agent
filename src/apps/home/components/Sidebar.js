@@ -97,6 +97,10 @@ const settingMenu = {
       icon: faFileArrowUp,
     },
     {
+      title: "Bot File Upload",
+      icon: faFileArrowUp,
+    },
+    {
       title: "LLM Key",
       icon: faKey,
       state: false,

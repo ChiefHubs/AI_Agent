@@ -28,18 +28,40 @@ export const uploadFile = ({ file }) => {
 
   return axios.post(`${API_URL}/user_query/uploadFile`, formData, config);
 };
+export const uploadFileForBot = ({ file, app_id, org_id }) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("app_id", app_id);
+  formData.append("org_id", org_id);
+  const config = {
+    headers: {
+      "content-type": "multipart/form-data",
+    },
+  };
+
+  return axios.post(`${API_URL}/user_query/uploadFileForBot`, formData, config);
+};
 // retrain model (file)
-export const retrainModel = (files) => {
-  return axios.post(`${API_URL}/user_query/retrainModel`, { files });
+export const retrainModel = (uploads) => {
+  return axios.post(`${API_URL}/user_query/retrainModel`, { uploads });
 };
 // retrieve all files api
-export const getAllFiles = (values) => {
+export const getAllFiles = () => {
   return axios.get(`${API_URL}/user_query/getAllFiles`);
+};
+// retrieve all files api
+export const getAllBotFiles = (app_id, org_id) => {
+  return axios.post(`${API_URL}/user_query/getAllBotFiles`, { app_id, org_id });
 };
 
 // delete Model (file)
 export const deleteModel = (payload) => {
   return axios.post(`${API_URL}/user_query/deleteModel`, payload);
+};
+
+// delete Model (file)
+export const deleteModelForBot = (payload) => {
+  return axios.post(`${API_URL}/user_query/deleteModelForBot`, payload);
 };
 
 // retrain all models (files)
@@ -98,6 +120,10 @@ export const storeVectorDB = (file_id, path) => {
   });
 };
 
-export const uploadURL = ({ url }) => {
-  return axios.post(`${API_URL}/user_query/uploadURL`, { url });
+export const uploadURL = ({ url, app_id, org_id }) => {
+  return axios.post(`${API_URL}/user_query/uploadURL`, {
+    url,
+    app_id: app_id || null,
+    org_id: org_id || null,
+  });
 };

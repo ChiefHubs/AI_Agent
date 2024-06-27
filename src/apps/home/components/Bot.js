@@ -38,7 +38,6 @@ const Bot = () => {
     const chatbotInfo = await verifyURL({ org, app, email });
     if (chatbotInfo) {
       setIsChatbotExist(true);
-      console.log("chatbotinfo--------------------------", chatbotInfo);
       setAvatar(chatbotInfo.avatar);
       dispatch(setUser(chatbotInfo));
       setAuthHeader(chatbotInfo.token);

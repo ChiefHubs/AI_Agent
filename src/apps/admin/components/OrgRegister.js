@@ -207,7 +207,7 @@ const OrgRegister = () => {
                             <p
                               variant="small"
                               color="blue-gray"
-                              className="font-normal truncate w-24 md:w-[700px]"
+                              className="font-normal truncate w-24 md:w-[500px]"
                             >
                               {description}
                             </p>

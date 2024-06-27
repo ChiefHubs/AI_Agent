@@ -30,7 +30,7 @@ const ChatbotModal = ({
       org: "",
       app: "",
       email: "",
-      description: "",
+      prompt: "",
     },
     validationSchema: chatbotRegSchema,
     onSubmit: (values) => {
@@ -43,7 +43,7 @@ const ChatbotModal = ({
       org: "",
       app: "",
       email: "",
-      description: "",
+      prompt: "",
       avatar: "",
     },
     validationSchema: chatbotUpdateSchema,
@@ -77,7 +77,6 @@ const ChatbotModal = ({
     changeIsLoading(true);
     try {
       const res = await updateChatbot(values);
-      console.log("edit--------", avatar);
       if (avatar !== null) {
         await uploadAvatar(avatar, res.data?.app_id);
       }
@@ -99,12 +98,11 @@ const ChatbotModal = ({
 
   useEffect(() => {
     if (data?.length > 0) {
-      console.log("hia--data0----------", data[0]);
       const edit_data = {
         app: data[0].app_id._id,
         email: data[0].user_id,
         org: data[0].org_id._id,
-        description: data[0].description,
+        prompt: data[0].prompt,
         avatar: data[0].avatar,
         _id: data[0]._id,
       };
@@ -115,13 +113,13 @@ const ChatbotModal = ({
         org: "",
         app: "",
         email: "",
-        description: "",
+        prompt: "",
       });
       formik_edit.setValues({
         org: "",
         app: "",
         email: "",
-        description: "",
+        prompt: "",
       });
     }
   }, [data]);
@@ -149,7 +147,6 @@ const ChatbotModal = ({
   const handleAvatarChange = (e) => {
     e.preventDefault();
     const newImage = e.target?.files?.[0];
-    console.log("----file 11----------", e.target?.files?.[0]);
     if (newImage) {
       setImageData(newImage);
       setImage(URL.createObjectURL(newImage));
@@ -276,21 +273,21 @@ const ChatbotModal = ({
                 </div>
                 <div className="form-control">
                   <span>
-                    <label htmlFor="description">Description</label>
-                    {formik.touched.description && formik.errors.description ? (
-                      <div className="error">{formik.errors.description}</div>
+                    <label htmlFor="prompt">Prompt</label>
+                    {formik.touched.prompt && formik.errors.prompt ? (
+                      <div className="error">{formik.errors.prompt}</div>
                     ) : null}
                   </span>
                   <textarea
                     autoComplete="off"
-                    id="description"
-                    name="description"
+                    id="prompt"
+                    name="prompt"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    value={formik.values.description}
+                    value={formik.values.prompt}
                     className="input-box"
                     rows={6}
-                    placeholder="Enter Description"
+                    placeholder="Enter prompt"
                   />
                 </div>
 
@@ -421,24 +418,22 @@ const ChatbotModal = ({
                   </div>
                   <div className="form-control">
                     <span>
-                      <label htmlFor="description">Description</label>
-                      {formik_edit.touched.description &&
-                      formik_edit.errors.description ? (
-                        <div className="error">
-                          {formik_edit.errors.description}
-                        </div>
+                      <label htmlFor="prompt">Prompt</label>
+                      {formik_edit.touched.prompt &&
+                      formik_edit.errors.prompt ? (
+                        <div className="error">{formik_edit.errors.prompt}</div>
                       ) : null}
                     </span>
                     <textarea
                       autoComplete="off"
-                      id="description"
-                      name="description"
+                      id="prompt"
+                      name="prompt"
                       onChange={formik_edit.handleChange}
                       onBlur={formik_edit.handleBlur}
-                      value={formik_edit.values.description}
+                      value={formik_edit.values.prompt}
                       className="input-box"
                       rows={6}
-                      placeholder="Enter Description"
+                      placeholder="Enter prompt"
                     />
                   </div>
 

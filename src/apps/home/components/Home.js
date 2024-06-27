@@ -10,6 +10,7 @@ import UserManager from "../../admin/components/UserManager";
 import LLMTemperature from "../../menu/components/LLMTemperature";
 import Profile from "../../menu/components/Profile";
 import FileUpload from "../../menu/components/FileUpload";
+import BotFileUpload from "../../menu/components/BotFileUpload";
 import LLMKey from "../../menu/components/LLMKey";
 import SetPrompt from "../../menu/components/SetPrompt";
 import UpgradeGPT from "../../menu/components/UpgradeGPT";
@@ -200,6 +201,9 @@ const Home = () => {
                 )}
                 {currentPage === "File Upload" && (
                   <FileUpload setCurrentPage={setCurrentPage} />
+                )}
+                {currentPage === "Bot File Upload" && (
+                  <BotFileUpload setCurrentPage={setCurrentPage} />
                 )}
                 {currentPage === "System Prompt" && (
                   <SetPrompt setCurrentPage={setCurrentPage} />

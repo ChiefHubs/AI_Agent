@@ -58,6 +58,7 @@ function BubbleChat({
     } else {
       payload.id = activeChat.id;
     }
+    payload.isBubble = true;
     setIsLoading(true);
     setQuestion("");
     await generateBubbleChat(payload)
@@ -95,7 +96,6 @@ function BubbleChat({
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
-      // console.log("Enter key pressed ✅");
       handleSendMessage();
     }
   };
