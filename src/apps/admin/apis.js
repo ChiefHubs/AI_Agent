@@ -78,10 +78,11 @@ export const deleteBot = (id) => {
 };
 
 // upload file
-export const uploadAvatar = (avatar, app_id) => {
+export const uploadAvatar = (avatar, id = null) => {
   const formData = new FormData();
   formData.append("file", avatar);
-  formData.append("app_id", app_id);
+  formData.append("id", id);
+  console.log("id--------", id);
   const config = {
     headers: {
       "content-type": "multipart/form-data",

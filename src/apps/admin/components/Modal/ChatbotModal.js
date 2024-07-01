@@ -58,7 +58,7 @@ const ChatbotModal = ({
       const res = await createChatbot(values);
       // console.log("res-------", res.data);
       if (avatar !== null) {
-        await uploadAvatar(avatar, res.data?.app_id);
+        await uploadAvatar(avatar, res.data?._id);
       }
       changeIsLoading(false);
       onClose();
@@ -77,8 +77,9 @@ const ChatbotModal = ({
     changeIsLoading(true);
     try {
       const res = await updateChatbot(values);
+      console.log("heelo", res.data);
       if (avatar !== null) {
-        await uploadAvatar(avatar, res.data?.app_id);
+        await uploadAvatar(avatar, res.data?.id);
       }
       changeIsLoading(false);
       onClose();

@@ -118,17 +118,21 @@ function BubbleChat({
   return (
     <div>
       <div
-        className={`flex flex-col justify-between  mb-2 bg-white h-full w-full pt-16 px-4 fixed right-4 bottom-12 shadow-lg border-1 rounded-lg overflow-hidden transition-transform duration-300  ${
+        className={`flex flex-col justify-between bg-transparent rounded-t-lg mb-4 h-full w-full pt-16 pl-4 fixed right-4 bottom-12 shadow-lg border-1 rounded-lg overflow-hidden transition-transform duration-300  ${
           isOpen ? "" : "transform translate-y-full opacity-0"
         } `}
       >
         <div className="bg-sky-900 w-full h-12 flex justify-start items-center rounded-t-lg">
           <img
-            src={`${serverAddress}/avatar/${avatar}`}
+            src={
+              avatar == ""
+                ? "/images/default_user.jpg"
+                : `${serverAddress}/avatar/${avatar}`
+            }
             className="w-10 ml-2 rounded-lg"
           />
         </div>
-        <div className="h-full overflow-y-scroll">
+        <div className="h-full overflow-y-scroll bg-white">
           <div
             className={`${
               questionList.length > 0 || activeChat.queries.length > 0
@@ -136,7 +140,11 @@ function BubbleChat({
           >
             <div className={`text-sm font-bold flex justify-start my-1`}>
               <img
-                src={`${serverAddress}/avatar/${avatar}`}
+                src={
+                  avatar == ""
+                    ? "/images/default_user.jpg"
+                    : `${serverAddress}/avatar/${avatar}`
+                }
                 className="w-10 h-10 rounded-lg ml-1"
               />
               <span className="font-bold ml-1 bg-gray-300 p-2 rounded-lg">
@@ -184,7 +192,7 @@ function BubbleChat({
             <div ref={bottomRef} />
           </div>
         </div>
-        <div className="p-4">
+        <div className="p-4 bg-white">
           <div className="w-full h-[50px] border border-gray-600 flex items-center rounded-lg p-2">
             <input
               value={question}
