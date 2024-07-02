@@ -125,9 +125,9 @@ function BubbleChat({
         <div className="bg-sky-900 w-full h-12 flex justify-start items-center rounded-t-lg">
           <img
             src={
-              avatar == ""
-                ? "/images/default_user.jpg"
-                : `${serverAddress}/avatar/${avatar}`
+              avatar
+                ? `${serverAddress}/avatar/${avatar}`
+                : "/images/default_user.jpg"
             }
             className="w-10 ml-2 rounded-lg"
           />
@@ -141,9 +141,9 @@ function BubbleChat({
             <div className={`text-sm font-bold flex justify-start my-1`}>
               <img
                 src={
-                  avatar == ""
-                    ? "/images/default_user.jpg"
-                    : `${serverAddress}/avatar/${avatar}`
+                  avatar
+                    ? `${serverAddress}/avatar/${avatar}`
+                    : "/images/default_user.jpg"
                 }
                 className="w-10 h-10 rounded-lg ml-1"
               />

@@ -329,10 +329,7 @@ const ChatbotModal = ({
                   <div className="form-control justify-center items-center flex">
                     <label htmlFor="input_file">
                       <Avatar
-                        src={
-                          image ||
-                          `${process.env.REACT_APP_URL}/avatar/${formik_edit.values.avatar}`
-                        }
+                        src={image || "/images/default_user.jpg"}
                         className="cursor-pointer rounded-full"
                       ></Avatar>
                     </label>

@@ -270,12 +270,12 @@ const BotIntegration = () => {
                             </p>
                           </td>
                           <td className={classes}>
-                            {avatar === "" ? (
-                              <Avatar src="/images/default_user.jpg" />
-                            ) : (
+                            {avatar ? (
                               <Avatar
                                 src={`${process.env.REACT_APP_URL}/avatar/${avatar}?${timestamp}`}
                               />
+                            ) : (
+                              <Avatar src="/images/default_user.jpg" />
                             )}
                           </td>
                           <td className={classes}>
