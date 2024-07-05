@@ -162,7 +162,11 @@ function BubbleChat({
 
                   <div className={`text-sm font-bold flex justify-start my-1`}>
                     <img
-                      src={`${serverAddress}/avatar/${avatar}`}
+                      src={
+                        avatar
+                          ? `${serverAddress}/avatar/${avatar}`
+                          : "/images/default_bot.png"
+                      }
                       className="w-10 h-10 rounded-lg ml-1"
                     />
                     <span className="font-bold ml-1 bg-gray-300 p-2 rounded-lg">
