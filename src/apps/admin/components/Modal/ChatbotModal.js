@@ -187,7 +187,7 @@ const ChatbotModal = ({
                 <div className="form-control justify-center items-center flex">
                   <label htmlFor="input_file">
                     <Avatar
-                      src={image || "/images/default_user.jpg"}
+                      src={image || "/images/default_bot.png"}
                       className="cursor-pointer rounded-full"
                     ></Avatar>
                   </label>
@@ -329,7 +329,7 @@ const ChatbotModal = ({
                   <div className="form-control justify-center items-center flex">
                     <label htmlFor="input_file">
                       <Avatar
-                        src={image || "/images/default_user.jpg"}
+                        src={image || "/images/default_bot.png"}
                         className="cursor-pointer rounded-full"
                       ></Avatar>
                     </label>

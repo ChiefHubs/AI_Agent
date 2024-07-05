@@ -21,7 +21,7 @@ import { ScrapURL } from "../validations";
 import { FileUploader } from "react-drag-drop-files";
 import { getAllOrgs, getAllApps } from "../../admin/apis";
 
-const fileTypes = ["PDF", "TXT", "DOCX"];
+const fileTypes = ["PDF", "TXT", "DOCX", "CSV"];
 
 const BotFileUpload = () => {
   const theme = useSelector((store) => store.setting.isDark);

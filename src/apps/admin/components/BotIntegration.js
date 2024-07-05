@@ -275,7 +275,7 @@ const BotIntegration = () => {
                                 src={`${process.env.REACT_APP_URL}/avatar/${avatar}?${timestamp}`}
                               />
                             ) : (
-                              <Avatar src="/images/default_user.jpg" />
+                              <Avatar src="/images/default_bot.png" />
                             )}
                           </td>
                           <td className={classes}>

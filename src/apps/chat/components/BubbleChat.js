@@ -127,7 +127,7 @@ function BubbleChat({
             src={
               avatar
                 ? `${serverAddress}/avatar/${avatar}`
-                : "/images/default_user.jpg"
+                : "/images/default_bot.png"
             }
             className="w-10 ml-2 rounded-lg"
           />
@@ -143,7 +143,7 @@ function BubbleChat({
                 src={
                   avatar
                     ? `${serverAddress}/avatar/${avatar}`
-                    : "/images/default_user.jpg"
+                    : "/images/default_bot.png"
                 }
                 className="w-10 h-10 rounded-lg ml-1"
               />
