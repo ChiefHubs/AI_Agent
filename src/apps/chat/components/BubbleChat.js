@@ -51,16 +51,18 @@ function BubbleChat({
 
     if (!activeChat.id) {
       const splitQues = question.split(" ");
-
       payload.isNew = true;
-      payload.title =
+      payload.title = 
         splitQues[0] + " " + (splitQues[1] || "") + " " + (splitQues[2] || "");
     } else {
       payload.id = activeChat.id;
     }
+
     payload.isBubble = true;
+    payload.status = true;
     setIsLoading(true);
     setQuestion("");
+
     await generateBubbleChat(payload)
       .then((res) => {
         setQueries(res.data.chats);

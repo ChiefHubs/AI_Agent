@@ -174,7 +174,7 @@ const BotFileUpload = () => {
   const handleGetAllFiles = async () => {
     try {
       const res = await getAllBotFiles(currentApp, currentOrg);
-      setUploadData(res.data.result);
+      setUploadData(res.result);
       setTimeout(() => {
         setIsLoading(false);
       }, 1000);
@@ -189,7 +189,7 @@ const BotFileUpload = () => {
     setIsDelete(false);
     try {
       await retrainModel(uploaddata);
-      handleGetAllFiles();
+      await handleGetAllFiles();
       toast.success("Model retrained successfully", {
         position: "bottom-right",
         autoClose: 5000,

@@ -50,8 +50,9 @@ export const getAllFiles = () => {
   return axios.get(`${API_URL}/user_query/getAllFiles`);
 };
 // retrieve all files api
-export const getAllBotFiles = (app_id, org_id) => {
-  return axios.post(`${API_URL}/user_query/getAllBotFiles`, { app_id, org_id });
+export const getAllBotFiles = async (app_id, org_id) => {
+  let { data } = await axios.post(`${API_URL}/user_query/getAllBotFiles`, { app_id, org_id });
+  return data;
 };
 
 // delete Model (file)
